@@ -95,3 +95,19 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+## Configuracion de eslint para react native
+
+```sh
+npm uninstall @react-native-community/eslint-config - React Native já vem com o Eslint inicial quando criamos o projeto mas vamos remover esse pacote porque criaremos a nossa configuração.
+
+npm uninstall eslint - Agora removeremos o eslint.
+
+Provavelmente já vai vir no seu projeto criado um arquivo com nome de .eslintrc você pode Excluir esse arquivo.
+
+Você também já vai ter um arquivo chamado .prettierrc você pode Excluir esse arquivo.
+
+npm install eslint --save-dev - Agora vamos instalar o eslint
+
+npx eslint --init - Vamos iniciar nossa configuração. Este comando fará algumas perguntas via CMD. Aqui está uma lista delas e as respostas que precisaremos escolher (✔ and ❯ os símbolos indicam as respostas selecionadas):
+```
