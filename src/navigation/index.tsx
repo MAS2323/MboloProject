@@ -10,6 +10,7 @@ import FavoriteScreen from '../screens/tabs/FavoriteScreen';
 import AllStoreScreen from '../screens/tabs/AllStoreScreen';
 import {Image} from 'react-native';
 import IMAGES from '../assets/images';
+import {COLORS} from '../constants';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -53,10 +54,12 @@ function MyTabs() {
               style={{
                 width: 30,
                 height: 30,
-                tintColor: focused ? '#000' : '#ccc',
+                tintColor: focused ? COLORS.primary : COLORS.GRAY_LIGHT,
               }}
             />
           ),
+          tabBarActiveTintColor: COLORS.primary,
+          tabBarInactiveTintColor: COLORS.GRAY_LIGHT,
         }}
       />
       <Tab.Screen
@@ -70,10 +73,12 @@ function MyTabs() {
               style={{
                 width: 30,
                 height: 30,
-                tintColor: focused ? '#000' : '#ccc',
+                tintColor: focused ? COLORS.primary : COLORS.GRAY_LIGHT,
               }}
             />
           ),
+          tabBarActiveTintColor: COLORS.primary,
+          tabBarInactiveTintColor: COLORS.GRAY_LIGHT,
         }}
       />
       <Tab.Screen
@@ -87,10 +92,12 @@ function MyTabs() {
               style={{
                 width: 30,
                 height: 30,
-                tintColor: focused ? '#000' : '#ccc',
+                tintColor: focused ? COLORS.primary : COLORS.GRAY_LIGHT,
               }}
             />
           ),
+          tabBarActiveTintColor: COLORS.primary,
+          tabBarInactiveTintColor: COLORS.GRAY_LIGHT,
         }}
       />
 
@@ -105,10 +112,12 @@ function MyTabs() {
               style={{
                 width: 30,
                 height: 30,
-                tintColor: focused ? '#000' : '#ccc',
+                tintColor: focused ? COLORS.primary : COLORS.GRAY_LIGHT,
               }}
             />
           ),
+          tabBarActiveTintColor: COLORS.primary,
+          tabBarInactiveTintColor: COLORS.GRAY_LIGHT,
         }}
       />
     </Tab.Navigator>
