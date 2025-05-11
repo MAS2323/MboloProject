@@ -1,6 +1,11 @@
 const SCREENS = {
   INTRO: 'INTRO',
   LOGIN: 'LOGIN',
+  HOME: 'HOME',
+  PROFILE: 'PROFILE',
+  FAVORITE: 'FAVORITE',
+  ALLSTORE: 'ALLSTORE',
+  HOME_STACK: 'HOME_STACK',
 };
 
 export default SCREENS;

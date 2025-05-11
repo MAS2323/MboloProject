@@ -3,8 +3,16 @@ import {createStackNavigator} from '@react-navigation/stack';
 import IntroScreen from '../screens/intro/IntroScreen';
 import SCREENS from '../screens';
 import LoginScren from '../screens/auth/LoginScren';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import HomeScreen from '../screens/tabs/HomeScreen';
+import ProfileScreen from '../screens/tabs/ProfileScreen';
+import FavoriteScreen from '../screens/tabs/FavoriteScreen';
+import AllStoreScreen from '../screens/tabs/AllStoreScreen';
+import {Image} from 'react-native';
+import IMAGES from '../assets/images';
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 const StackNavigation = () => {
   return (
     <Stack.Navigator
@@ -22,8 +30,88 @@ const StackNavigation = () => {
         component={LoginScren}
         options={{headerShown: false}}
       />
+      <Stack.Screen
+        name={SCREENS.HOME_STACK}
+        component={MyTabs}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
 
+function MyTabs() {
+  return (
+    <Tab.Navigator initialRouteName={SCREENS.HOME}>
+      <Tab.Screen
+        name={SCREENS.HOME}
+        component={HomeScreen}
+        options={{
+          title: 'Home',
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={IMAGES.HOME}
+              style={{
+                width: 30,
+                height: 30,
+                tintColor: focused ? '#000' : '#ccc',
+              }}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={SCREENS.ALLSTORE}
+        component={AllStoreScreen}
+        options={{
+          title: 'All Store',
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={IMAGES.ORDERS}
+              style={{
+                width: 30,
+                height: 30,
+                tintColor: focused ? '#000' : '#ccc',
+              }}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={SCREENS.FAVORITE}
+        component={FavoriteScreen}
+        options={{
+          title: 'Favorite',
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={IMAGES.WISHLIST}
+              style={{
+                width: 30,
+                height: 30,
+                tintColor: focused ? '#000' : '#ccc',
+              }}
+            />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name={SCREENS.PROFILE}
+        component={ProfileScreen}
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={IMAGES.PROFILE}
+              style={{
+                width: 30,
+                height: 30,
+                tintColor: focused ? '#000' : '#ccc',
+              }}
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 export default StackNavigation;
