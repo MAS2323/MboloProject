@@ -48,6 +48,7 @@ function MyTabs() {
         component={HomeScreen}
         options={{
           title: 'Home',
+          headerShown: false,
           tabBarIcon: ({focused}) => (
             <Image
               source={IMAGES.HOME}

@@ -1,6 +1,6 @@
 import {Platform, StyleSheet} from 'react-native';
 import React, {useEffect} from 'react';
-import SplashScreen from 'react-native-splash-screen';
+// import SplashScreen from 'react-native-splash-screen';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import StackNavigation from './src/navigation';
 
