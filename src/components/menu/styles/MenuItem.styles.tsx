@@ -1,31 +1,30 @@
-// components/menu/MenuItem.styles.js
 import {StyleSheet} from 'react-native';
-import {SIZES} from '../../../constants';
-import {FONTS, SHADOWS} from '../../../constants';
-import COLORS from '../../../constants/colors';
+import {COLORS, FONTS, SIZES} from '../../../constants';
 
 export default StyleSheet.create({
-  menuContainer: {
-    marginBottom: SIZES.large,
+  container: {
+    flex: 1,
+    margin: SIZES.small / 2, // Tighten the margin for a closer grid
     backgroundColor: COLORS.white,
-    borderRadius: SIZES.small,
+    borderRadius: 0, // No border radius for a cleaner look
     padding: SIZES.medium,
-    ...SHADOWS.small,
+    alignItems: 'center',
+    justifyContent: 'center', // Center content vertically
+    aspectRatio: 1, // Make the item square
+    maxWidth: '33%', // For 3 columns (100%/3 - margin)
+    minWidth: '33%', // Ensure consistent width
   },
-  menuTitle: {
-    fontFamily: FONTS.MONTSERRAT_BOLD,
-    fontSize: SIZES.large,
-    color: COLORS.primary,
+  image: {
+    width: 50, // Smaller size for icons
+    height: 50,
     marginBottom: SIZES.small,
+    resizeMode: 'contain', // Better for icons
   },
-  menuItem: {
-    paddingVertical: SIZES.small,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray2,
+  title: {
+    fontFamily: FONTS.MONTSERRAT_BOLD,
+    fontSize: SIZES.small, // Smaller font for better fit
+    color: COLORS.gray, // Match the grayish text in the image
+    textAlign: 'center',
   },
-  menuItemText: {
-    fontFamily: FONTS.MONTSERRAT,
-    fontSize: SIZES.medium,
-    color: COLORS.black,
-  },
+  // Remove subcategoriesContainer and subcategoryText since they're not in the image
 });

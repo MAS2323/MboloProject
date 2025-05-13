@@ -1,53 +1,70 @@
-// components/menu/MenuScreen.js
-import React from 'react';
-import {FlatList} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  FlatList,
+  Text,
+  ActivityIndicator,
+  useWindowDimensions,
+} from 'react-native';
+import {fetchMenuCategories} from './api/menuApi';
 import MenuItem from './MenuItem';
 import styles from './styles/MenuScreen.styles';
 
-const menuItems = [
-  {
-    id: '1',
-    title: 'Información',
-    items: ['Alquiler', 'Ventas'],
-  },
-  {
-    id: '2',
-    title: 'Ministerios',
-    items: ['ONGs', 'Educación'],
-  },
-  {
-    id: '3',
-    title: 'Servicios',
-    items: ['Turismo', 'Sanidad'],
-  },
-  {
-    id: '4',
-    title: 'Servicios',
-    items: ['Turismo', 'Sanidad'],
-  },
-  {
-    id: '5',
-    title: 'Servicios',
-    items: ['Turismo', 'Sanidad'],
-  },
-  {
-    id: '6',
-    title: 'Servicios',
-    items: ['Turismo', 'Sanidad'],
-  },
-];
+const MenuScreen = ({navigation}) => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const {width} = useWindowDimensions();
 
-const MenuScreen = () => {
+  // Use 3 columns for all screen sizes to match the image
+  const numColumns = 3;
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const data = await fetchMenuCategories();
+        setCategories(data);
+        setError(null);
+      } catch (err) {
+        setError('No se pudieron cargar las categorías. Inténtalo de nuevo.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadCategories();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={styles.loader.color} />
+      </View>
+    );
+  }
+
   return (
-    <FlatList
-      data={menuItems}
-      renderItem={({item}) => (
-        <MenuItem title={item.title} items={item.items} />
+    <View style={styles.container}>
+      <Text style={styles.title}>CATEGORÍAS</Text>
+
+      {error ? (
+        <Text style={styles.errorText}>{error}</Text>
+      ) : (
+        <FlatList
+          data={categories}
+          renderItem={({item}) => (
+            <MenuItem
+              item={item}
+              onPress={() => handleCategoryPress(item._id, item.name)}
+            />
+          )}
+          keyExtractor={item => item._id}
+          numColumns={numColumns}
+          contentContainerStyle={styles.listContainer}
+          columnWrapperStyle={styles.columnWrapper}
+          key={numColumns} // Ensure FlatList re-renders when numColumns changes
+        />
       )}
-      keyExtractor={item => item.id}
-      contentContainerStyle={styles.container}
-      showsVerticalScrollIndicator={false}
-    />
+    </View>
   );
 };
 
