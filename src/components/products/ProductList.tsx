@@ -1,14 +1,14 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const SlideSecction = () => {
+const ProductList = () => {
   return (
     <View>
-      <Text>SlideSecction</Text>
+      <Text>ProductList</Text>
     </View>
   );
 };
 
-export default SlideSecction;
+export default ProductList;
 
 const styles = StyleSheet.create({});

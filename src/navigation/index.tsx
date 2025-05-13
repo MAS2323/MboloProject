@@ -12,6 +12,7 @@ import {Image} from 'react-native';
 import IMAGES from '../assets/images';
 import {COLORS} from '../constants';
 import SearchScreen from '../components/header/SearchScreen';
+import ProductList from '../components/products/ProductList';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -30,6 +31,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.LOGIN}
         component={LoginScren}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.PRODUCT_LIST}
+        component={ProductList}
         options={{headerShown: false}}
       />
       <Stack.Screen

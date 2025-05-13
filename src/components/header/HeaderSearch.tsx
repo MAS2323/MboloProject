@@ -6,12 +6,12 @@ import {COLORS, ICONS} from '../../constants';
 import SCREENS from '../../screens';
 
 // Importar los componentes de iconos dinámicamente
-const IconComponents = {
+const IconComponents: {[key: string]: any} = {
   Feather: require('react-native-vector-icons/Feather').default,
   Ionicons: require('react-native-vector-icons/Ionicons').default,
 };
 
-const HeaderSearch = props => {
+const HeaderSearch = (props: any) => {
   // const navigation = useNavigation();
   const navigation = props;
   const SearchIcon = IconComponents[ICONS.SEARCH.library];
