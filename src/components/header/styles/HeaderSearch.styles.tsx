@@ -4,6 +4,7 @@ import {SIZES, COLORS} from '../../../constants';
 
 export default StyleSheet.create({
   container: {
+    // backgroundColor: '#f5f5f5',
     paddingHorizontal: SIZES.medium,
     paddingVertical: SIZES.small,
     backgroundColor: COLORS.offwhite, // Color de fondo gris claro

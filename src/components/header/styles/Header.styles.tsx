@@ -8,7 +8,7 @@ export default StyleSheet.create({
   container: {
     width: '100%',
     padding: SIZES.medium,
-    backgroundColor: COLORS.white,
+    // backgroundColor: COLORS.white,
     // ...SHADOWS.medium,
   },
   iconsContainer: {

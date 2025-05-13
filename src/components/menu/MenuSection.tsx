@@ -1,9 +1,13 @@
-// components/menu/MenuSection.js
-import React from 'react';
+import React, {ReactNode} from 'react';
 import {View, Text} from 'react-native';
 import styles from './styles/MenuSection.styles';
 
-const MenuSection = ({title, children}) => {
+interface MenuSectionProps {
+  title: string;
+  children: ReactNode;
+}
+
+const MenuSection: React.FC<MenuSectionProps> = ({title, children}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
