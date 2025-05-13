@@ -1,43 +1,36 @@
-// screens/SearchScreen/SearchBar.styles.js
 import {StyleSheet} from 'react-native';
 import {COLORS, SIZES} from '../../../constants';
-// import COLORS from '../../../constants/colors';
+
 export default StyleSheet.create({
-  searchIconContainer: {
+  container: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-    backgroundColor: COLORS.secondary,
+    alignItems: 'center',
+    backgroundColor: '#E6F0FA', // Light blue background from the image
     borderRadius: SIZES.medium,
     marginVertical: SIZES.medium,
+    marginHorizontal: SIZES.small,
     height: 50,
-    marginHorizontal: 12,
+    paddingHorizontal: SIZES.small,
   },
   searchIcon: {
-    marginHorizontal: 10,
-    color: COLORS.gray,
-    marginTop: SIZES.small,
-  },
-  searchWrapper: {
-    flex: 1,
-    backgroundColor: COLORS.secondary,
     marginRight: SIZES.small,
-    borderRadius: SIZES.small,
+    color: COLORS.gray, // Match the grayish icon color in the image
   },
-  searchInput: {
-    width: '100%',
-    height: '100%',
-    paddingHorizontal: SIZES.small,
+  placeholderText: {
+    flex: 1,
+    textAlign: 'center',
     fontFamily: 'Montserrat-Regular',
     fontSize: SIZES.medium,
-    color: COLORS.black,
+    color: COLORS.gray, // Match the placeholder text color
+    padding: 0,
   },
-  searchBtn: {
-    width: 50,
-    height: '100%',
-    backgroundColor: COLORS.primary,
-    borderRadius: SIZES.medium,
-    alignItems: 'center',
-    justifyContent: 'center',
+  exploreText: {
+    textAlign: 'center',
+    marginTop: SIZES.small,
+    letterSpacing: 4,
+    color: COLORS.gray,
+    fontFamily: 'Montserrat-Medium',
+    fontSize: SIZES.small,
+    textTransform: 'uppercase',
   },
 });

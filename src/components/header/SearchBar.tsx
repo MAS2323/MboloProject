@@ -1,6 +1,5 @@
-// screens/SearchScreen/SearchBar.js
 import React from 'react';
-import {View, TextInput, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './styles/SearchBar.styles';
 import {ICONS, COLORS} from '../../constants';
 
@@ -10,38 +9,25 @@ const IconComponents = {
   Ionicons: require('react-native-vector-icons/Ionicons').default,
 };
 
-const SearchBar = ({onSearchChange, searchQuery}) => {
+const SearchBar = ({onPress}) => {
   const SearchIcon = IconComponents[ICONS.SEARCH.library];
-  const CameraIcon = IconComponents[ICONS.CAMERA.library];
 
   return (
-    <View style={styles.searchIconContainer}>
-      <TouchableOpacity>
+    <View>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={onPress}
+        activeOpacity={0.7}>
         <SearchIcon
           name={ICONS.SEARCH.name}
           size={ICONS.SEARCH.size}
           style={styles.searchIcon}
         />
+        <Text style={styles.placeholderText}>
+          Escríbelo, busca y encuentralo!
+        </Text>
       </TouchableOpacity>
-
-      <View style={styles.searchWrapper}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Buscar..."
-          placeholderTextColor={COLORS.gray}
-          autoFocus={true}
-          value={searchQuery}
-          onChangeText={onSearchChange}
-        />
-      </View>
-
-      <TouchableOpacity style={styles.searchBtn}>
-        <CameraIcon
-          name={ICONS.CAMERA.name}
-          size={ICONS.CAMERA.size}
-          color={COLORS.white}
-        />
-      </TouchableOpacity>
+      <Text style={styles.exploreText}>EXPLORAR</Text>
     </View>
   );
 };

@@ -6,13 +6,14 @@ export default StyleSheet.create({
   container: {
     paddingHorizontal: SIZES.medium,
     paddingVertical: SIZES.small,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.offwhite, // Color de fondo gris claro
     alignItems: 'center', // Centrar contenido horizontalmente
   },
+
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.lightwhite,
+    backgroundColor: COLORS.secondary,
     borderRadius: SIZES.small,
     paddingHorizontal: SIZES.medium,
     paddingVertical: SIZES.small,
