@@ -11,6 +11,7 @@ import AllStoreScreen from '../screens/tabs/AllStoreScreen';
 import {Image} from 'react-native';
 import IMAGES from '../assets/images';
 import {COLORS} from '../constants';
+import SearchScreen from '../components/header/SearchScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -29,6 +30,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.LOGIN}
         component={LoginScren}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.SEATCHSCRENN}
+        component={SearchScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen

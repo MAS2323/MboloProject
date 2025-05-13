@@ -1,24 +1,33 @@
-// components/Header.js
+// components/header/Header.js
 import React from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
-// import {Ionicons} from '@expo/vector-icons';
-// import {Fontisto} from '@expo/vector-icons';
-import styles from './styles/mainHeader';
-const Header = ({location}) => {
+import {View, TouchableOpacity} from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import LocationTitle from './LocationTitle';
+import styles from './styles/Header.styles';
+import ICONS from '../../constants/icons';
+
+const Header = () => {
   return (
-    <View style={[styles.appBarWrapper, {marginTop: 53}]}>
-      <View style={styles.appBar}>
-        <TouchableOpacity onPress={() => {}}>
-          {/* <Ionicons name="location-outline" size={30} color="black" /> */}
+    <View style={styles.container}>
+      <View style={styles.iconsContainer}>
+        <TouchableOpacity style={styles.iconButton}>
+          <Feather
+            name={ICONS.SEARCH.name}
+            size={ICONS.SEARCH.size}
+            style={styles.icon}
+          />
         </TouchableOpacity>
-        <Text style={styles.location}>{location}</Text>
-        <View style={{alignItems: 'flex-end'}}>
-          <TouchableOpacity
-          //   onPress={() => router.push('/cart/CartScreen')}
-          >
-            {/* <Fontisto name="shopping-bag" size={24} color={COLORS.black} /> */}
-          </TouchableOpacity>
-        </View>
+
+        <LocationTitle />
+
+        <TouchableOpacity style={styles.iconButton}>
+          <Ionicons
+            name={ICONS.CAMERA.name}
+            size={ICONS.CAMERA.size}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
