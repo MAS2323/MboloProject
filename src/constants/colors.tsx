@@ -8,6 +8,7 @@ const COLORS = {
   primary: '#4c86A8',
   secondary: '#DDF0FF',
   tertiary: '#FF7754',
+  blue: '#007AFF',
 
   gray: '#83829A',
   gray2: '#C1C0C8',
@@ -18,6 +19,8 @@ const COLORS = {
   red: '#e81e4d',
   green: '#00C135',
   lightwhite: '#FAFAFC',
+  lightGray: '#F5F5F5',
+  softGray: '#E5E5E5',
 };
 
 export default COLORS;

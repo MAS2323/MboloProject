@@ -13,6 +13,7 @@ import IMAGES from '../assets/images';
 import {COLORS} from '../constants';
 import SearchScreen from '../components/header/SearchScreen';
 import ProductList from '../components/products/ProductList';
+import ProductDetails from '../components/products/ProductDetails';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -39,7 +40,17 @@ const StackNavigation = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name={SCREENS.PRODUCT_DETAIL}
+        component={ProductDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name={SCREENS.SEATCHSCRENN}
+        component={SearchScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.CART_SCREEN}
         component={SearchScreen}
         options={{headerShown: false}}
       />

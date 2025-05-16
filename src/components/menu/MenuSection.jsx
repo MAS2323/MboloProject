@@ -2,12 +2,7 @@ import React, {ReactNode} from 'react';
 import {View, Text} from 'react-native';
 import styles from './styles/MenuSection.styles';
 
-interface MenuSectionProps {
-  title: string;
-  children: ReactNode;
-}
-
-const MenuSection: React.FC<MenuSectionProps> = ({title, children}) => {
+const MenuSection = ({title, children}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>

@@ -1,5 +1,4 @@
 // components/header/HeaderSearch.js
-import React from 'react';
 import {View, TextInput, Text, TouchableOpacity} from 'react-native';
 import styles from './styles/HeaderSearch.styles';
 import {COLORS, ICONS} from '../../constants';

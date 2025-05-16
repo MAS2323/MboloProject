@@ -1,4 +1,3 @@
-// constants/icons.js
 export const ICONS = {
   SEARCH: {
     library: 'Feather',
@@ -16,8 +15,8 @@ export const ICONS = {
     size: 24,
   },
   LOCATION: {
-    library: 'SimpleLineIcons',
-    name: 'location-pin',
+    library: 'Ionicons', // Changed to Ionicons to match usage
+    name: 'location-outline',
     size: 24,
   },
   BAG: {
@@ -28,6 +27,60 @@ export const ICONS = {
   TENDENCIA: {
     library: 'Entypo',
     name: 'bar-graph',
+    size: 24,
+  },
+  DELIVERY: {
+    library: 'MaterialCommunityIcons',
+    name: 'truck-delivery-outline', // Fixed typo
+    size: 24,
+  },
+  SHOPING_BAG: {
+    library: 'Fontisto',
+    name: 'shopping-bag',
+    size: 24,
+  },
+  WHATSAPP: {
+    library: 'Fontisto',
+    name: 'whatsapp',
+    size: 24,
+  },
+  START: {
+    library: 'Ionicons',
+    name: 'star',
+    size: 24,
+  },
+  PLUS: {
+    library: 'SimpleLineIcons',
+    name: 'plus',
+    size: 20, // Adjusted to match usage
+  },
+  MINUS: {
+    library: 'SimpleLineIcons',
+    name: 'minus',
+    size: 20, // Adjusted to match usage
+  },
+  BACK_ARROW: {
+    // Added for navigation back button
+    library: 'Ionicons',
+    name: 'chevron-back-circle',
+    size: 30,
+  },
+  IMAGE_OUTLINE: {
+    // Added for navigation back button
+    library: 'Ionicons',
+    name: 'image-outline',
+    size: 50,
+  },
+  ADDCIRCLE: {
+    // Added for navigation back button
+    library: 'MaterialIcons',
+    name: 'add-circle',
+    size: 30,
+  },
+  PHONE: {
+    // Added for phone call button
+    library: 'Ionicons',
+    name: 'call',
     size: 24,
   },
 };
