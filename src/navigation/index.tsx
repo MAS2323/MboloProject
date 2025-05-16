@@ -11,9 +11,10 @@ import AllStoreScreen from '../screens/tabs/AllStoreScreen';
 import {Image} from 'react-native';
 import IMAGES from '../assets/images';
 import {COLORS} from '../constants';
-import SearchScreen from '../components/header/SearchScreen';
+import SearchScreen from '../components/header/Search/SearchScreen';
 import ProductList from '../components/products/ProductList';
 import ProductDetails from '../components/products/ProductDetails';
+import ImageGalleryScreen from '../components/products/components/ImageGalleryScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,17 +41,17 @@ const StackNavigation = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name={SCREENS.IMAGE_GALLERY_SCREEN}
+        component={ImageGalleryScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name={SCREENS.PRODUCT_DETAIL}
         component={ProductDetails}
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name={SCREENS.SEATCHSCRENN}
-        component={SearchScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name={SCREENS.CART_SCREEN}
+        name={SCREENS.SEARCHSCREEN}
         component={SearchScreen}
         options={{headerShown: false}}
       />

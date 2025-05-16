@@ -11,10 +11,12 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import styles from './styles/ProductDetails.style'; // Adjust path as needed
-import {COLORS, ICONS} from '../../constants'; // Adjust path as needed
-import SCREENS from '../../screens'; // Adjust path as needed
+import Linking from 'react-native';
+import styles from './styles/ProductDetails.style';
+import {COLORS, ICONS, SIZES} from '../../constants';
+import SCREENS from '../../screens';
 import {API_BASE_URL} from '../../config/Service.Config';
+
 const IconComponents = {
   Ionicons: require('react-native-vector-icons/Ionicons').default,
   SimpleLineIcons: require('react-native-vector-icons/SimpleLineIcons').default,
@@ -56,15 +58,14 @@ const ProductDetails = () => {
             'ID de producto o datos del producto no proporcionados',
           );
         }
-        if (item) {
-          setProduct(item);
-        } else if (id) {
-          const response = await axios.get(`${API_BASE_URL}/products/${id}`);
-          setProduct(response.data);
-        }
+        const response = await axios.get(
+          `${API_BASE_URL}/products/${id || item._id}`,
+        );
+        setProduct(response.data);
       } catch (error) {
         console.error('Error al cargar el producto:', error.message);
         setProduct(null);
+        Alert.alert('Error', 'No se pudo cargar el producto');
       } finally {
         setLoading(false);
       }
@@ -139,7 +140,7 @@ const ProductDetails = () => {
     );
   };
 
-  // Share functionality (simplified for React Native CLI)
+  // Share functionality
   const handleShare = () => {
     if (!product?._id) {
       Alert.alert('Error', 'ID de producto no válido');
@@ -155,8 +156,7 @@ const ProductDetails = () => {
   const handleScroll = ({nativeEvent}) => {
     const scrollY = nativeEvent.contentOffset.y;
     const imageSectionHeight = Dimensions.get('window').height * 0.4;
-    const triggerPoint = imageSectionHeight / 2;
-    setShowHeader(scrollY > triggerPoint);
+    setShowHeader(scrollY > imageSectionHeight / 2);
   };
 
   // Mock HeaderScreen component
@@ -252,6 +252,7 @@ const ProductDetails = () => {
   const sections = [
     {type: 'images', data: product.images || []},
     {type: 'details', data: product},
+    {type: 'packages', data: product.packages || []},
     {type: 'store', data: store},
     {
       type: 'related',
@@ -329,126 +330,44 @@ const ProductDetails = () => {
                   <Text style={styles.price}>XAF {item.data.price || '0'}</Text>
                 </View>
               </View>
-              <View style={styles.ratingRow}>
-                <View style={styles.rating}>
-                  {[1, 2, 3, 4, 5].map(index => (
-                    <StarIcon
-                      key={index}
-                      name={ICONS.START.name}
-                      size={ICONS.START.size}
-                      color="gold"
-                    />
-                  ))}
-                  <Text style={styles.ratingText}>(4.9)</Text>
-                </View>
-                <View style={styles.quantityControl}>
-                  <TouchableOpacity onPress={handleIncrement}>
-                    <PlusIcon
-                      name={ICONS.PLUS.name}
-                      size={ICONS.PLUS.size}
-                      color={COLORS.black}
-                    />
-                  </TouchableOpacity>
-                  <Text style={styles.ratingText}>{count}</Text>
-                  <TouchableOpacity onPress={handleDecrement}>
-                    <MinusIcon
-                      name={ICONS.MINUS.name}
-                      size={ICONS.MINUS.size}
-                      color={COLORS.black}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
               <View style={styles.descriptionWrapper}>
                 <Text style={styles.descriptionTitle}>Descripción</Text>
                 <Text style={styles.description}>
                   {item.data.description || 'Sin descripción'}
                 </Text>
               </View>
-              <View style={styles.detailsWrapper}>
-                <Text style={styles.detailItem}>
-                  Categoría:{' '}
-                  {item.data.subcategory?.category?.name || 'No especificada'}
-                </Text>
-                <Text style={styles.detailItem}>
-                  Subcategoría:{' '}
-                  {item.data.subcategory?.name || 'No especificada'}
-                </Text>
-                {item.data.tallas?.length > 0 && (
-                  <Text style={styles.detailItem}>
-                    Tallas disponibles: {item.data.tallas.join(', ')}
-                  </Text>
-                )}
-                {item.data.numeros_calzado?.length > 0 && (
-                  <Text style={styles.detailItem}>
-                    Números de calzado: {item.data.numeros_calzado.join(', ')}
-                  </Text>
-                )}
-                {item.data.colores?.length > 0 && (
-                  <Text style={styles.detailItem}>
-                    Colores disponibles: {item.data.colores.join(', ')}
-                  </Text>
-                )}
-              </View>
-              <View style={styles.locationWrapper}>
-                <View style={styles.location}>
-                  <LocationIcon
-                    name={ICONS.LOCATION.name}
-                    size={ICONS.LOCATION.size}
-                    color={COLORS.black}
-                  />
-                  <Text>{item.data.product_location || 'No especificada'}</Text>
-                </View>
-                <View style={styles.location}>
-                  <DeliveryIcon
-                    name={ICONS.DELIVERY.name}
-                    size={ICONS.DELIVERY.size}
-                    color={COLORS.black}
-                  />
-                  <Text>Entrega gratis</Text>
-                </View>
-              </View>
-              <View style={styles.cartRow}>
-                <TouchableOpacity onPress={() => {}} style={styles.cartBtn}>
-                  <Text style={styles.cartTitle}>Contáctanos y compra</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate(SCREENS.CART_SCREEN)}
-                  style={styles.addCart}>
-                  <ShoppingBagIcon
-                    name={ICONS.SHOPING_BAG.name}
-                    size={ICONS.SHOPING_BAG.size}
-                    color={COLORS.lightwhite}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.contactRow}>
-                <TouchableOpacity
-                  onPress={openPhoneDialer}
-                  style={styles.contactBtn}>
-                  <PhoneIcon
-                    name={ICONS.PHONE.name}
-                    size={ICONS.PHONE.size}
-                    color={COLORS.blue}
-                  />
-                  <Text style={styles.contactText}>
-                    {item.data.phoneNumber || 'N/A'}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={openWhatsApp}
-                  style={styles.contactBtn}>
-                  <WhatsAppIcon
-                    name={ICONS.WHATSAPP.name}
-                    size={ICONS.WHATSAPP.size}
-                    color={COLORS.blue}
-                  />
-                  <Text style={styles.contactText}>
-                    {item.data.whatsapp || 'N/A'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
             </View>
+          </View>
+        );
+
+      case 'packages':
+        return (
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Paquetes</Text>
+            <FlatList
+              data={item.data}
+              renderItem={({item: pkg}) => (
+                <View style={styles.packageCard}>
+                  <Text style={styles.packageName}>{pkg.name}</Text>
+                  <Text style={styles.packagePrice}>XAF {pkg.price}</Text>
+                  <Text style={styles.packageDetail}>
+                    Sesión: {pkg.session}
+                  </Text>
+                  <Text style={styles.packageDetail}>
+                    Cambios: {pkg.changes}
+                  </Text>
+                  <Text style={styles.packageDetail}>
+                    Fotos digitales: {pkg.digital}
+                  </Text>
+                  <Text style={styles.packageDetail}>
+                    Fotos impresas: {pkg.printed}
+                  </Text>
+                </View>
+              )}
+              keyExtractor={(pkg, index) => `package-${index}`}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
           </View>
         );
 

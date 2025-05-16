@@ -3,20 +3,20 @@ import {View, TextInput, Text, TouchableOpacity} from 'react-native';
 import styles from './styles/HeaderSearch.styles';
 import {COLORS, ICONS} from '../../constants';
 import SCREENS from '../../screens';
-
+import {useNavigation} from '@react-navigation/native';
 // Importar los componentes de iconos dinámicamente
-const IconComponents: {[key: string]: any} = {
+const IconComponents = {
   Feather: require('react-native-vector-icons/Feather').default,
   Ionicons: require('react-native-vector-icons/Ionicons').default,
 };
 
-const HeaderSearch = (props: any) => {
-  // const navigation = useNavigation();
-  const navigation = props;
+const HeaderSearch = props => {
+  const navigation = useNavigation();
+  // const navigation = props;
   const SearchIcon = IconComponents[ICONS.SEARCH.library];
 
   const handleSearchPress = () => {
-    navigation.navigate(SCREENS.SEATCHSCRENN);
+    navigation.navigate(SCREENS.SEARCHSCREEN);
   };
 
   return (

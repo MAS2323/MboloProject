@@ -8,12 +8,13 @@ import {
   StyleSheet,
   ActivityIndicator,
   Dimensions,
-} from ' f';
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import styles from './styles/RelatedProductsStyle';
+import {COLORS} from '../../../constants';
 import {API_BASE_URL} from '../../../config/Service.Config';
+import styles from './styles/RelatedProductsStyle';
 
 const RelatedProducts = ({
   categoryId,
