@@ -37,11 +37,6 @@ const StackNavigation = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name={SCREENS.PRODUCT_LIST}
-        component={ProductList}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
         name={SCREENS.IMAGE_GALLERY_SCREEN}
         component={ImageGalleryScreen}
         options={{headerShown: false}}
@@ -54,6 +49,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.SEARCHSCREEN}
         component={SearchScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.PRODUCT_LIST}
+        component={ProductList}
         options={{headerShown: false}}
       />
       <Stack.Screen

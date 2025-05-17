@@ -4,52 +4,23 @@ import {COLORS, SIZES} from '../../../constants';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: COLORS.lightwhite,
-    marginTop: 30,
+    backgroundColor: COLORS.lightWhite,
+    marginTop: SIZES.xLarge,
   },
   appBarWrapper: {
     paddingVertical: SIZES.small,
     backgroundColor: COLORS.white,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.lightGray,
-  },
-  categoryListContainer: {
-    paddingHorizontal: SIZES.medium,
-  },
-  categoryButton: {
-    paddingHorizontal: SIZES.medium,
-    paddingVertical: SIZES.small,
-    marginRight: SIZES.small,
-    borderRadius: 20, // BorderRadius más pronunciado
-    backgroundColor: COLORS.softGray, // Color de fondo suave (gris claro)
-    shadowColor: COLORS.gray, // Sombra suave
+    elevation: 2,
+    shadowColor: COLORS.gray,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
   },
-  selectedCategoryButton: {
-    backgroundColor: COLORS.primary,
-  },
-  categoryText: {
-    fontSize: SIZES.medium,
-    color: COLORS.darkGray,
-    fontWeight: '500',
-  },
-  selectedCategoryText: {
-    color: COLORS.white,
-  },
-  flatListContent: {
+  categoryListContainer: {
     paddingHorizontal: SIZES.medium,
-    paddingTop: SIZES.medium,
-  },
-  separator: {
-    height: SIZES.medium,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingVertical: SIZES.xSmall,
   },
 });
 

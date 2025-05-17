@@ -21,6 +21,8 @@ const COLORS = {
   lightwhite: '#FAFAFC',
   lightGray: '#F5F5F5',
   softGray: '#E5E5E5',
+  darkGray: '#333333',
+  lightWhite: '#F5F5F5',
 };
 
 export default COLORS;
