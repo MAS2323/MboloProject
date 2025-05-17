@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import Linking from 'react-native';
 import styles from './styles/ProductDetails.style';
 import {COLORS, ICONS, SIZES} from '../../constants';
 import SCREENS from '../../screens';
@@ -40,15 +39,6 @@ const ProductDetails = () => {
 
   // Map icon libraries
   const BackArrowIcon = IconComponents[ICONS.BACK_ARROW.library];
-  const ShoppingBagIcon = IconComponents[ICONS.SHOPING_BAG.library];
-  const StarIcon = IconComponents[ICONS.START.library];
-  const PlusIcon = IconComponents[ICONS.PLUS.library];
-  const MinusIcon = IconComponents[ICONS.MINUS.library];
-  const LocationIcon = IconComponents[ICONS.LOCATION.library];
-  const DeliveryIcon = IconComponents[ICONS.DELIVERY.library];
-  const PhoneIcon = IconComponents[ICONS.PHONE.library];
-  const WhatsAppIcon = IconComponents[ICONS.WHATSAPP.library];
-
   // Fetch product data
   useEffect(() => {
     const fetchProduct = async () => {
@@ -120,38 +110,39 @@ const ProductDetails = () => {
     loadStoreData();
   }, [product]);
 
-  // Quantity controls
-  const handleIncrement = () => setCount(prevCount => prevCount + 1);
-  const handleDecrement = () =>
-    setCount(prevCount => (prevCount > 1 ? prevCount - 1 : prevCount));
+  // Función para compartir el producto
+  const handleShare = async () => {
+    try {
+      if (!product?._id) {
+        throw new Error('ID de producto no válido');
+      }
 
-  // Contact handlers
-  const openWhatsApp = () => {
-    const url = `whatsapp://send?phone=${product?.whatsapp}`;
-    Linking.openURL(url).catch(() =>
-      Alert.alert('Error', 'No se puede abrir WhatsApp'),
-    );
-  };
+      const productUrl = `${API_BASE_URL}/products/shortLink/${product._id}`;
+      const response = await axios.post(productUrl);
 
-  const openPhoneDialer = () => {
-    const url = `tel:${product?.phoneNumber}`;
-    Linking.openURL(url).catch(() =>
-      Alert.alert('Error', 'No se puede abrir el marcador telefónico'),
-    );
-  };
+      if (!response.data?.shortLink) {
+        throw new Error('No se pudo generar el enlace corto');
+      }
 
-  // Share functionality
-  const handleShare = () => {
-    if (!product?._id) {
-      Alert.alert('Error', 'ID de producto no válido');
-      return;
+      const shortLink = response.data.shortLink;
+      const message = `Mira este producto: ${product.title}\n\n${product.description}\n\nPrecio: ${product.price}\n\nEnlace: ${shortLink}`;
+
+      const result = await Share.share({
+        message,
+        url: shortLink,
+        title: product.title,
+      });
+
+      if (result.action === Share.sharedAction) {
+        console.log('Compartido con éxito');
+      } else if (result.action === Share.dismissedAction) {
+        console.log('Compartir cancelado');
+      }
+    } catch (error) {
+      console.error('Error al compartir:', error);
+      alert('Hubo un problema al generar el enlace.');
     }
-    const message = `Mira este producto: ${product.title}\n\n${product.description}\n\nPrecio: ${product.price}\n\nEnlace: ${API_BASE_URL}/products/${product._id}`;
-    Linking.openURL(`sms:&body=${encodeURIComponent(message)}`).catch(() =>
-      Alert.alert('Error', 'No se pudo compartir el producto'),
-    );
   };
-
   // Handle scroll to show/hide header
   const handleScroll = ({nativeEvent}) => {
     const scrollY = nativeEvent.contentOffset.y;
@@ -319,16 +310,36 @@ const ProductDetails = () => {
         return (
           <View style={styles.sectionContainer}>
             <View style={styles.details}>
-              <View style={styles.titleRow}>
-                <Text
-                  style={styles.title}
-                  numberOfLines={2}
-                  ellipsizeMode="tail">
-                  {item.data.title || 'Producto sin título'}
+              <View style={styles.priceRow}>
+                <Text style={styles.price}>XFA{item.data.price || '0'}</Text>
+              </View>
+              <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+                {item.data.title || 'Producto sin título'}
+              </Text>
+              <View style={styles.detailsWrapper}>
+                <Text style={styles.detailItem}>
+                  Categoría:{' '}
+                  {item.data.subcategory?.category?.name || 'No especificada'}
                 </Text>
-                <View style={styles.priceWrapper}>
-                  <Text style={styles.price}>XAF {item.data.price || '0'}</Text>
-                </View>
+                <Text style={styles.detailItem}>
+                  Subcategoría:{' '}
+                  {item.data.subcategory?.name || 'No especificada'}
+                </Text>
+                {item.data.tallas?.length > 0 && (
+                  <Text style={styles.detailItem}>
+                    Tallas disponibles: {item.data.tallas.join(', ')}
+                  </Text>
+                )}
+                {item.data.numeros_calzado?.length > 0 && (
+                  <Text style={styles.detailItem}>
+                    Números de calzado: {item.data.numeros_calzado.join(', ')}
+                  </Text>
+                )}
+                {item.data.colores?.length > 0 && (
+                  <Text style={styles.detailItem}>
+                    Colores disponibles: {item.data.colores.join(', ')}
+                  </Text>
+                )}
               </View>
               <View style={styles.descriptionWrapper}>
                 <Text style={styles.descriptionTitle}>Descripción</Text>
@@ -336,46 +347,38 @@ const ProductDetails = () => {
                   {item.data.description || 'Sin descripción'}
                 </Text>
               </View>
+              {item.data.comentarios?.length > 0 && (
+                <View style={styles.commentsWrapper}>
+                  <Text style={styles.commentsTitle}>
+                    Comentarios ({item.data.comentarios.length})
+                  </Text>
+                  {item.data.comentarios.slice(0, 3).map((comment, index) => (
+                    <View key={index} style={styles.commentItem}>
+                      <Text style={styles.commentUser}>
+                        {comment.user?.userName || 'Anónimo'}
+                      </Text>
+                      <Text style={styles.commentText}>{comment.comment}</Text>
+                      <Text style={styles.commentDate}>
+                        {new Date(comment.createdAt).toLocaleDateString()}
+                      </Text>
+                    </View>
+                  ))}
+                  {item.data.comentarios.length > 3 && (
+                    <TouchableOpacity>
+                      <Text style={styles.viewMoreComments}>
+                        Ver más comentarios
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              )}
             </View>
           </View>
         );
-
-      case 'packages':
-        return (
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Paquetes</Text>
-            <FlatList
-              data={item.data}
-              renderItem={({item: pkg}) => (
-                <View style={styles.packageCard}>
-                  <Text style={styles.packageName}>{pkg.name}</Text>
-                  <Text style={styles.packagePrice}>XAF {pkg.price}</Text>
-                  <Text style={styles.packageDetail}>
-                    Sesión: {pkg.session}
-                  </Text>
-                  <Text style={styles.packageDetail}>
-                    Cambios: {pkg.changes}
-                  </Text>
-                  <Text style={styles.packageDetail}>
-                    Fotos digitales: {pkg.digital}
-                  </Text>
-                  <Text style={styles.packageDetail}>
-                    Fotos impresas: {pkg.printed}
-                  </Text>
-                </View>
-              )}
-              keyExtractor={(pkg, index) => `package-${index}`}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-            />
-          </View>
-        );
-
       case 'store':
         return (
           <StoreCard store={item.data} productComments={product.comentarios} />
         );
-
       case 'related':
         return (
           <RelatedProducts

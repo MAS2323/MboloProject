@@ -15,8 +15,8 @@ export const ICONS = {
     size: 24,
   },
   LOCATION: {
-    library: 'Ionicons', // Changed to Ionicons to match usage
-    name: 'location-outline',
+    library: 'SimpleLineIcons',
+    name: 'location-pin',
     size: 24,
   },
   BAG: {
