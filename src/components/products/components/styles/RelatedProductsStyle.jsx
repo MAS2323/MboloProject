@@ -1,82 +1,79 @@
 import {StyleSheet, Dimensions} from 'react-native';
 import {COLORS, SIZES} from '../../../../constants';
 
-const {width} = Dimensions.get('window');
-
+const {width: SCREEN_WIDTH} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
-    marginVertical: SIZES.medium,
-    paddingHorizontal: SIZES.medium,
+    paddingVertical: SIZES.medium,
+    paddingHorizontal: SIZES.xSmall,
+    backgroundColor: COLORS.white,
+    marginVertical: SIZES.xSmall,
   },
   title: {
-    fontSize: SIZES.large,
-    fontWeight: 'bold',
+    fontSize: SIZES.medium,
     color: COLORS.black,
-    marginBottom: SIZES.medium,
+    fontWeight: '600',
+    marginBottom: SIZES.small,
+    marginLeft: SIZES.xSmall,
+  },
+  flatListContent: {
+    paddingHorizontal: SIZES.xSmall,
+  },
+  column: {
+    flexDirection: 'column',
+    marginRight: SIZES.xSmall,
+    width: (SCREEN_WIDTH - SIZES.xSmall * 4) / 3,
+  },
+  productWrapper: {
+    padding: SIZES.xSmall / 2,
+  },
+  productCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: SIZES.xSmall,
+    padding: SIZES.xSmall,
+    alignItems: 'center',
+    elevation: 1,
+    shadowColor: COLORS.black,
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  placeholderCard: {
+    width: (SCREEN_WIDTH - SIZES.xSmall * 4) / 3 - SIZES.xSmall * 2,
+    height: (SCREEN_WIDTH - SIZES.xSmall * 4) / 3 + SIZES.medium,
+  },
+  imageContainer: {
+    width: (SCREEN_WIDTH - SIZES.xSmall * 4) / 3 - SIZES.xSmall * 2,
+    height: (SCREEN_WIDTH - SIZES.xSmall * 4) / 3 - SIZES.xSmall * 2,
+    marginBottom: SIZES.xSmall / 2,
+  },
+  productImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: SIZES.xSmall,
+  },
+  productTitle: {
+    fontSize: SIZES.small - 2,
+    color: COLORS.black,
+    textAlign: 'center',
+    marginBottom: SIZES.xSmall / 2,
+    lineHeight: SIZES.small,
+    width: '100%',
+  },
+  productPrice: {
+    fontSize: SIZES.small - 2,
+    color: '#FF6200',
+    fontWeight: '600',
+  },
+  loadingContainer: {
+    padding: SIZES.medium,
+    alignItems: 'center',
   },
   noProductsText: {
     fontSize: SIZES.medium,
     color: COLORS.gray,
     textAlign: 'center',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: SIZES.large,
-  },
-  column: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginRight: SIZES.medium,
-  },
-  productWrapper: {
-    width: width * 0.4,
-    marginRight: SIZES.small,
-  },
-  productCard: {
-    backgroundColor: COLORS.white,
-    borderRadius: SIZES.small,
-    padding: SIZES.small,
-    alignItems: 'center',
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  imageContainer: {
-    width: '100%',
-    height: 150,
-    borderRadius: SIZES.small,
-    overflow: 'hidden',
-  },
-  productImage: {
-    width: '100',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  productTitle: {
-    fontSize: SIZES.medium,
-    fontWeight: '500',
-    color: COLORS.black,
-    marginVertical: SIZES.xSmall,
-    textAlign: 'center',
-  },
-  productPrice: {
-    fontSize: SIZES.medium,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  placeholderCard: {
-    width: width * 0.4,
-    height: 200,
-    backgroundColor: COLORS.lightGray,
-    borderRadius: SIZES.small,
-    marginRight: SIZES.small,
-  },
-  flatListContent: {
-    paddingVertical: SIZES.small,
+    marginVertical: SIZES.medium,
   },
 });
 

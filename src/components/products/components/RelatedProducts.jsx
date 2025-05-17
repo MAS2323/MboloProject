@@ -5,9 +5,7 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
   ActivityIndicator,
-  Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -57,15 +55,13 @@ const RelatedProducts = ({
         const params = {
           category: categoryId,
           _id: {$ne: currentProductId},
-          limit: 6, // 6 products for 2 rows x 3 columns
+          limit: 6,
         };
         if (subcategoryId) {
           params.subcategory = subcategoryId;
         }
 
-        const response = await axios.get(`${API_BASE_URL}/products`, {
-          params,
-        });
+        const response = await axios.get(`${API_BASE_URL}/products`, {params});
         let products = response.data.products || response.data || [];
 
         if (products.length === 0 && tiendaId) {
@@ -96,36 +92,42 @@ const RelatedProducts = ({
     loadProducts();
   }, [categoryId, subcategoryId, currentProductId, tiendaId, cacheKey]);
 
-  const renderProductItem = useCallback(({item}) => {
-    if (!item._id) {
-      // Placeholder for empty cells
-      return <View style={styles.placeholderCard} />;
-    }
+  const renderProductItem = useCallback(
+    ({item}) => {
+      if (!item._id) {
+        return <View style={styles.placeholderCard} />;
+      }
 
-    return (
-      <TouchableOpacity
-        style={styles.productCard}
-        onPress={() =>
-          navigation.navigate(SCREENS.PRODUCT_DETAIL, {id: item._id})
-        }>
-        <View style={styles.imageContainer}>
-          <Image
-            source={{
-              uri: item.images?.[0]?.url || 'https://via.placeholder.com/150',
-            }}
-            style={styles.productImage}
-          />
-        </View>
-        <Text
-          style={styles.productTitle}
-          numberOfLines={2}
-          ellipsizeMode="tail">
-          {item.title || 'Producto sin título'}
-        </Text>
-        <Text style={styles.productPrice}>XAF {item.price || '0'}</Text>
-      </TouchableOpacity>
-    );
-  }, []);
+      return (
+        <TouchableOpacity
+          style={styles.productCard}
+          onPress={() =>
+            navigation.navigate(SCREENS.PRODUCT_DETAIL, {id: item._id})
+          }>
+          <View style={styles.imageContainer}>
+            <Image
+              source={{
+                uri: item.images?.[0]?.url || 'https://via.placeholder.com/150',
+              }}
+              style={styles.productImage}
+              resizeMode="contain"
+              onError={e =>
+                console.error('Error cargando imagen:', e.nativeEvent.error)
+              }
+            />
+          </View>
+          <Text
+            style={styles.productTitle}
+            numberOfLines={2}
+            ellipsizeMode="tail">
+            {item.title || 'Producto sin título'}
+          </Text>
+          <Text style={styles.productPrice}>${item.price || '0'}</Text>
+        </TouchableOpacity>
+      );
+    },
+    [navigation],
+  );
 
   if (loading) {
     return (
@@ -148,7 +150,6 @@ const RelatedProducts = ({
   const columns = [];
   for (let i = 0; i < Math.ceil(relatedProducts.length / 2); i++) {
     const colProducts = relatedProducts.slice(i * 2, (i + 1) * 2);
-    // Fill with placeholders if less than 2 products
     while (colProducts.length < 2) {
       colProducts.push({});
     }
@@ -180,6 +181,8 @@ const RelatedProducts = ({
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.flatListContent}
+        initialNumToRender={3}
+        maxToRenderPerBatch={6}
       />
     </View>
   );
