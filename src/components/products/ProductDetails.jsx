@@ -15,7 +15,9 @@ import styles from './styles/ProductDetails.style';
 import {COLORS, ICONS, SIZES} from '../../constants';
 import SCREENS from '../../screens';
 import {API_BASE_URL} from '../../config/Service.Config';
-
+import RelatedProducts from './components/RelatedProducts';
+import StoreCard from './components/StoreCard';
+import HeaderSearch from '../header/HeaderSearch';
 const IconComponents = {
   Ionicons: require('react-native-vector-icons/Ionicons').default,
   SimpleLineIcons: require('react-native-vector-icons/SimpleLineIcons').default,
@@ -30,7 +32,6 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [store, setStore] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [count, setCount] = useState(1);
   const [showHeader, setShowHeader] = useState(false);
 
   // Extract item from route params or use ID for API fetch
@@ -140,83 +141,21 @@ const ProductDetails = () => {
       }
     } catch (error) {
       console.error('Error al compartir:', error);
-      alert('Hubo un problema al generar el enlace.');
+      Alert.alert('Hubo un problema al generar el enlace.');
     }
   };
+  // Handle header click
+  const handleHeaderPress = event => {
+    event.stopPropagation(); // Prevent event bubbling to FlatList
+    navigation.navigate(SCREENS.HOME_STACK); // Navigate to home screen (adjust as needed)
+  };
+
   // Handle scroll to show/hide header
   const handleScroll = ({nativeEvent}) => {
     const scrollY = nativeEvent.contentOffset.y;
     const imageSectionHeight = Dimensions.get('window').height * 0.4;
     setShowHeader(scrollY > imageSectionHeight / 2);
   };
-
-  // Mock HeaderScreen component
-  const HeaderScreen = () => (
-    <View style={styles.header}>
-      <Text style={{fontSize: 18, fontWeight: 'bold', color: COLORS.black}}>
-        My App
-      </Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-        <Text style={{color: COLORS.blue, fontSize: 16}}>Home</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  // Mock StoreCard component
-  const StoreCard = ({store, productComments}) => (
-    <View style={styles.sectionContainer}>
-      <Text style={styles.sectionTitle}>{store?.name || 'Tienda'}</Text>
-      {store?.logo && (
-        <Image source={{uri: store.logo}} style={styles.storeLogo} />
-      )}
-      <Text style={styles.storeDescription}>
-        {store?.description || 'Sin descripción'}
-      </Text>
-      <Text style={styles.storeText}>Dirección: {store?.address}</Text>
-      <Text style={styles.storeText}>
-        Teléfono: {store?.phone_number || 'N/A'}
-      </Text>
-      {productComments?.length > 0 && (
-        <View style={styles.commentsWrapper}>
-          <Text style={styles.commentsTitle}>
-            Comentarios ({productComments.length})
-          </Text>
-          {productComments.slice(0, 3).map((comment, index) => (
-            <View key={index} style={styles.commentItem}>
-              <Text style={styles.commentUser}>
-                {comment.user?.userName || 'Anónimo'}
-              </Text>
-              <Text style={styles.commentText}>{comment.comment}</Text>
-              <Text style={styles.commentDate}>
-                {new Date(comment.createdAt).toLocaleDateString()}
-              </Text>
-            </View>
-          ))}
-          {productComments.length > 3 && (
-            <TouchableOpacity>
-              <Text style={styles.viewMoreComments}>Ver más comentarios</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
-    </View>
-  );
-
-  // Mock RelatedProducts component
-  const RelatedProducts = ({
-    categoryId,
-    subcategoryId,
-    currentProductId,
-    tiendaId,
-  }) => (
-    <View style={styles.sectionContainer}>
-      <Text style={styles.sectionTitle}>Productos Relacionados</Text>
-      <Text style={styles.storeText}>
-        Placeholder para productos relacionados (Categoría: {categoryId},
-        Subcategoría: {subcategoryId})
-      </Text>
-    </View>
-  );
 
   // Fallback UI for no product
   if (!product && !loading) {
@@ -399,9 +338,9 @@ const ProductDetails = () => {
       {showHeader && (
         <TouchableOpacity
           style={styles.header}
-          onPress={() => navigation.navigate('Home')}
+          onPress={handleHeaderPress}
           activeOpacity={0.7}>
-          <HeaderScreen />
+          <HeaderSearch />
         </TouchableOpacity>
       )}
       <FlatList

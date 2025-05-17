@@ -15,6 +15,7 @@ import axios from 'axios';
 import {COLORS} from '../../../constants';
 import {API_BASE_URL} from '../../../config/Service.Config';
 import styles from './styles/RelatedProductsStyle';
+import SCREENS from '../../../screens';
 
 const RelatedProducts = ({
   categoryId,
@@ -104,7 +105,9 @@ const RelatedProducts = ({
     return (
       <TouchableOpacity
         style={styles.productCard}
-        onPress={() => navigation.navigate('ProductDetails', {id: item._id})}>
+        onPress={() =>
+          navigation.navigate(SCREENS.PRODUCT_DETAIL, {id: item._id})
+        }>
         <View style={styles.imageContainer}>
           <Image
             source={{

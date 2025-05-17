@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import styles from './styles/StoreCardStyle';
+import SCREENS from '../../../screens';
 // Mock COLORS and SIZES constants (adjust to match your constants/theme.js)
 
 const StoreCard = ({store, productComments}) => {
@@ -19,9 +20,10 @@ const StoreCard = ({store, productComments}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.storeTitle}>Tienda</Text>
-      <TouchableOpacity
+      <View
         style={styles.storeCard}
-        onPress={() => navigation.navigate('MiTiendaScreen', {id: store.id})}>
+        // onPress={() => navigation.navigate(SCREENS.MY_STORE, {id: store.id})}
+      >
         {store.logo ? (
           <Image source={{uri: store.logo}} style={styles.storeLogo} />
         ) : (
@@ -37,10 +39,12 @@ const StoreCard = ({store, productComments}) => {
             Calificación: {store.rating || '4.7'} ({store.reviews || '3000+'})
           </Text>
         </View>
-        <TouchableOpacity style={styles.storeButton}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(SCREENS.MY_STORE, {id: store.id})}
+          style={styles.storeButton}>
           <Text style={styles.storeButtonText}>Visitar tienda</Text>
         </TouchableOpacity>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 };

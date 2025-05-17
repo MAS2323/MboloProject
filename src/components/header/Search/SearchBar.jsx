@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './styles/SearchBar.styles';
-import {ICONS, COLORS} from '../../constants';
+import {ICONS} from '../../../constants';
 
 // Importar componentes de iconos dinámicamente
 const IconComponents = {

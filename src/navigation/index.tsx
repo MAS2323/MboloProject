@@ -15,6 +15,7 @@ import SearchScreen from '../components/header/Search/SearchScreen';
 import ProductList from '../components/products/ProductList';
 import ProductDetails from '../components/products/ProductDetails';
 import ImageGalleryScreen from '../components/products/components/ImageGalleryScreen';
+import MiTiendaScreen from '../components/stores/MiTiendaScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -53,6 +54,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.SEARCHSCREEN}
         component={SearchScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.MY_STORE}
+        component={MiTiendaScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen
