@@ -1,4 +1,3 @@
-import React, {ReactNode} from 'react';
 import {View, Text} from 'react-native';
 import styles from './styles/MenuSection.styles';
 

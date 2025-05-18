@@ -55,22 +55,22 @@ const TendenciaScreen = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const getUserId = async () => {
-      try {
-        const id = await AsyncStorage.getItem('id');
-        if (id) {
-          setUserId(id.replace(/\"/g, ''));
-        } else {
-          console.error('Error: userId is null');
-        }
-      } catch (error) {
-        console.error('Error getting userId from AsyncStorage:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const getUserId = async () => {
+  //     try {
+  //       const id = await AsyncStorage.getItem('id');
+  //       if (id) {
+  //         setUserId(id.replace(/\"/g, ''));
+  //       } else {
+  //         console.error('Error: userId is null');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error getting userId from AsyncStorage:', error);
+  //     }
+  //   };
 
-    getUserId();
-  }, []);
+  //   getUserId();
+  // }, []);
 
   useEffect(() => {
     const fetchSubcategories = async () => {

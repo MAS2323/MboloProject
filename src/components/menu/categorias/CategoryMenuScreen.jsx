@@ -1,14 +1,7 @@
-import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, FlatList, Image, TouchableOpacity} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import styles from './styles/CategoryMenuScreenStyle';
+import SCREENS from '../../../screens';
 
 const CategoryMenuScreen = () => {
   const route = useRoute();
@@ -32,7 +25,7 @@ const CategoryMenuScreen = () => {
             <TouchableOpacity
               style={styles.item}
               onPress={() =>
-                navigation.navigate('SubCategoryMenuScreen', {
+                navigation.navigate(SCREENS.SUB_CATEGORY_MENU_SCREEN, {
                   id: item._id,
                   subcategoryName: item.name,
                   subcategoryDescription: item.description,
