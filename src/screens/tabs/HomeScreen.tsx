@@ -13,7 +13,7 @@ const HomeScreen = (props: {navigation: any}) => {
   // Componentes que se desplazarán (excepto el header)
   const scrollComponents = [
     {id: '2', component: <HeaderSearch />},
-    {id: '3', component: <MenuScreen navigation={navigation} />},
+    {id: '3', component: <MenuScreen />},
     {id: '4', component: <SlideSection />},
     {id: '5', component: <ProductRow />}, // Add ProductRow here
     {id: '6', component: <TendenciaScreen />}, // Add ProductRow here

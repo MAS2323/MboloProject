@@ -1,7 +1,6 @@
 // components/menu/MenuSection.styles.js
 import {StyleSheet} from 'react-native';
-import {COLORS, SIZES, FONTS} from '../../constants';
-
+import {COLORS, FONTS, SIZES} from '../../../constants';
 export default StyleSheet.create({
   container: {
     marginBottom: SIZES.large,
