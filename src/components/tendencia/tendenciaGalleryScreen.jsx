@@ -1,14 +1,14 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const TendenciaScreen = () => {
+const tendenciaGalleryScreen = () => {
   return (
     <View>
-      <Text>TendenciaScreen</Text>
+      <Text>tendenciaGalleryScreen</Text>
     </View>
   );
 };
 
-export default TendenciaScreen;
+export default tendenciaGalleryScreen;
 
 const styles = StyleSheet.create({});
