@@ -3,61 +3,83 @@ import {StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#E6F0FA", // Fondo claro como en la imagen
+    backgroundColor: '#fff',
   },
-  header: {
-    // backgroundColor: "#FFFFFF",
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+  appBarWrapper: {
+    paddingTop: 40,
+    paddingBottom: 15,
+    paddingHorizontal: 16,
+    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E4E7',
-    flexDirection: 'row',
-    alignItems: 'center',
+    borderBottomColor: '#e0e0e0',
   },
-  backButton: {
-    marginRight: 10,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
   },
-  backText: {
-    fontSize: 18,
-    color: '#00C853', // Verde como en la imagen
-    fontWeight: '500',
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 5,
   },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#000', // Texto negro
+  content: {
     flex: 1,
-    textAlign: 'center', // Centrar el título
+    paddingHorizontal: 16,
   },
   listContent: {
-    paddingTop: 60, // Espacio para el header fijo
     paddingBottom: 20,
   },
-  item: {
-    // backgroundColor: "#E6F0FA", // Fondo claro
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+  menuItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E4E7', // Línea divisoria
+    borderBottomColor: '#f0f0f0',
   },
-  subcategoryItem: {
-    paddingLeft: 40, // Indentación para subcategorías
-    backgroundColor: '#F5F7FA', // Fondo ligeramente más claro para subcategorías
+  menuImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    marginRight: 15,
   },
-  text: {
-    fontSize: 16,
-    color: '#000', // Texto negro
-    fontWeight: '400',
+  menuInfo: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  menuName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 5,
+  },
+  menuDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
+  },
+  menuLocation: {
+    fontSize: 13,
+    color: '#888',
+    fontStyle: 'italic',
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 20,
+    marginBottom: 15,
   },
   noData: {
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 50,
     fontSize: 16,
-    color: '#6B7280',
-    fontWeight: '400',
+    color: '#999',
+  },
+  errorText: {
+    textAlign: 'center',
+    marginTop: 50,
+    fontSize: 16,
+    color: '#ff3333',
   },
 });
 

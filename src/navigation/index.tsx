@@ -18,6 +18,7 @@ import ImageGalleryScreen from '../components/products/components/ImageGallerySc
 import MiTiendaScreen from '../components/stores/MiTiendaScreen';
 import CategoryMenuScreen from '../components/menu/categorias/CategoryMenuScreen';
 import SubCategoryMenuScreen from '../components/menu/categorias/SubCategoryMenuScreen';
+import MenuItemDetails from '../components/menu/categorias/MenuItemDetails';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -51,6 +52,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.SUB_CATEGORY_MENU_SCREEN}
         component={SubCategoryMenuScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.MENU_ITEM_DETAILS}
+        component={MenuItemDetails}
         options={{headerShown: false}}
       />
       <Stack.Screen
