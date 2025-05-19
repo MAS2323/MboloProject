@@ -22,6 +22,9 @@ import MenuItemDetails from '../components/menu/categorias/MenuItemDetails';
 import ProducListCategory from '../components/products/categorias/ProducListCategory';
 import DetallesScreen from '../components/tendencia/DetallesScreen';
 import tendenciaGalleryScreen from '../components/tendencia/tendenciaGalleryScreen';
+import TiendaDetalle from '../components/stores/TiendaDetalle';
+import AppCenter from '../components/stores/AppCenter';
+import MiniAppWebView from '../components/browser/MiniAppWebView';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -85,6 +88,21 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.TENDENCIAS_SCREEN_GALERY}
         component={tendenciaGalleryScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.TIENDA_DETALLE_SCREEN}
+        component={TiendaDetalle}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.APP_CENTER}
+        component={AppCenter}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.MINI_APP_WEB_VIEWER}
+        component={MiniAppWebView}
         options={{headerShown: false}}
       />
       <Stack.Screen

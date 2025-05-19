@@ -29,6 +29,11 @@ export const ICONS = {
     name: 'bar-graph',
     size: 24,
   },
+  STAR: {
+    library: 'Entypo',
+    name: 'star',
+    size: 24,
+  },
   DELIVERY: {
     library: 'MaterialCommunityIcons',
     name: 'truck-delivery-outline', // Fixed typo
@@ -81,6 +86,26 @@ export const ICONS = {
     // Added for phone call button
     library: 'Ionicons',
     name: 'call',
+    size: 24,
+  },
+  BACK_ARROW_ICON: {
+    library: 'MaterialIcons',
+    name: 'arrow-back',
+    size: 24,
+  },
+  REFRESH: {
+    library: 'MaterialIcons',
+    name: 'refresh',
+    size: 24,
+  },
+  BACK_IOS: {
+    library: 'MaterialIcons',
+    name: 'arrow-back-ios',
+    size: 24,
+  },
+  FORWARD_IOS: {
+    library: 'MaterialIcons',
+    name: 'arrow-forward-ios',
     size: 24,
   },
 };
