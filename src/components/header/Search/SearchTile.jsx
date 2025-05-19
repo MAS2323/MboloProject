@@ -1,6 +1,7 @@
 import {View, TouchableOpacity, Text, Image, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import styles from './styles/SearchScreenStyles';
+import SCREENS from '../../../screens';
 
 const SearchTile = ({item}) => {
   const navigation = useNavigation();
@@ -9,7 +10,9 @@ const SearchTile = ({item}) => {
     <View>
       <TouchableOpacity
         style={styles.container}
-        onPress={() => navigation.navigate('ProductDetails', {id: item._id})}>
+        onPress={() =>
+          navigation.navigate(SCREENS.PRODUCT_DETAIL, {id: item._id})
+        }>
         <View style={styles.image}>
           <Image
             source={{

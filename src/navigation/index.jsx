@@ -19,6 +19,7 @@ import MiTiendaScreen from '../components/stores/MiTiendaScreen';
 import CategoryMenuScreen from '../components/menu/categorias/CategoryMenuScreen';
 import SubCategoryMenuScreen from '../components/menu/categorias/SubCategoryMenuScreen';
 import MenuItemDetails from '../components/menu/categorias/MenuItemDetails';
+import ProducListCategory from '../components/products/categorias/ProducListCategory';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -62,6 +63,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.PRODUCT_DETAIL}
         component={ProductDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.PRODUCT_LIST_CATEGORY}
+        component={ProducListCategory}
         options={{headerShown: false}}
       />
       <Stack.Screen

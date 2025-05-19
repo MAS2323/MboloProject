@@ -9,7 +9,7 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import {API_BASE_URL} from '../../../config/Service.Config';

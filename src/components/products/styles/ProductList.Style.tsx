@@ -22,6 +22,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: SIZES.medium,
     paddingVertical: SIZES.xSmall,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default styles;
