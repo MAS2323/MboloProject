@@ -20,6 +20,8 @@ import CategoryMenuScreen from '../components/menu/categorias/CategoryMenuScreen
 import SubCategoryMenuScreen from '../components/menu/categorias/SubCategoryMenuScreen';
 import MenuItemDetails from '../components/menu/categorias/MenuItemDetails';
 import ProducListCategory from '../components/products/categorias/ProducListCategory';
+import DetallesScreen from '../components/tendencia/DetallesScreen';
+import tendenciaGalleryScreen from '../components/tendencia/tendenciaGalleryScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -73,6 +75,16 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.SEARCHSCREEN}
         component={SearchScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.DETALLE_SCREEN}
+        component={DetallesScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.TENDENCIAS_SCREEN_GALERY}
+        component={tendenciaGalleryScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen

@@ -14,6 +14,7 @@ import {useNavigation} from '@react-navigation/native';
 import styles from './styles/TendenciaScreenStyle';
 import ICONS from '../../constants/icons';
 import {API_BASE_URL} from '../../config/Service.Config';
+import SCREENS from '../../screens';
 // Define IconComponents for all required libraries
 const IconComponents = {
   Ionicons: require('react-native-vector-icons/Ionicons').default,
@@ -102,7 +103,7 @@ const TendenciaScreen = () => {
   }, [visibleItems, subcategories, isLoadingMore]);
 
   const handlePress = subcategory => {
-    navigation.navigate('DetallesScreen', {item: subcategory});
+    navigation.navigate(SCREENS.DETALLE_SCREEN, {item: subcategory});
   };
 
   const handleCall = phoneNumber => {
