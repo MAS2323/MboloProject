@@ -144,37 +144,40 @@ export const ICONS = {
     size: 24,
   },
   USER: {
-    Component: 'MaterialIcons',
+    library: 'MaterialIcons',
     name: 'person-outline',
     size: 24,
   },
   LOCK: {
-    Component: 'MaterialIcons',
+    library: 'MaterialIcons',
     name: 'lock-outline',
     size: 24,
   },
   EYE: {
-    Component: 'MaterialIcons',
+    library: 'MaterialIcons',
     name: 'visibility',
     size: 18,
   },
   EYE_OFF: {
-    Component: 'MaterialIcons',
+    library: 'MaterialIcons',
     name: 'visibility-off',
     size: 18,
   },
-};
-
-export const IconComponents = {
-  MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
-  Feather: require('react-native-vector-icons/Feather').default,
-  Ionicons: require('react-native-vector-icons/Ionicons').default,
-  AntDesign: require('react-native-vector-icons/AntDesign').default,
-  SimpleLineIcons: require('react-native-vector-icons/SimpleLineIcons').default,
-  Entypo: require('react-native-vector-icons/Entypo').default,
-  MaterialCommunityIcons:
-    require('react-native-vector-icons/MaterialCommunityIcons').default,
-  Fontisto: require('react-native-vector-icons/Fontisto').default,
+  USER_O: {
+    library: 'FontAwesome',
+    name: 'user-o',
+    size: 24,
+  },
+  EYE_OUTLINE: {
+    library: 'MaterialCommunityIcons',
+    name: 'eye-outline',
+    size: 18,
+  },
+  EYE_OFF_OUTLINE: {
+    library: 'MaterialCommunityIcons',
+    name: 'eye-off-outline',
+    size: 18,
+  },
 };
 
 export default ICONS;
