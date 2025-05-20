@@ -237,41 +237,6 @@ const ProfileScreen = () => {
         navigation.navigate(SCREENS.SEGUIDORES);
       },
     },
-    {
-      icon: (() => {
-        const Icon = IconComponents[ICONS.SETTINGS.library];
-        return Icon ? (
-          <Icon
-            name={ICONS.SETTINGS.name}
-            size={ICONS.SETTINGS.size}
-            color={COLORS.black || '#000'}
-          />
-        ) : null;
-      })(),
-      label: 'Configuración',
-      onPress: () => {
-        if (!SCREENS.SETTINGS) {
-          console.error('SCREENS.SETTINGS is undefined');
-          Alert.alert('Error', 'SettingsScreen is not defined');
-          return;
-        }
-        navigation.navigate(SCREENS.SETTINGS);
-      },
-    },
-    {
-      icon: (() => {
-        const Icon = IconComponents[ICONS.LOGOUT.library];
-        return Icon ? (
-          <Icon
-            name={ICONS.LOGOUT.name}
-            size={ICONS.LOGOUT.size}
-            color={COLORS.red || '#ff0000'}
-          />
-        ) : null;
-      })(),
-      label: 'Cerrar Sesión',
-      onPress: logout,
-    },
   ];
 
   if (!isLoggedIn) {

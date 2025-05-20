@@ -32,6 +32,8 @@ import MisPedidosScreen from '../components/profile/MisPedidosScreen';
 import NotificacionesScreen from '../components/profile/NotificacionesScreen';
 import SeguidoresScreen from '../components/profile/SeguidoresScreen';
 import SettingsScreen from '../components/profile/SettingsScreen';
+import AddScreen from '../components/stores/AddScreen';
+import CrearTiendaScreen from '../components/stores/CrearTiendaScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -150,6 +152,16 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.SETTINGS}
         component={SettingsScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.ADD_SCREENS}
+        component={AddScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.CREAR_TIENDA}
+        component={CrearTiendaScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen

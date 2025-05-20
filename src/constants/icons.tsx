@@ -183,6 +183,83 @@ export const ICONS = {
     name: 'email-outline',
     size: 24,
   },
+  PERSON: {
+    library: 'Ionicons',
+    name: 'person',
+    size: 24,
+  },
+  BUSINESS: {
+    library: 'MaterialIcons',
+    name: 'business',
+    size: 24,
+  },
+  EMAIL_SETTING: {
+    library: 'MaterialIcons',
+    name: 'email',
+    size: 24,
+  },
+  LOCK_SETTING: {
+    library: 'MaterialIcons',
+    name: 'lock',
+    size: 24,
+  },
+  // CHAT: { library: 'MaterialIcons', name: 'chat', size: 24 }, // Commented out
+  FEEDBACK: {
+    library: 'MaterialIcons',
+    name: 'feedback',
+    size: 24,
+  },
+  NOTIFICATIONS_SETTING: {
+    library: 'MaterialIcons',
+    name: 'notifications',
+    size: 24,
+  },
+  INFO: {
+    library: 'MaterialIcons',
+    name: 'info',
+    size: 24,
+  },
+  CACHED: {
+    ibrary: 'MaterialIcons',
+    name: 'cached',
+    size: 24,
+  },
+  LOGOUT_SETTING: {
+    library: 'AntDesign',
+    name: 'logout',
+    size: 24,
+  },
+  CHEVRON_LEFT: {
+    library: 'MaterialIcons',
+    name: 'chevron-left',
+    size: 30,
+  },
+  CHEVRON_RIGHT: {
+    library: 'MaterialIcons',
+    name: 'chevron-right',
+    size: 24,
+  },
+
+  EMAIL_SETTINGS: {
+    library: 'MaterialIcons',
+    name: 'email',
+    size: 24,
+  },
+  LOCK_SETTINGS: {
+    library: 'MaterialIcons',
+    name: 'lock',
+    size: 24,
+  },
+  NOTIFICATIONS_SETTINGS: {
+    library: 'MaterialIcons',
+    name: 'notifications',
+    size: 24,
+  },
+  LOGOUT_SETTINGS: {
+    library: 'AntDesign',
+    name: 'logout',
+    size: 24,
+  },
 };
 
 export default ICONS;

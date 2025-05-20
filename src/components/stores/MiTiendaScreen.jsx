@@ -16,20 +16,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_BASE_URL} from '../../config/Service.Config';
-
-const COLORS = {
-  primary: '#4c86A8',
-  secondary: '#DDF0FF',
-  tertiary: '#FF7754',
-  gray: '#83829A',
-  gray2: '#C1C0C8',
-  offwhite: '#F3F4F8',
-  white: '#FFFFFF',
-  black: '#000000',
-  red: '#e81e4d',
-  green: '#00C135',
-  lightwhite: '#FAFAFC',
-};
+import {COLORS} from '../../constants';
+import SCREENS from '../../screens';
+import styles from './styles/MiTiendaScreenStyle';
 
 const MiTiendaScreen = () => {
   const navigation = useNavigation();
@@ -163,7 +152,9 @@ const MiTiendaScreen = () => {
   const renderProduct = ({item}) => (
     <TouchableOpacity
       style={styles.productCard}
-      onPress={() => navigation.navigate('ProductDetails', {id: item._id})}>
+      onPress={() =>
+        navigation.navigate(SCREENS.PRODUCT_DETAIL, {id: item._id})
+      }>
       {item.images && item.images.length > 0 && item.images[0].url ? (
         <Image
           source={{uri: item.images[0].url}}
@@ -282,7 +273,7 @@ const MiTiendaScreen = () => {
           <Text style={styles.emptyText}>No se encontró la tienda.</Text>
           <TouchableOpacity
             style={styles.createButton}
-            onPress={() => navigation.navigate('CrearTiendaScreen')}>
+            onPress={() => navigation.navigate(SCREENS.CREAR_TIEDNA)}>
             <Text style={styles.createButtonText}>Crear Tienda</Text>
           </TouchableOpacity>
         </View>
@@ -347,223 +338,5 @@ const MiTiendaScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.offwhite,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray2,
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: COLORS.black,
-  },
-  content: {
-    padding: 15,
-  },
-  tiendaCard: {
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    marginBottom: 20,
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    overflow: 'hidden',
-  },
-  tiendaBanner: {
-    width: '100%',
-    height: 180,
-    resizeMode: 'cover',
-    borderRadius: 10,
-    marginVertical: 10,
-  },
-  tiendaHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 15,
-  },
-  tiendaLogo: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 15,
-    borderWidth: 2,
-    borderColor: COLORS.primary,
-    resizeMode: 'contain',
-  },
-  tiendaTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.black,
-    flex: 1,
-  },
-  productsHeader: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.black,
-    marginBottom: 15,
-  },
-  productsList: {
-    marginBottom: 20,
-  },
-  productCard: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 12,
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  productImage: {
-    width: 90,
-    height: 90,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  productInfo: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  productTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.black,
-    marginBottom: 4,
-  },
-  productPrice: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: COLORS.red,
-    marginBottom: 4,
-  },
-  productDescription: {
-    fontSize: 14,
-    color: COLORS.gray,
-    lineHeight: 20,
-  },
-  emptyProductsText: {
-    fontSize: 16,
-    color: COLORS.gray,
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15,
-    backgroundColor: COLORS.offwhite,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: COLORS.gray,
-    marginBottom: 20,
-  },
-  createButton: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-    alignItems: 'center',
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  createButtonText: {
-    fontSize: 16,
-    color: COLORS.white,
-    fontWeight: 'bold',
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.offwhite,
-  },
-  placeholderImage: {
-    backgroundColor: COLORS.lightwhite,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalBannerBackground: {
-    ...StyleSheet.absoluteFillObject,
-    resizeMode: 'cover',
-  },
-  modalContent: {
-    width: '90%',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 12,
-    maxHeight: '80%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-  },
-  modalLogoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  modalLogo: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-    borderWidth: 2,
-    borderColor: COLORS.primary,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.black,
-  },
-  modalDetailsContainer: {
-    padding: 15,
-  },
-  tiendaDetails: {
-    padding: 10,
-  },
-  tiendaLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.black,
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  tiendaText: {
-    fontSize: 16,
-    color: COLORS.gray,
-    lineHeight: 22,
-  },
-});
 
 export default MiTiendaScreen;

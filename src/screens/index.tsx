@@ -36,6 +36,16 @@ const SCREENS = {
   SETTINGS: 'SettingsScreen',
   REGISTER: 'RegisterScreen',
   MI_TIENDA_ADMIN: 'MiTiendaScreenAdmin',
+  PERSONAL_INFO: 'PersonalInfoScreen',
+  BUSINESS_INFO: 'BusinessInfoScreen',
+  PHONE_NUMBERS: 'PhoneNumbersScreen',
+  CHANGE_EMAIL: 'ChangeEmailScreen',
+  CHANGE_PASSWORD: 'ChangePasswordScreen',
+  DISABLE_FEEDBACK: 'DisableFeedbackScreen',
+  MANAGE_NOTIFICATIONS: 'ManageNotificationsScreen',
+  SOBRE_NOSOTROS: 'SobreNosotrosScreen',
+  CREAR_TIENDA: 'CrearTiendaScreen',
+  ADD_SCREENS: 'AddScreens',
 };
 
 export default SCREENS;
