@@ -26,6 +26,15 @@ const SCREENS = {
   TIENDA_DETALLE_SCREEN: 'TIENDA_DETALLE_SCREEN',
   APP_CENTER: 'APP_CENTER',
   MINI_APP_WEB_VIEWER: 'MINI_APP_WEB_VIEWER',
+  DETALLES_SCREEN: 'DetallesScreen',
+  CART: 'CartScreen',
+  NOTIFICACIONES: 'NotificacionesScreen',
+  CUENTA_OFICIAL: 'CuentaOficialScreen',
+  MI_TIENDA: 'MiTiendaScreenAdmin',
+  MIS_PEDIDOS: 'MisPedidosScreen',
+  SEGUIDORES: 'SeguidoresScreen',
+  SETTINGS: 'SettingsScreen',
+  REGISTER: 'RegisterScreen',
 };
 
 export default SCREENS;

@@ -25,6 +25,7 @@ import tendenciaGalleryScreen from '../components/tendencia/tendenciaGalleryScre
 import TiendaDetalle from '../components/stores/TiendaDetalle';
 import AppCenter from '../components/stores/AppCenter';
 import MiniAppWebView from '../components/browser/MiniAppWebView';
+import RegisterScreen from '../screens/auth/RegisterScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -93,6 +94,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.TIENDA_DETALLE_SCREEN}
         component={TiendaDetalle}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.REGISTER}
+        component={RegisterScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen

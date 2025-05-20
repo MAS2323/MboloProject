@@ -108,6 +108,73 @@ export const ICONS = {
     name: 'arrow-forward-ios',
     size: 24,
   },
+  DELETE: {
+    library: 'MaterialIcons',
+    name: 'delete',
+    size: 24,
+  },
+  NOTIFICATIONS: {
+    library: 'MaterialIcons',
+    name: 'notifications',
+    size: 24,
+  },
+  ACCOUNT: {
+    library: 'MaterialIcons',
+    name: 'manage-accounts',
+    size: 24,
+  },
+  ORDERS: {
+    library: 'MaterialIcons',
+    name: 'reorder',
+    size: 24,
+  },
+  FOLLOWERS: {
+    library: 'MaterialIcons',
+    name: 'people',
+    size: 24,
+  },
+  SETTINGS: {
+    library: 'MaterialIcons',
+    name: 'settings',
+    size: 24,
+  },
+  LOGOUT: {
+    library: 'MaterialIcons',
+    name: 'logout',
+    size: 24,
+  },
+  USER: {
+    Component: 'MaterialIcons',
+    name: 'person-outline',
+    size: 24,
+  },
+  LOCK: {
+    Component: 'MaterialIcons',
+    name: 'lock-outline',
+    size: 24,
+  },
+  EYE: {
+    Component: 'MaterialIcons',
+    name: 'visibility',
+    size: 18,
+  },
+  EYE_OFF: {
+    Component: 'MaterialIcons',
+    name: 'visibility-off',
+    size: 18,
+  },
+};
+
+export const IconComponents = {
+  MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
+  Feather: require('react-native-vector-icons/Feather').default,
+  Ionicons: require('react-native-vector-icons/Ionicons').default,
+  AntDesign: require('react-native-vector-icons/AntDesign').default,
+  SimpleLineIcons: require('react-native-vector-icons/SimpleLineIcons').default,
+  Entypo: require('react-native-vector-icons/Entypo').default,
+  MaterialCommunityIcons:
+    require('react-native-vector-icons/MaterialCommunityIcons').default,
+  Fontisto: require('react-native-vector-icons/Fontisto').default,
 };
 
 export default ICONS;

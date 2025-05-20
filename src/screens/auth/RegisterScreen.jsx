@@ -1,14 +1,14 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const FavoriteScreen = () => {
+const RegisterScreen = () => {
   return (
     <View>
-      <Text>FavoriteScreen</Text>
+      <Text>RegisterScreen</Text>
     </View>
   );
 };
 
-export default FavoriteScreen;
+export default RegisterScreen;
 
 const styles = StyleSheet.create({});

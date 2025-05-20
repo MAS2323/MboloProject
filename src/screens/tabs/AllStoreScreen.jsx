@@ -13,7 +13,7 @@ import {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {API_BASE_URL} from '../../config/Service.Config';
 import axios from 'axios';
-import SCREENS from '..';
+import SCREENS from '../index'; // Adjust path if needed
 import styles from './styles/AllStoreScreenStyle';
 
 const AllStoreScreen = () => {
@@ -22,6 +22,12 @@ const AllStoreScreen = () => {
   const [activeTab, setActiveTab] = useState('Cuentas Oficiales');
   const {width} = useWindowDimensions();
   const navigation = useNavigation();
+
+  // Log SCREENS and navigation stack to debug
+  useEffect(() => {
+    console.log('SCREENS:', SCREENS);
+    console.log('Navigation stack:', navigation.getState().routeNames);
+  }, [navigation]);
 
   // Calcular dimensiones responsive
   const NUM_COLUMNS = width < 600 ? 2 : 3;
@@ -46,11 +52,7 @@ const AllStoreScreen = () => {
         }
         setTiendas(data);
       } catch (error) {
-        if (error instanceof Error) {
-          console.error('Error fetching stores:', error.message);
-        } else {
-          console.error('Error fetching stores:', error);
-        }
+        console.error('Error fetching stores:', error.message);
         Alert.alert('Error', 'No se pudieron cargar las tiendas');
       } finally {
         setLoading(false);
@@ -64,27 +66,27 @@ const AllStoreScreen = () => {
     const unsubscribe = navigation.addListener('focus', () => {
       setActiveTab('Cuentas Oficiales');
     });
-
     return unsubscribe;
   }, [navigation]);
 
   const renderTiendaItem = ({item}) => (
     <TouchableOpacity
       style={[styles.tiendaItem, {width: ITEM_WIDTH, margin: ITEM_MARGIN}]}
-      onPress={() =>
-        navigation.navigate(SCREENS.TIENDA_DETALLE_SCREEN, {storeId: item._id})
-      }>
+      onPress={() => {
+        console.log('Navigating to TiendaDetalle with id:', item._id);
+        navigation.navigate(SCREENS.TIENDA_DETALLE_SCREEN, {id: item._id});
+      }}>
       <Image
-        source={{uri: item.banner?.url}}
+        source={{uri: item.banner?.url || 'https://via.placeholder.com/150'}}
         style={styles.tiendaBanner}
         resizeMode="cover"
       />
       <View style={styles.tiendaInfo}>
         <Text style={styles.tiendaNombre} numberOfLines={1}>
-          {item.name}
+          {item.name || 'Sin nombre'}
         </Text>
         <Text style={styles.tiendaDescripcion} numberOfLines={2}>
-          {item.description}
+          {item.description || 'Sin descripción'}
         </Text>
       </View>
     </TouchableOpacity>
@@ -115,8 +117,10 @@ const AllStoreScreen = () => {
               activeTab === tab && styles.menuItemActive,
             ]}
             onPress={() => {
+              console.log('Switching tab to:', tab);
               setActiveTab(tab);
               if (tab === 'AppCenter') {
+                console.log('Navigating to AppCenter');
                 navigation.navigate(SCREENS.APP_CENTER);
               }
             }}>
