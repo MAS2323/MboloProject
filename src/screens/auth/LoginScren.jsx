@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +15,7 @@ import {ICONS, COLORS} from '../../constants';
 import {API_BASE_URL} from '../../config/Service.Config';
 import {useNavigation} from '@react-navigation/native';
 import styles from './style/LoginScreenStyle';
+import SCREENS from '..';
 // Icon components
 const IconComponents = {
   FontAwesome: require('react-native-vector-icons/FontAwesome').default,
@@ -71,7 +73,7 @@ const LoginScreen = () => {
             JSON.stringify(responseData),
           );
           await AsyncStorage.setItem('id', JSON.stringify(responseData._id));
-          navigation.replace('Tabs');
+          navigation.navigate(SCREENS.HOME_STACK);
         }
       }
     } catch (error) {
@@ -163,14 +165,19 @@ const LoginScreen = () => {
                 style={[styles.button, loading && styles.buttonDisabled]}
                 onPress={handleLogin}
                 disabled={loading}>
-                <Text style={styles.buttonText}>
-                  {loading ? 'Cargando...' : 'L O G I N'}
-                </Text>
+                {loading ? (
+                  <ActivityIndicator
+                    size="small"
+                    color={COLORS.white || '#fff'}
+                  />
+                ) : (
+                  <Text style={styles.buttonText}>L O G I N</Text>
+                )}
               </TouchableOpacity>
             </View>
             <Text
               style={styles.registration}
-              onPress={() => navigation.navigate('RegisterScreen')}>
+              onPress={() => navigation.navigate(SCREENS.REGISTER)}>
               ¿No tiene una cuenta? Regístrate
             </Text>
           </View>
@@ -179,4 +186,5 @@ const LoginScreen = () => {
     </View>
   );
 };
+
 export default LoginScreen;

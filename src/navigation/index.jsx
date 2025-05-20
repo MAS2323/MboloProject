@@ -26,6 +26,12 @@ import TiendaDetalle from '../components/stores/TiendaDetalle';
 import AppCenter from '../components/stores/AppCenter';
 import MiniAppWebView from '../components/browser/MiniAppWebView';
 import RegisterScreen from '../screens/auth/RegisterScreen';
+import MiTiendaScreenAdmin from '../components/stores/MiTiendaScreenAdmin';
+import CuentaOficialScreen from '../components/profile/CuentaOficialScreen';
+import MisPedidosScreen from '../components/profile/MisPedidosScreen';
+import NotificacionesScreen from '../components/profile/NotificacionesScreen';
+import SeguidoresScreen from '../components/profile/SeguidoresScreen';
+import SettingsScreen from '../components/profile/SettingsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -102,6 +108,31 @@ const StackNavigation = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name={SCREENS.MI_TIENDA_ADMIN}
+        component={MiTiendaScreenAdmin}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.CUENTA_OFICIAL}
+        component={CuentaOficialScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.MIS_PEDIDOS}
+        component={MisPedidosScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.NOTIFICACIONES}
+        component={NotificacionesScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.SEGUIDORES}
+        component={SeguidoresScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name={SCREENS.APP_CENTER}
         component={AppCenter}
         options={{headerShown: false}}
@@ -114,6 +145,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.PRODUCT_LIST}
         component={ProductList}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.SETTINGS}
+        component={SettingsScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -197,6 +233,7 @@ function MyTabs() {
         component={ProfileScreen}
         options={{
           title: 'Profile',
+          headerShown: false,
           tabBarIcon: ({focused}) => (
             <Image
               source={IMAGES.PROFILE}

@@ -35,6 +35,7 @@ const SCREENS = {
   SEGUIDORES: 'SeguidoresScreen',
   SETTINGS: 'SettingsScreen',
   REGISTER: 'RegisterScreen',
+  MI_TIENDA_ADMIN: 'MiTiendaScreenAdmin',
 };
 
 export default SCREENS;

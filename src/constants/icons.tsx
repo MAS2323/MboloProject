@@ -178,6 +178,11 @@ export const ICONS = {
     name: 'eye-off-outline',
     size: 18,
   },
+  EMAIL: {
+    library: 'MaterialCommunityIcons',
+    name: 'email-outline',
+    size: 24,
+  },
 };
 
 export default ICONS;

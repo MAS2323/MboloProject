@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   Dimensions,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {COLORS, ICONS} from '../../constants';
@@ -14,6 +15,15 @@ import {useNavigation} from '@react-navigation/native';
 import SCREENS from '../index';
 import styles from './styles/ProfileScreenStyle';
 import IMAGES from '../../assets/images';
+
+// Icon components
+const IconComponents = {
+  FontAwesome: require('react-native-vector-icons/FontAwesome').default,
+  Ionicons: require('react-native-vector-icons/Ionicons').default,
+  MaterialCommunityIcons:
+    require('react-native-vector-icons/MaterialCommunityIcons').default,
+  MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
+};
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -56,6 +66,7 @@ const ProfileScreen = () => {
     } catch (error) {
       setIsLoggedIn(false);
       console.error('Error al recuperar tus datos:', error);
+      Alert.alert('Error', 'No se pudieron cargar los datos del usuario.');
     }
   };
 
@@ -75,6 +86,7 @@ const ProfileScreen = () => {
       console.log('Sesión cerrada con éxito');
     } catch (error) {
       console.error('Error al cerrar sesión:', error.message || error);
+      Alert.alert('Error', 'No se pudo cerrar la sesión.');
     }
   };
 
@@ -100,13 +112,16 @@ const ProfileScreen = () => {
 
   const menuItems = [
     {
-      icon: (
-        <ICONS.BAG.Component
-          name={ICONS.BAG.name}
-          size={ICONS.BAG.size}
-          color={COLORS.black}
-        />
-      ),
+      icon: (() => {
+        const Icon = IconComponents[ICONS.BAG.library];
+        return Icon ? (
+          <Icon
+            name={ICONS.BAG.name}
+            size={ICONS.BAG.size}
+            color={COLORS.black || '#000'}
+          />
+        ) : null;
+      })(),
       label: 'Carrito',
       onPress: () => {
         if (!SCREENS.CART) {
@@ -118,13 +133,16 @@ const ProfileScreen = () => {
       },
     },
     {
-      icon: (
-        <ICONS.NOTIFICATIONS.Component
-          name={ICONS.NOTIFICATIONS.name}
-          size={ICONS.NOTIFICATIONS.size}
-          color={COLORS.black}
-        />
-      ),
+      icon: (() => {
+        const Icon = IconComponents[ICONS.NOTIFICATIONS.library];
+        return Icon ? (
+          <Icon
+            name={ICONS.NOTIFICATIONS.name}
+            size={ICONS.NOTIFICATIONS.size}
+            color={COLORS.black || '#000'}
+          />
+        ) : null;
+      })(),
       label: 'Notificaciones',
       onPress: () => {
         if (!SCREENS.NOTIFICACIONES) {
@@ -136,13 +154,16 @@ const ProfileScreen = () => {
       },
     },
     {
-      icon: (
-        <ICONS.ACCOUNT.Component
-          name={ICONS.ACCOUNT.name}
-          size={ICONS.ACCOUNT.size}
-          color={COLORS.black}
-        />
-      ),
+      icon: (() => {
+        const Icon = IconComponents[ICONS.ACCOUNT.library];
+        return Icon ? (
+          <Icon
+            name={ICONS.ACCOUNT.name}
+            size={ICONS.ACCOUNT.size}
+            color={COLORS.black || '#000'}
+          />
+        ) : null;
+      })(),
       label: 'Cuenta Oficial',
       onPress: () => {
         if (!SCREENS.CUENTA_OFICIAL) {
@@ -154,13 +175,16 @@ const ProfileScreen = () => {
       },
     },
     {
-      icon: (
-        <ICONS.STORE.Component
-          name={ICONS.STORE.name}
-          size={ICONS.STORE.size}
-          color={COLORS.black}
-        />
-      ),
+      icon: (() => {
+        const Icon = IconComponents[ICONS.STORE.library];
+        return Icon ? (
+          <Icon
+            name={ICONS.STORE.name}
+            size={ICONS.STORE.size}
+            color={COLORS.black || '#000'}
+          />
+        ) : null;
+      })(),
       label: 'Mi Tienda',
       onPress: () => {
         if (!SCREENS.MI_TIENDA) {
@@ -172,13 +196,16 @@ const ProfileScreen = () => {
       },
     },
     {
-      icon: (
-        <ICONS.ORDERS.Component
-          name={ICONS.ORDERS.name}
-          size={ICONS.ORDERS.size}
-          color={COLORS.black}
-        />
-      ),
+      icon: (() => {
+        const Icon = IconComponents[ICONS.ORDERS.library];
+        return Icon ? (
+          <Icon
+            name={ICONS.ORDERS.name}
+            size={ICONS.ORDERS.size}
+            color={COLORS.black || '#000'}
+          />
+        ) : null;
+      })(),
       label: 'Pedidos',
       onPress: () => {
         if (!SCREENS.MIS_PEDIDOS) {
@@ -190,13 +217,16 @@ const ProfileScreen = () => {
       },
     },
     {
-      icon: (
-        <ICONS.FOLLOWERS.Component
-          name={ICONS.FOLLOWERS.name}
-          size={ICONS.FOLLOWERS.size}
-          color={COLORS.black}
-        />
-      ),
+      icon: (() => {
+        const Icon = IconComponents[ICONS.FOLLOWERS.library];
+        return Icon ? (
+          <Icon
+            name={ICONS.FOLLOWERS.name}
+            size={ICONS.FOLLOWERS.size}
+            color={COLORS.black || '#000'}
+          />
+        ) : null;
+      })(),
       label: 'Seguidores',
       onPress: () => {
         if (!SCREENS.SEGUIDORES) {
@@ -208,13 +238,16 @@ const ProfileScreen = () => {
       },
     },
     {
-      icon: (
-        <ICONS.SETTINGS.Component
-          name={ICONS.SETTINGS.name}
-          size={ICONS.SETTINGS.size}
-          color={COLORS.black}
-        />
-      ),
+      icon: (() => {
+        const Icon = IconComponents[ICONS.SETTINGS.library];
+        return Icon ? (
+          <Icon
+            name={ICONS.SETTINGS.name}
+            size={ICONS.SETTINGS.size}
+            color={COLORS.black || '#000'}
+          />
+        ) : null;
+      })(),
       label: 'Configuración',
       onPress: () => {
         if (!SCREENS.SETTINGS) {
@@ -226,13 +259,16 @@ const ProfileScreen = () => {
       },
     },
     {
-      icon: (
-        <ICONS.LOGOUT.Component
-          name={ICONS.LOGOUT.name}
-          size={ICONS.LOGOUT.size}
-          color={COLORS.red}
-        />
-      ),
+      icon: (() => {
+        const Icon = IconComponents[ICONS.LOGOUT.library];
+        return Icon ? (
+          <Icon
+            name={ICONS.LOGOUT.name}
+            size={ICONS.LOGOUT.size}
+            color={COLORS.red || '#ff0000'}
+          />
+        ) : null;
+      })(),
       label: 'Cerrar Sesión',
       onPress: logout,
     },
@@ -262,20 +298,29 @@ const ProfileScreen = () => {
           <Image
             style={styles.avatar}
             source={
-              userData?.image?.url ? {uri: userData?.image?.url} : IMAGES.AVATAR
+              userData?.image?.url
+                ? {uri: userData?.image?.url}
+                : IMAGES.AVATAR || {uri: 'https://via.placeholder.com/40'}
             }
             defaultSource={{uri: 'https://via.placeholder.com/40'}}
           />
           <Text style={styles.userNameText}>
-            {userData?.userName || 'MAS ONEWE'}
+            @{userData?.userName || '@mboloUser'}
           </Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate(SCREENS.SETTINGS)}>
-          <ICONS.SETTINGS.Component
-            name={ICONS.SETTINGS.name}
-            size={ICONS.SETTINGS.size}
-            color={COLORS.black}
-          />
+          {(() => {
+            const SettingsIcon = IconComponents[ICONS.SETTINGS.library];
+            return SettingsIcon ? (
+              <SettingsIcon
+                name={ICONS.SETTINGS.name}
+                size={ICONS.SETTINGS.size}
+                color={COLORS.black || '#000'}
+              />
+            ) : (
+              <Text>⚙️</Text>
+            );
+          })()}
         </TouchableOpacity>
       </View>
 
