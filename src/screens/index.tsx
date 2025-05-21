@@ -50,6 +50,8 @@ const SCREENS = {
   DELIVERY_SCREEN: 'DeliveryDetails',
   STORE_DETAILS: 'StoreDetails',
   COMPANY_DETAILS: 'CompanyDetailsScreen',
+  SELECT_CITY_SCREEN: 'SelectCityScreen',
+  SELECT_SEX_SCREEN: 'SelectSexScreen',
 };
 
 export default SCREENS;

@@ -47,6 +47,8 @@ import CompanyDetails from '../components/profile/bussines/CompanyDetails';
 import StoreDetails from '../components/profile/bussines/StoreDetails';
 import DeliveryDetails from '../components/profile/bussines/DeliveryDetails';
 import CreateProfessionalAccount from '../components/profile/bussines/CreateProfessionalAccount';
+import SelectSexScreen from '../components/profile/settings/select/SelectSexScreen';
+import SelectCityScreen from '../components/profile/settings/select/SelectCityScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -85,6 +87,16 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.CREATE_PROFESIONAL_ACCOUNT}
         component={CreateProfessionalAccount}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.SELECT_SEX_SCREEN}
+        component={SelectSexScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.SELECT_CITY_SCREEN}
+        component={SelectCityScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen

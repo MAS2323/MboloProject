@@ -22,6 +22,7 @@ import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {ICONS} from '../../../constants';
 import IMAGES from '../../../assets/images';
 import styles from './styles/PersonalInfoScreenStyle';
+import SCREENS from '../../../screens';
 
 // Importar los componentes de iconos dinámicamente
 const IconComponents = {
@@ -428,7 +429,7 @@ const PersonalInfoScreen = () => {
               label="Ubicación"
               value={location || userData?.ciudad?.name}
               placeholder="Seleccionar ubicación"
-              onPress={() => navigation.navigate('SelectCityScreen')}
+              onPress={() => navigation.navigate(SCREENS.SELECT_CITY_SCREEN)}
               editable={false}
             />
             <InputField
@@ -455,7 +456,7 @@ const PersonalInfoScreen = () => {
               label="Sexo"
               value={sex}
               placeholder="Seleccionar sexo"
-              onPress={() => navigation.navigate('SelectSexScreen')}
+              onPress={() => navigation.navigate(SCREENS.SELECT_SEX_SCREEN)}
               editable={false}
             />
             <SocialMediaSection
