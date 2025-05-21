@@ -45,7 +45,11 @@ const SCREENS = {
   MANAGE_NOTIFICATIONS: 'ManageNotificationsScreen',
   SOBRE_NOSOTROS: 'SobreNosotrosScreen',
   CREAR_TIENDA: 'CrearTiendaScreen',
+  CREATE_PROFESIONAL_ACCOUNT: 'CreateProfessionalAccount',
   ADD_SCREENS: 'AddScreens',
+  DELIVERY_SCREEN: 'DeliveryDetails',
+  STORE_DETAILS: 'StoreDetails',
+  COMPANY_DETAILS: 'CompanyDetailsScreen',
 };
 
 export default SCREENS;

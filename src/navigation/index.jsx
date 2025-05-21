@@ -34,6 +34,19 @@ import SeguidoresScreen from '../components/profile/SeguidoresScreen';
 import SettingsScreen from '../components/profile/SettingsScreen';
 import AddScreen from '../components/stores/AddScreen';
 import CrearTiendaScreen from '../components/stores/CrearTiendaScreen';
+import CartScreen from '../components/profile/CartScreen';
+import PersonalInfoScreen from '../components/profile/settings/PersonalInfoScreen';
+import BusinessInfoScreen from '../components/profile/settings/BusinessInfoScreen';
+import PhoneNumbersScreen from '../components/profile/settings/PhoneNumbersScreen';
+import ChangeEmailScreen from '../components/profile/settings/ChangeEmailScreen';
+import ChangePasswordScreen from '../components/profile/settings/ChangePasswordScreen';
+import DisableFeedbackScreen from '../components/profile/settings/DisableFeedbackScreen';
+import SobreNosotrosScreen from '../components/profile/settings/SobreNosotrosScreen';
+import ManageNotificationsScreen from '../components/profile/settings/ManageNotificationsScreen';
+import CompanyDetails from '../components/profile/bussines/CompanyDetails';
+import StoreDetails from '../components/profile/bussines/StoreDetails';
+import DeliveryDetails from '../components/profile/bussines/DeliveryDetails';
+import CreateProfessionalAccount from '../components/profile/bussines/CreateProfessionalAccount';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -70,6 +83,11 @@ const StackNavigation = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name={SCREENS.CREATE_PROFESIONAL_ACCOUNT}
+        component={CreateProfessionalAccount}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name={SCREENS.MENU_ITEM_DETAILS}
         component={MenuItemDetails}
         options={{headerShown: false}}
@@ -90,8 +108,53 @@ const StackNavigation = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name={SCREENS.BUSINESS_INFO}
+        component={BusinessInfoScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.CHANGE_EMAIL}
+        component={ChangeEmailScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.CHANGE_PASSWORD}
+        component={ChangePasswordScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.DISABLE_FEEDBACK}
+        component={DisableFeedbackScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.SOBRE_NOSOTROS}
+        component={SobreNosotrosScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.MANAGE_NOTIFICATIONS}
+        component={ManageNotificationsScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.PHONE_NUMBERS}
+        component={PhoneNumbersScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.PERSONAL_INFO}
+        component={PersonalInfoScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name={SCREENS.DETALLE_SCREEN}
         component={DetallesScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.CART}
+        component={CartScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -162,6 +225,21 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.CREAR_TIENDA}
         component={CrearTiendaScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.COMPANY_DETAILS}
+        component={CompanyDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.STORE_DETAILS}
+        component={StoreDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.DELIVERY_SCREEN}
+        component={DeliveryDetails}
         options={{headerShown: false}}
       />
       <Stack.Screen

@@ -23,6 +23,7 @@ const COLORS = {
   softGray: '#E5E5E5',
   darkGray: '#333333',
   lightWhite: '#F5F5F5',
+  orange: '#FF6A00',
 };
 
 export default COLORS;

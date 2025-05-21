@@ -12,6 +12,8 @@ const IMAGES = {
   RESEACH: require('./research.png'),
   FAVARITO: require('./faraitos.jpeg'),
   AVATAR: require('./Avatar22.webp'),
+  CARITO: require('./carrito.jpeg'),
+  PLACEHOLDER: require('./placeholderImage.png'),
 };
 
 export default IMAGES;

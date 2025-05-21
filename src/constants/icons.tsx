@@ -14,6 +14,11 @@ export const ICONS = {
     name: 'appstore1',
     size: 24,
   },
+  STORE_POST: {
+    library: 'MaterialCommunityIcons',
+    name: 'store',
+    size: 24,
+  },
   LOCATION: {
     library: 'SimpleLineIcons',
     name: 'location-pin',
@@ -84,7 +89,7 @@ export const ICONS = {
   },
   PHONE: {
     // Added for phone call button
-    library: 'Ionicons',
+    library: 'MaterialIcons',
     name: 'call',
     size: 24,
   },
@@ -119,8 +124,8 @@ export const ICONS = {
     size: 24,
   },
   ACCOUNT: {
-    library: 'MaterialIcons',
-    name: 'manage-accounts',
+    library: 'MaterialCommunityIcons',
+    name: 'account-cog',
     size: 24,
   },
   ORDERS: {
@@ -258,6 +263,76 @@ export const ICONS = {
   LOGOUT_SETTINGS: {
     library: 'AntDesign',
     name: 'logout',
+    size: 24,
+  },
+  CHECK_CIRCLE: {
+    library: 'MaterialIcons',
+    name: 'check-circle',
+    size: 20,
+  },
+  ARROW_DROP_DOWN: {
+    library: 'MaterialIcons',
+    name: 'arrow-drop-down',
+    size: 24,
+  },
+  WAVING_HAND: {
+    library: 'MaterialIcons',
+    name: 'waving-hand',
+    size: 24,
+  },
+  FACEBOOK: {
+    library: 'FontAwesome',
+    name: 'facebook',
+    size: 24,
+  },
+  GOOGLE: {
+    library: 'FontAwesome',
+    name: 'google',
+    size: 24,
+  },
+  SHOPPING_CART: {
+    library: 'FontAwesome',
+    name: 'shopping-cart',
+    size: 20,
+  },
+  DELETE_OUTLINE: {
+    library: 'MaterialIcons',
+    name: 'delete-outline',
+    size: 24,
+  },
+  IMAGE_NOT_SUPPORTED: {
+    library: 'MaterialIcons',
+    name: 'image-not-supported',
+    size: 40,
+  },
+  ADD: {
+    library: 'MaterialIcons',
+    name: 'add',
+    size: 24,
+  },
+  ARROW_BACK: {
+    library: 'Ionicons',
+    name: 'arrow-back',
+    size: 24,
+  },
+  INFO_CIRCLE_OUTLINE: {
+    library: 'Ionicons',
+    name: 'information-circle-outline',
+    size: 24,
+  },
+  IMAGE: {
+    library: 'MaterialIcons',
+    name: 'image',
+    size: 40,
+  },
+  PANORAMA: {
+    library: 'MaterialIcons',
+    name: 'panorama',
+    size: 40,
+  },
+  WORK: {
+    library: 'MaterialIcons',
+    name: 'work',
     size: 24,
   },
 };

@@ -24,6 +24,7 @@ const IconComponents = {
     require('react-native-vector-icons/MaterialCommunityIcons').default,
   MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
   AntDesign: require('react-native-vector-icons/AntDesign').default,
+  FontAwesome6: require('react-native-vector-icons/FontAwesome6').default,
 };
 
 // Header Component
@@ -215,7 +216,7 @@ const SettingsScreen = () => {
   };
 
   // Definir iconos para sections usando la misma técnica
-  const PersonIcon = IconComponents[ICONS.PERSON.library];
+  const PersonIcon = IconComponents[ICONS.USER_O.library];
   const BusinessIcon = IconComponents[ICONS.BUSINESS.library];
   const PhoneIcon = IconComponents[ICONS.PHONE.library];
   const EmailSettingsIcon = IconComponents[ICONS.EMAIL_SETTINGS.library];
@@ -235,8 +236,8 @@ const SettingsScreen = () => {
         {
           icon: PersonIcon ? (
             <PersonIcon
-              name={ICONS.PERSON.name}
-              size={ICONS.PERSON.size}
+              name={ICONS.USER_O.name}
+              size={ICONS.USER_O.size}
               color={COLORS.white || '#fff'}
             />
           ) : null,

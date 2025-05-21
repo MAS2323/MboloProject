@@ -1,28 +1,28 @@
 import {StyleSheet} from 'react-native';
-import {COLORS} from '../../../constants';
-
+import {COLORS} from '../../../../constants';
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
-    backgroundColor: COLORS.background || '#F5F6F5', // Light gray for modern look
+    backgroundColor: COLORS.background,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    // backgroundColor: COLORS.white || '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border || '#E0E0E0',
+    borderBottomColor: COLORS.border,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    // elevation: 3, // For Android shadow
+    // elevation: 3, // Android shadow
+    zIndex: 10, // Ensure header stays above content
   },
   headerText: {
     fontSize: 20,
     fontWeight: '600',
-    color: COLORS.text || '#333333',
+    color: COLORS.text,
     marginLeft: 16,
   },
   container: {
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.background || '#F5F6F5',
+    backgroundColor: COLORS.background,
   },
   inputGroup: {
     marginBottom: 20,
@@ -42,17 +42,17 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: '500',
-    color: COLORS.text || '#333333',
+    color: COLORS.text,
     marginBottom: 8,
   },
   input: {
-    borderWidth: 1,
-    borderColor: COLORS.border || '#D1D5DB',
+    backgroundColor: COLORS.white,
     borderRadius: 8,
     padding: 14,
     fontSize: 16,
-    color: COLORS.text || '#333333',
-    backgroundColor: COLORS.white || '#FFFFFF',
+    color: COLORS.text,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.05,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     // elevation: 1,
   },
   disabledInput: {
-    backgroundColor: COLORS.disabled || '#F1F1F1',
+    backgroundColor: COLORS.disabled,
     opacity: 0.7,
   },
   multilineInput: {
@@ -68,19 +68,51 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     paddingTop: 12,
   },
-  imagePicker: {
+  selectionPicker: {
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    padding: 14,
     borderWidth: 1,
-    borderColor: COLORS.border || '#D1D5DB',
+    borderColor: COLORS.border,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    // elevation: 1,
+  },
+  selectionPickerSelected: {
+    borderColor: COLORS.green,
+    backgroundColor: '#E6F4EA', // Light green for selected state
+  },
+  selectionPickerText: {
+    fontSize: 16,
+    color: COLORS.placeholder,
+    flex: 1,
+  },
+  selectionPickerTextSelected: {
+    color: COLORS.green,
+    fontWeight: '500',
+  },
+  imagePicker: {
     borderRadius: 12,
-    padding: 16,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.white || '#FFFFFF',
+    padding: 16,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     // elevation: 2,
+  },
+  imageContainer: {
+    position: 'relative',
+    alignItems: 'center',
   },
   imagePlaceholder: {
     alignItems: 'center',
@@ -88,33 +120,21 @@ const styles = StyleSheet.create({
   },
   imagePickerText: {
     fontSize: 14,
-    color: COLORS.placeholder || '#6B7280',
+    color: COLORS.placeholder,
     marginTop: 8,
     fontWeight: '500',
-  },
-  imageContainer: {
-    position: 'relative',
-    alignItems: 'center',
   },
   imagePreview: {
     width: 120,
     height: 120,
     borderRadius: 12,
     resizeMode: 'cover',
-    marginBottom: 8,
-  },
-  bannerPreview: {
-    width: '100%',
-    height: 160,
-    borderRadius: 12,
-    resizeMode: 'cover',
-    marginBottom: 8,
   },
   deleteButton: {
     position: 'absolute',
     top: -8,
     right: -8,
-    backgroundColor: COLORS.white || '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderRadius: 20,
     padding: 4,
     shadowColor: '#000',
@@ -127,7 +147,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.green || '#10B981',
+    backgroundColor: COLORS.green,
     paddingVertical: 16,
     borderRadius: 8,
     marginTop: 24,
@@ -138,20 +158,22 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   submitButtonDisabled: {
-    backgroundColor: COLORS.disabled || '#6EE7B7',
+    backgroundColor: '#6EE7B7', // Lighter green for disabled state
     opacity: 0.6,
   },
   submitButtonText: {
-    color: COLORS.white || '#FFFFFF',
+    color: COLORS.white,
     fontSize: 18,
     fontWeight: '600',
     marginLeft: 8,
   },
   cardContainer: {
-    backgroundColor: COLORS.white || '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
@@ -161,19 +183,19 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: COLORS.text || '#333333',
+    color: COLORS.text,
     marginBottom: 12,
   },
   cardLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: COLORS.placeholder || '#6B7280',
-    marginTop: 8,
+    color: COLORS.placeholder,
+    marginTop: 12,
+    marginBottom: 4,
   },
   cardText: {
     fontSize: 16,
-    color: COLORS.text || '#333333',
-    marginBottom: 8,
+    color: COLORS.text,
   },
 });
 

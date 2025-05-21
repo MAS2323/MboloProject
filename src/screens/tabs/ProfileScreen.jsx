@@ -23,6 +23,7 @@ const IconComponents = {
   MaterialCommunityIcons:
     require('react-native-vector-icons/MaterialCommunityIcons').default,
   MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
+  Entypo: require('react-native-vector-icons/Entypo').default,
 };
 
 const ProfileScreen = () => {
@@ -176,11 +177,11 @@ const ProfileScreen = () => {
     },
     {
       icon: (() => {
-        const Icon = IconComponents[ICONS.STORE.library];
+        const Icon = IconComponents[ICONS.STORE_POST.library];
         return Icon ? (
           <Icon
-            name={ICONS.STORE.name}
-            size={ICONS.STORE.size}
+            name={ICONS.STORE_POST.name}
+            size={ICONS.STORE_POST.size}
             color={COLORS.black || '#000'}
           />
         ) : null;
