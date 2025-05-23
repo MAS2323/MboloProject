@@ -52,6 +52,12 @@ const SCREENS = {
   COMPANY_DETAILS: 'CompanyDetailsScreen',
   SELECT_CITY_SCREEN: 'SelectCityScreen',
   SELECT_SEX_SCREEN: 'SelectSexScreen',
+  CAPITAL_OWNER_SCREEN: 'CapitalOwnershipSelectionScreen',
+  CATEGORY_SELECTION_SCREEN: 'CategorySelectionScreen',
+  COMPANY_SIZE_SCREEN: 'CompanySizeSelectionScreen',
+  ECONOMIC_SECTOR_SCREEN: 'EconomicSectorSelectionScreen',
+  LEGAL_FORM_SCREEN: 'LegalFormSelectionScreen',
+  OPERATION_SCOPEREEN: 'OperationScopeSelectionScreen',
 };
 
 export default SCREENS;

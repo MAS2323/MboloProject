@@ -49,6 +49,12 @@ import DeliveryDetails from '../components/profile/bussines/DeliveryDetails';
 import CreateProfessionalAccount from '../components/profile/bussines/CreateProfessionalAccount';
 import SelectSexScreen from '../components/profile/settings/select/SelectSexScreen';
 import SelectCityScreen from '../components/profile/settings/select/SelectCityScreen';
+import CapitalOwnershipSelectionScreen from '../components/profile/settings/select/CapitalOwnershipSelectionScreen';
+import CategorySelectionScreen from '../components/profile/settings/select/CategorySelectionScreen';
+import CompanySizeSelectionScreen from '../components/profile/settings/select/CompanySizeSelectionScreen';
+import EconomicSectorSelectionScreen from '../components/profile/settings/select/EconomicSectorSelectionScreen';
+import LegalFormSelectionScreen from '../components/profile/settings/select/LegalFormSelectionScreen';
+import OperationScopeSelectionScreen from '../components/profile/settings/select/OperationScopeSelectionScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -145,8 +151,38 @@ const StackNavigation = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name={SCREENS.CAPITAL_OWNER_SCREEN}
+        component={CapitalOwnershipSelectionScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.CATEGORY_SELECTION_SCREEN}
+        component={CategorySelectionScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.COMPANY_SIZE_SCREEN}
+        component={CompanySizeSelectionScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name={SCREENS.MANAGE_NOTIFICATIONS}
         component={ManageNotificationsScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.ECONOMIC_SECTOR_SCREEN}
+        component={EconomicSectorSelectionScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.LEGAL_FORM_SCREEN}
+        component={LegalFormSelectionScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.OPERATION_SCOPEREEN}
+        component={OperationScopeSelectionScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen

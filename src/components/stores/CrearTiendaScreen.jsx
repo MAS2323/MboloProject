@@ -20,8 +20,6 @@ import {API_BASE_URL} from '../../config/Service.Config';
 import {COLORS, ICONS} from '../../constants';
 import styles from './styles/CrearTiendaScreenStyle';
 
-// Debug ICONS
-console.log('ICONS:', ICONS);
 
 // Importar los componentes de iconos dinámicamente
 const IconComponents = {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {
   View,
   SafeAreaView,
@@ -7,7 +7,6 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import axios from 'axios';
@@ -16,6 +15,7 @@ import styles from './styles/SearchScreenStyles';
 import {API_BASE_URL} from '../../../config/Service.Config';
 import IMAGES from '../../../assets/images';
 import {COLORS} from '../../../constants';
+import SCREENS from '../../../screens';
 
 // Mock SearchTile component (replace with your actual SearchTile)
 const SearchTile = ({item}) => {
@@ -23,7 +23,9 @@ const SearchTile = ({item}) => {
   return (
     <TouchableOpacity
       style={styles.searchTile}
-      onPress={() => navigation.navigate('ProductDetails', {id: item._id})}>
+      onPress={() =>
+        navigation.navigate(SCREENS.PRODUCT_DETAIL, {id: item._id})
+      }>
       <Image
         source={{
           uri: item.images?.[0]?.url || 'https://via.placeholder.com/50',

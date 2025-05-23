@@ -19,6 +19,7 @@ import axios from 'axios';
 import {COLORS, ICONS} from '../../../constants';
 import styles from './styles/CrearTiendaScreenStyle';
 import {API_BASE_URL} from '../../../config/Service.Config';
+import SCREENS from '../../../screens';
 
 // Dynamic icon loading
 const IconComponents = {
@@ -900,7 +901,7 @@ const CreateProfessionalAccount = () => {
                 styles.selectionPickerSelected,
             ]}
             onPress={() =>
-              navigation.replace('CategorySelectionScreen', {
+              navigation.navigate(SCREENS.CATEGORY_SELECTION_SCREEN, {
                 returnScreen: 'CreateProfessionalAccount',
               })
             }>
@@ -937,7 +938,7 @@ const CreateProfessionalAccount = () => {
               formData.address && styles.selectionPickerSelected,
             ]}
             onPress={() =>
-              navigation.navigate('SelectCityScreen', {
+              navigation.navigate(SCREENS.SELECT_CITY_SCREEN, {
                 returnScreen: 'CreateProfessionalAccount',
               })
             }>
@@ -970,7 +971,7 @@ const CreateProfessionalAccount = () => {
               formData.capitalOwnership && styles.selectionPickerSelected,
             ]}
             onPress={() =>
-              navigation.navigate('CapitalOwnershipSelectionScreen', {
+              navigation.navigate(SCREENS.CAPITAL_OWNER_SCREEN, {
                 returnScreen: 'CreateProfessionalAccount',
               })
             }>
@@ -1004,7 +1005,7 @@ const CreateProfessionalAccount = () => {
               formData.companySize && styles.selectionPickerSelected,
             ]}
             onPress={() =>
-              navigation.navigate('CompanySizeSelectionScreen', {
+              navigation.navigate(SCREENS.COMPANY_SIZE_SCREEN, {
                 returnScreen: 'CreateProfessionalAccount',
               })
             }>
@@ -1038,7 +1039,7 @@ const CreateProfessionalAccount = () => {
               formData.legalForm && styles.selectionPickerSelected,
             ]}
             onPress={() =>
-              navigation.navigate('LegalFormSelectionScreen', {
+              navigation.navigate(SCREENS.LEGAL_FORM_SCREEN, {
                 returnScreen: 'CreateProfessionalAccount',
               })
             }>
@@ -1071,7 +1072,7 @@ const CreateProfessionalAccount = () => {
               formData.economicSector && styles.selectionPickerSelected,
             ]}
             onPress={() =>
-              navigation.navigate('EconomicSectorSelectionScreen', {
+              navigation.navigate(SCREENS.ECONOMIC_SECTOR_SCREEN, {
                 returnScreen: 'CreateProfessionalAccount',
               })
             }>
@@ -1104,7 +1105,7 @@ const CreateProfessionalAccount = () => {
               formData.operationScope && styles.selectionPickerSelected,
             ]}
             onPress={() =>
-              navigation.navigate('OperationScopeSelectionScreen', {
+              navigation.navigate(SCREENS.OPERATION_SCOPEREEN, {
                 returnScreen: 'CreateProfessionalAccount',
               })
             }>

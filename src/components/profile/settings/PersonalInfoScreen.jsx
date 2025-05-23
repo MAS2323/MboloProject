@@ -17,7 +17,7 @@ import axios from 'axios';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {API_BASE_URL} from '../../config/Service.Config';
+import {API_BASE_URL} from '../../../config/Service.Config';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {ICONS} from '../../../constants';
 import IMAGES from '../../../assets/images';
