@@ -1,25 +1,35 @@
-import {View, FlatList, StatusBar} from 'react-native';
+import React, {useState} from 'react';
+import {View, FlatList, StatusBar, RefreshControl} from 'react-native';
 import Header from '../../components/header/Header';
 import HeaderSearch from '../../components/header/HeaderSearch';
 import MenuScreen from '../../components/menu/MenuScreen';
-import styles from './styles/HomeScreen.styles';
 import SlideSection from '../../components/products/SlideSecction';
 import ProductRow from '../../components/products/ProductRow';
 import TendenciaScreen from '../../components/tendencia/TendenciaScreen';
+import styles from './styles/HomeScreen.styles';
 
 const HomeScreen = (props: {navigation: any}) => {
   const {navigation} = props;
+  const [refreshing, setRefreshing] = useState(false);
 
   // Componentes que se desplazarán (excepto el header)
   const scrollComponents = [
     {id: '2', component: <HeaderSearch />},
     {id: '3', component: <MenuScreen />},
     {id: '4', component: <SlideSection />},
-    {id: '5', component: <ProductRow />}, // Add ProductRow here
-    {id: '6', component: <TendenciaScreen />}, // Add ProductRow here
-
-    // Puedes añadir más componentes aquí
+    {id: '5', component: <ProductRow />},
+    {id: '6', component: <TendenciaScreen />},
   ];
+
+  // Función para manejar el refresh
+  const onRefresh = () => {
+    setRefreshing(true);
+    // Simula una acción de refresco (reemplaza con tu lógica de API)
+    setTimeout(() => {
+      console.log('Refresh completed');
+      setRefreshing(false);
+    }, 2000); // Simula 2 segundos de carga
+  };
 
   return (
     <View style={styles.container}>
@@ -30,7 +40,7 @@ const HomeScreen = (props: {navigation: any}) => {
         <Header />
       </View>
 
-      {/* Contenido desplazable */}
+      {/* Contenido desplazable con RefreshControl */}
       <FlatList
         data={scrollComponents}
         renderItem={({item}) => item.component}
@@ -38,6 +48,14 @@ const HomeScreen = (props: {navigation: any}) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
         ListHeaderComponent={<View style={styles.headerSpacer} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#00C853']} // Color del indicador de refresco
+            tintColor="#00C853" // Color en iOS
+          />
+        }
       />
     </View>
   );
