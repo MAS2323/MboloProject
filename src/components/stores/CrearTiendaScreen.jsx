@@ -19,7 +19,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {API_BASE_URL} from '../../config/Service.Config';
 import {COLORS, ICONS} from '../../constants';
 import styles from './styles/CrearTiendaScreenStyle';
-
+import SCREENS from '../../screens';
 
 // Importar los componentes de iconos dinámicamente
 const IconComponents = {
@@ -348,7 +348,9 @@ const CrearTiendaScreen = () => {
     <TouchableOpacity
       style={styles.cardContainer}
       onPress={() =>
-        navigation.navigate('EditarTienda', {store: JSON.stringify(store)})
+        navigation.navigate(SCREENS.EDITAR_STORE_DETAILS, {
+          store: JSON.stringify(store),
+        })
       }>
       <Text style={styles.cardTitle}>{store.name}</Text>
       {store.banner && (

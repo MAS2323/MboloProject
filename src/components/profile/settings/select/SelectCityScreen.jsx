@@ -12,7 +12,7 @@ import axios from 'axios';
 import {COLORS, ICONS} from '../../../../constants';
 import SCREENS from '../../../../screens';
 import {API_BASE_URL} from '../../../../config/Service.Config';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import styles from './styles/SelectCityStyle';
 
 // Importar los componentes de iconos dinámicamente
@@ -28,6 +28,8 @@ const SelectCityScreen = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const navigation = useNavigation();
+  const route = useRoute();
+  const {returnScreen} = route.params || {};
   const ChevronLeftIcon = IconComponents[ICONS.CHEVRON_LEFT.library];
 
   // Verificar usuario existente y cargar datos desde AsyncStorage
@@ -115,8 +117,27 @@ const SelectCityScreen = () => {
       );
       setUserData(updatedUserData);
 
+      // Guardar la ciudad seleccionada en AsyncStorage como selectedAddress
+      const addressData = {
+        _id: city._id,
+        city: city.name,
+        street: '',
+        state: '',
+        country: '',
+        postalCode: '',
+      };
+      await AsyncStorage.setItem(
+        'selectedAddress',
+        JSON.stringify(addressData),
+      );
+
+      // Navegar de vuelta a la pantalla de origen con parámetros
+      navigation.navigate(returnScreen, {
+        addressId: city._id,
+        addressDetails: city.name,
+      });
+
       Alert.alert('Éxito', 'Ubicación actualizada correctamente');
-      navigation.goBack();
     } catch (error) {
       console.error('Error al actualizar la ubicación:', {
         message: error.message,

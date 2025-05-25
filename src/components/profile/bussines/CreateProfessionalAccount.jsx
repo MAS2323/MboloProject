@@ -12,9 +12,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import {COLORS, ICONS} from '../../../constants';
 import styles from './styles/CrearTiendaScreenStyle';
@@ -165,6 +168,32 @@ const CreateProfessionalAccount = () => {
     loadSelections();
   }, []);
 
+  // Reload selectedAddress when the screen regains focus
+  useFocusEffect(
+    useCallback(() => {
+      const loadAddress = async () => {
+        try {
+          const storedAddress = await AsyncStorage.getItem('selectedAddress');
+          if (storedAddress) {
+            const address = JSON.parse(storedAddress);
+            setFormData(prev => ({
+              ...prev,
+              address: address._id,
+              addressDetails: `${address.street ? address.street + ', ' : ''}${
+                address.city
+              }${address.state ? ', ' + address.state : ''}${
+                address.country ? ', ' + address.country : ''
+              }${address.postalCode ? ', ' + address.postalCode : ''}`,
+            }));
+          }
+        } catch (error) {
+          console.error('Error al cargar dirección desde AsyncStorage:', error);
+        }
+      };
+      loadAddress();
+    }, []),
+  );
+
   // Actualizar formData con los valores desde params
   useEffect(() => {
     const updateFormDataFromParams = async () => {
@@ -221,7 +250,7 @@ const CreateProfessionalAccount = () => {
             JSON.stringify({
               _id: params.addressId,
               street: params.street || '',
-              city: params.city || '',
+              city: params.city || params.addressDetails,
               state: params.state || '',
               country: params.country || '',
               postalCode: params.postalCode || '',
@@ -568,26 +597,14 @@ const CreateProfessionalAccount = () => {
     try {
       const result = await launchImageLibrary({
         mediaType: 'photo',
-        allowsEditing: true,
-        aspect: [1, 1],
         quality: 1,
+        maxWidth: 500,
+        maxHeight: 500,
       });
 
       if (!result.didCancel && !result.errorCode && result.assets) {
         const uri = result.assets[0].uri;
-        try {
-          await new Promise((resolve, reject) => {
-            Image.getSize(
-              uri,
-              () => resolve(),
-              error => reject(error),
-            );
-          });
-          setAvatar(uri);
-        } catch (error) {
-          console.error('Error al validar imagen:', error);
-          Alert.alert('Error', 'No se pudo cargar la imagen seleccionada.');
-        }
+        setAvatar(uri);
       }
     } catch (error) {
       console.error('Error al seleccionar imagen:', error);

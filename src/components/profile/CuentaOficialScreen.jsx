@@ -17,6 +17,7 @@ import axios from 'axios';
 import {API_BASE_URL} from '../../config/Service.Config';
 import styles from './styles/CuentaOficialScreenStyle';
 import {COLORS} from '../../constants';
+import SCREENS from '../../screens';
 
 const CuentaOficialScreen = () => {
   const navigation = useNavigation();
@@ -112,7 +113,9 @@ const CuentaOficialScreen = () => {
         {/* No mostramos el botón de "Agregar" si ya existe una cuenta */}
         {cuentasOficiales.length === 0 && (
           <TouchableOpacity
-            onPress={() => navigation.navigate('CrearCuentaOficialScreen')} // Updated to use navigate
+            onPress={() =>
+              navigation.navigate(SCREENS.CREATE_PROFESIONAL_ACCOUNT)
+            } // Updated to use navigate
           >
             <Ionicons name="add" size={24} color={COLORS.primary} />
           </TouchableOpacity>
@@ -139,7 +142,9 @@ const CuentaOficialScreen = () => {
           </Text>
           <TouchableOpacity
             style={styles.createButton}
-            onPress={() => navigation.navigate('CrearCuentaOficialScreen')} // Updated to use navigate
+            onPress={() =>
+              navigation.navigate(SCREENS.CREATE_PROFESIONAL_ACCOUNT)
+            } // Updated to use navigate
           >
             <Text style={styles.createButtonText}>
               Crear Cuenta Profesional

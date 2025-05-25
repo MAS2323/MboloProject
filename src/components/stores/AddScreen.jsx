@@ -25,6 +25,7 @@ import {useNavigation} from '@react-navigation/native';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import styles from './styles/AddScreenStyle';
 import {COLORS, ICONS} from '../../constants';
+import SCREENS from '../../screens';
 
 // Importar los componentes de iconos dinámicamente
 const IconComponents = {
@@ -73,7 +74,8 @@ const LocationTitle = () => {
   }, [navigation]);
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('SelectCityScreen')}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate(SCREENS.SELECT_CITY_SCREEN)}>
       <Text style={styles.locationTitle}>{city}</Text>
     </TouchableOpacity>
   );
@@ -556,7 +558,7 @@ const AddScreen = () => {
             <TouchableOpacity
               style={styles.selectorButton}
               onPress={() =>
-                navigation.navigate('SubcategoriesScreen', {
+                navigation.navigate(SCREENS.CATEGORY_SELECTION_SCREEN, {
                   selectedCategory: selectedCategory
                     ? JSON.stringify(selectedCategory)
                     : null,

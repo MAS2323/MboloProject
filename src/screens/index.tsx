@@ -58,6 +58,7 @@ const SCREENS = {
   ECONOMIC_SECTOR_SCREEN: 'EconomicSectorSelectionScreen',
   LEGAL_FORM_SCREEN: 'LegalFormSelectionScreen',
   OPERATION_SCOPEREEN: 'OperationScopeSelectionScreen',
+  EDITAR_STORE_DETAILS: 'EditarTiendaScreen',
 };
 
 export default SCREENS;

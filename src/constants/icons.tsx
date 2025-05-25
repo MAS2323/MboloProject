@@ -350,6 +350,21 @@ export const ICONS = {
     name: 'ellipsis-vertical',
     size: 24,
   },
+  BACK: {
+    library: 'MaterialIcons',
+    name: 'chevron-left',
+    size: 30,
+  },
+  UPDATE: {
+    library: 'MaterialIcons',
+    name: 'update',
+    size: 24,
+  },
+  DELETE_FOREVER: {
+    library: 'MaterialIcons',
+    name: 'delete-forever',
+    size: 24,
+  },
 };
 
 export default ICONS;
