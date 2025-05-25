@@ -335,6 +335,21 @@ export const ICONS = {
     name: 'work',
     size: 24,
   },
+  CHEVRON_DOWN: {
+    library: 'Ionicons',
+    name: 'chevron-down',
+    size: 20,
+  },
+  CLOSE_CIRCLE: {
+    library: 'Ionicons',
+    name: 'close-circle',
+    size: 20,
+  },
+  ELLIPSIS_VERTICAL: {
+    library: 'Ionicons',
+    name: 'ellipsis-vertical',
+    size: 24,
+  },
 };
 
 export default ICONS;
