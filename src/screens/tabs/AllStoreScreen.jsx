@@ -64,7 +64,7 @@ const AllStoreScreen = () => {
   // Asegurarse de que al regresar se muestre "Cuentas Oficiales"
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      setActiveTab('Cuentas Oficiales');
+      setActiveTab('Tiendas');
     });
     return unsubscribe;
   }, [navigation]);
@@ -100,7 +100,7 @@ const AllStoreScreen = () => {
     );
   }
 
-  const tabs = ['Cuentas Oficiales', 'AppCenter'];
+  const tabs = ['Tiendas', 'AppCenter', 'Cuentas Oficiales'];
 
   return (
     <View style={styles.container}>
@@ -136,7 +136,7 @@ const AllStoreScreen = () => {
       </ScrollView>
 
       {/* Lista de tiendas para Cuentas Oficiales */}
-      {activeTab === 'Cuentas Oficiales' && (
+      {activeTab === 'Tiendas' && (
         <FlatList
           data={tiendas}
           renderItem={renderTiendaItem}

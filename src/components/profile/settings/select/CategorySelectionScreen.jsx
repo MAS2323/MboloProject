@@ -1,4 +1,3 @@
-// screens/CategorySelectionScreen.js
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -13,18 +12,16 @@ import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {API_BASE_URL} from '../../../../config/Service.Config';
 import {ICONS, COLORS} from '../../../../constants';
-import SCREENS from '../../../../screens';
 
 // Importar los componentes de iconos dinámicamente
 const IconComponents = {
   MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
-  Feather: require('react-native-vector-icons/Feather').default,
-  Ionicons: require('react-native-vector-icons/Ionicons').default,
 };
 
 const CategorySelectionScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const {returnScreen} = route.params || {};
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -90,13 +87,13 @@ const CategorySelectionScreen = () => {
 
   const handleCategorySelect = category => {
     setSelectedCategory(category);
-    setSubcategories([]); 
-    setSelectedSubcategory(null); 
+    setSubcategories([]);
+    setSelectedSubcategory(null);
   };
 
   const handleSubcategoryPress = subcategory => {
     setSelectedSubcategory(subcategory);
-    navigation.goBack(SCREENS.ADD_SCREENS, {
+    navigation.navigate(returnScreen || 'CreateProfessionalAccount', {
       categoryId: selectedCategory._id,
       categoryName: selectedCategory.name,
       subcategoryId: subcategory._id,
@@ -111,7 +108,7 @@ const CategorySelectionScreen = () => {
           <BackIcon
             name={ICONS.BACK.name || 'chevron-left'}
             size={ICONS.BACK.size || 30}
-            color={COLORS.PRIMARY || '#00C853'}
+            color={COLORS.PRIMARY}
           />
         </TouchableOpacity>
         <Text style={styles.headerText}>Selecciona una Categoría</Text>
@@ -131,7 +128,7 @@ const CategorySelectionScreen = () => {
                 <ChevronRightIcon
                   name={ICONS.CHEVRON_RIGHT.name || 'chevron-right'}
                   size={ICONS.CHEVRON_RIGHT.size || 24}
-                  color={COLORS.SECONDARY || '#666'}
+                  color={COLORS.SECONDARY}
                 />
               </View>
             </TouchableOpacity>
@@ -180,46 +177,39 @@ const CategorySelectionScreen = () => {
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.WHITE,
     marginTop: 30,
   },
   header: {
     flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#fff',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
+    borderBottomColor: '#E0E0E0',
+    zIndex: 1,
   },
   headerText: {
-    flex: 1,
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'center',
-    marginRight: 30,
+    color: COLORS.BLACK,
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.WHITE,
     paddingHorizontal: 0,
     paddingTop: 0,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#000',
+    color: COLORS.BLACK,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: COLORS.DISABLED,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: '#E0E0E0',
   },
   listContent: {
     paddingBottom: 20,
@@ -228,28 +218,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.WHITE,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   selectedItem: {
-    backgroundColor: '#e3f2fd',
+    backgroundColor: '#E3F2FD',
   },
   text: {
     fontSize: 16,
-    color: '#000',
+    color: COLORS.BLACK,
     fontWeight: '400',
   },
   noData: {
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
-    color: 'gray',
+    color: COLORS.SECONDARY,
     fontStyle: 'italic',
   },
   separator: {
     height: 1,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#E0E0E0',
     marginHorizontal: 16,
   },
 });

@@ -56,6 +56,7 @@ import EconomicSectorSelectionScreen from '../components/profile/settings/select
 import LegalFormSelectionScreen from '../components/profile/settings/select/LegalFormSelectionScreen';
 import OperationScopeSelectionScreen from '../components/profile/settings/select/OperationScopeSelectionScreen';
 import EditarTiendaScreen from '../components/stores/EditarTiendaScreen';
+import EditProfessionalAccoun from '../components/profile/bussines/EditProfessionalAccoun';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -174,6 +175,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.ECONOMIC_SECTOR_SCREEN}
         component={EconomicSectorSelectionScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.EDIT_PROFESIONAL_ACCOUNT}
+        component={EditProfessionalAccoun}
         options={{headerShown: false}}
       />
       <Stack.Screen

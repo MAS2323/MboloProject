@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   Image,
   Alert,
   ScrollView,
@@ -20,7 +19,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {COLORS, ICONS} from '../../../constants';
-import styles from './styles/CrearTiendaScreenStyle';
+import styles from './styles/EditTiendaSyle';
 import {API_BASE_URL} from '../../../config/Service.Config';
 import SCREENS from '../../../screens';
 
@@ -29,47 +28,89 @@ const IconComponents = {
   MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
 };
 
-const CreateProfessionalAccount = () => {
+const EditProfessionalAccount = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const params = route.params || {};
-  const [formData, setFormData] = useState({
-    name: 'E.G. BLUE SEA MALESTI LOPEZ',
-    email: '',
-    phone_number: '',
-    description: 'MANTENIMIENTO DE INMUEBLES',
-    owner: '',
-    category: '',
-    categoryName: '',
-    subcategory: '',
-    subcategoryName: '',
-    address: '',
-    addressDetails: '',
-    capitalOwnership: '',
-    capitalOwnershipDisplay: '',
-    companySize: '',
-    companySizeDisplay: '',
-    legalForm: '',
-    legalFormDisplay: '',
-    economicSector: '',
-    economicSectorDisplay: '',
-    operationScope: '',
-    operationScopeDisplay: '',
-    socialCapital: '1,000,000 FCFA',
-    numberOfEstablishments: '1',
-    numberOfEmployees: '12',
-    nif: '038446EG-24',
-    expedientNumber: '05069/2024',
-    certificateNumber: '3025',
-  });
+  const {account} = route.params || {};
+  const [formData, setFormData] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [existingAccount, setExistingAccount] = useState(null);
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState('');
 
-  // Cargar selecciones previas desde AsyncStorage al montar el componente
+  // Initialize form data from passed account
+  useEffect(() => {
+    const initializeFormData = async () => {
+      try {
+        setIsLoading(true);
+        const id = await AsyncStorage.getItem('id');
+        if (!id) {
+          Alert.alert('Error', 'Debes iniciar sesión para editar la cuenta.');
+          navigation.navigate('LoginScreen');
+          return;
+        }
+        const parsedId = JSON.parse(id);
+        setUserId(parsedId);
+
+        const userData = await AsyncStorage.getItem(`user${parsedId}`);
+        if (userData) {
+          const parsedUserData = JSON.parse(userData);
+          setUserName(parsedUserData.userName || '');
+        } else {
+          Alert.alert('Error', 'Datos de usuario no encontrados.');
+          navigation.navigate('LoginScreen');
+          return;
+        }
+
+        if (account) {
+          const parsedAccount = JSON.parse(account);
+          setFormData({
+            id: parsedAccount.id,
+            name: parsedAccount.name || '',
+            email: parsedAccount.email || '',
+            phone_number: parsedAccount.phone_number || '',
+            description: parsedAccount.description || '',
+            owner: parsedAccount.owner || parsedId,
+            category: parsedAccount.category || '',
+            categoryName: parsedAccount.categoryName || '',
+            subcategory: parsedAccount.subcategory || '',
+            subcategoryName: parsedAccount.subcategoryName || '',
+            address: parsedAccount.address || '',
+            addressDetails: parsedAccount.addressDetails || '',
+            capitalOwnership: parsedAccount.capitalOwnership || '',
+            capitalOwnershipDisplay: parsedAccount.capitalOwnership || '',
+            companySize: parsedAccount.companySize || '',
+            companySizeDisplay: parsedAccount.companySize || '',
+            legalForm: parsedAccount.legalForm || '',
+            legalFormDisplay: parsedAccount.legalForm || '',
+            economicSector: parsedAccount.economicSector || '',
+            economicSectorDisplay: parsedAccount.economicSector || '',
+            operationScope: parsedAccount.operationScope || '',
+            operationScopeDisplay: parsedAccount.operationScope || '',
+            socialCapital: parsedAccount.socialCapital || '',
+            numberOfEstablishments: parsedAccount.numberOfEstablishments || '',
+            numberOfEmployees: parsedAccount.numberOfEmployees || '',
+            nif: parsedAccount.nif || '',
+            expedientNumber: parsedAccount.expedientNumber || '',
+            certificateNumber: parsedAccount.certificateNumber || '',
+          });
+          setAvatar(parsedAccount.avatar || null);
+        } else {
+          Alert.alert('Error', 'No se encontraron datos de la cuenta.');
+          navigation.goBack();
+        }
+      } catch (error) {
+        console.error('Error al inicializar datos:', error);
+        Alert.alert('Error', 'No se pudieron cargar los datos.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    initializeFormData();
+  }, [account, navigation]);
+
+  // Load selections from AsyncStorage
   useEffect(() => {
     const loadSelections = async () => {
       try {
@@ -92,190 +133,212 @@ const CreateProfessionalAccount = () => {
           'selectedOperationScope',
         );
 
-        if (storedCategory && storedSubcategory) {
-          const category = JSON.parse(storedCategory);
-          const subcategory = JSON.parse(storedSubcategory);
-          setFormData(prev => ({
-            ...prev,
-            category: category._id,
-            categoryName: category.name,
-            subcategory: subcategory._id,
-            subcategoryName: subcategory.name,
-          }));
-        }
-
-        if (storedAddress) {
-          const address = JSON.parse(storedAddress);
-          setFormData(prev => ({
-            ...prev,
-            address: address._id,
-            addressDetails: `${address.street ? address.street + ', ' : ''}${
-              address.city
-            }${address.state ? ', ' + address.state : ''}${
+        if (formData) {
+          const updates = {};
+          if (storedCategory && storedSubcategory) {
+            const category = JSON.parse(storedCategory);
+            const subcategory = JSON.parse(storedSubcategory);
+            updates.category = category._id;
+            updates.categoryName = category.name;
+            updates.subcategory = subcategory._id;
+            updates.subcategoryName = subcategory.name;
+          }
+          if (storedAddress) {
+            const address = JSON.parse(storedAddress);
+            updates.address = address._id;
+            updates.addressDetails = `${
+              address.street ? address.street + ', ' : ''
+            }${address.city}${address.state ? ', ' + address.state : ''}${
               address.country ? ', ' + address.country : ''
-            }${address.postalCode ? ', ' + address.postalCode : ''}`,
-          }));
-        }
-
-        if (storedCapitalOwnership) {
-          const capitalOwnership = JSON.parse(storedCapitalOwnership);
-          setFormData(prev => ({
-            ...prev,
-            capitalOwnership: capitalOwnership.value,
-            capitalOwnershipDisplay: capitalOwnership.display,
-          }));
-        }
-
-        if (storedCompanySize) {
-          const companySize = JSON.parse(storedCompanySize);
-          setFormData(prev => ({
-            ...prev,
-            companySize: companySize.value,
-            companySizeDisplay: companySize.display,
-          }));
-        }
-
-        if (storedLegalForm) {
-          const legalForm = JSON.parse(storedLegalForm);
-          setFormData(prev => ({
-            ...prev,
-            legalForm: legalForm.value,
-            legalFormDisplay: legalForm.display,
-          }));
-        }
-
-        if (storedEconomicSector) {
-          const economicSector = JSON.parse(storedEconomicSector);
-          setFormData(prev => ({
-            ...prev,
-            economicSector: economicSector.value,
-            economicSectorDisplay: economicSector.display,
-          }));
-        }
-
-        if (storedOperationScope) {
-          const operationScope = JSON.parse(storedOperationScope);
-          setFormData(prev => ({
-            ...prev,
-            operationScope: operationScope.value,
-            operationScopeDisplay: operationScope.display,
-          }));
+            }${address.postalCode ? ', ' + address.postalCode : ''}`;
+          }
+          if (storedCapitalOwnership) {
+            const capitalOwnership = JSON.parse(storedCapitalOwnership);
+            updates.capitalOwnership = capitalOwnership.value;
+            updates.capitalOwnershipDisplay = capitalOwnership.display;
+          }
+          if (storedCompanySize) {
+            const companySize = JSON.parse(storedCompanySize);
+            updates.companySize = companySize.value;
+            updates.companySizeDisplay = companySize.display;
+          }
+          if (storedLegalForm) {
+            const legalForm = JSON.parse(storedLegalForm);
+            updates.legalForm = legalForm.value;
+            updates.legalFormDisplay = legalForm.display;
+          }
+          if (storedEconomicSector) {
+            const economicSector = JSON.parse(storedEconomicSector);
+            updates.economicSector = economicSector.value;
+            updates.economicSectorDisplay = economicSector.display;
+          }
+          if (storedOperationScope) {
+            const operationScope = JSON.parse(storedOperationScope);
+            updates.operationScope = operationScope.value;
+            updates.operationScopeDisplay = operationScope.display;
+          }
+          if (Object.keys(updates).length > 0) {
+            setFormData(prev => ({...prev, ...updates}));
+          }
         }
       } catch (error) {
         console.error('Error al cargar selecciones previas:', error);
       }
     };
-    loadSelections();
-  }, []);
+    if (formData) {
+      loadSelections();
+    }
+  }, [formData]);
 
-  // Reload selectedAddress when the screen regains focus
+  // Reload selections when screen regains focus
   useFocusEffect(
     useCallback(() => {
-      const loadAddress = async () => {
+      const loadSelections = async () => {
         try {
+          const storedCategory = await AsyncStorage.getItem('selectedCategory');
+          const storedSubcategory = await AsyncStorage.getItem(
+            'selectedSubcategory',
+          );
           const storedAddress = await AsyncStorage.getItem('selectedAddress');
-          if (storedAddress) {
-            const address = JSON.parse(storedAddress);
-            setFormData(prev => ({
-              ...prev,
-              address: address._id,
-              addressDetails: `${address.street ? address.street + ', ' : ''}${
-                address.city
-              }${address.state ? ', ' + address.state : ''}${
+          const storedCapitalOwnership = await AsyncStorage.getItem(
+            'selectedCapitalOwnership',
+          );
+          const storedCompanySize = await AsyncStorage.getItem(
+            'selectedCompanySize',
+          );
+          const storedLegalForm = await AsyncStorage.getItem(
+            'selectedLegalForm',
+          );
+          const storedEconomicSector = await AsyncStorage.getItem(
+            'selectedEconomicSector',
+          );
+          const storedOperationScope = await AsyncStorage.getItem(
+            'selectedOperationScope',
+          );
+
+          if (formData) {
+            const updates = {};
+            if (storedCategory && storedSubcategory) {
+              const category = JSON.parse(storedCategory);
+              const subcategory = JSON.parse(storedSubcategory);
+              updates.category = category._id;
+              updates.categoryName = category.name;
+              updates.subcategory = subcategory._id;
+              updates.subcategoryName = subcategory.name;
+            }
+            if (storedAddress) {
+              const address = JSON.parse(storedAddress);
+              updates.address = address._id;
+              updates.addressDetails = `${
+                address.street ? address.street + ', ' : ''
+              }${address.city}${address.state ? ', ' + address.state : ''}${
                 address.country ? ', ' + address.country : ''
-              }${address.postalCode ? ', ' + address.postalCode : ''}`,
-            }));
+              }${address.postalCode ? ', ' + address.postalCode : ''}`;
+            }
+            if (storedCapitalOwnership) {
+              const capitalOwnership = JSON.parse(storedCapitalOwnership);
+              updates.capitalOwnership = capitalOwnership.value;
+              updates.capitalOwnershipDisplay = capitalOwnership.display;
+            }
+            if (storedCompanySize) {
+              const companySize = JSON.parse(storedCompanySize);
+              updates.companySize = companySize.value;
+              updates.companySizeDisplay = companySize.display;
+            }
+            if (storedLegalForm) {
+              const legalForm = JSON.parse(storedLegalForm);
+              updates.legalForm = legalForm.value;
+              updates.legalFormDisplay = legalForm.display;
+            }
+            if (storedEconomicSector) {
+              const economicSector = JSON.parse(storedEconomicSector);
+              updates.economicSector = economicSector.value;
+              updates.economicSectorDisplay = economicSector.display;
+            }
+            if (storedOperationScope) {
+              const operationScope = JSON.parse(storedOperationScope);
+              updates.operationScope = operationScope.value;
+              updates.operationScopeDisplay = operationScope.display;
+            }
+            if (Object.keys(updates).length > 0) {
+              setFormData(prev => ({...prev, ...updates}));
+            }
           }
         } catch (error) {
-          console.error('Error al cargar dirección desde AsyncStorage:', error);
+          console.error('Error al cargar selecciones al enfocar:', error);
         }
       };
-      loadAddress();
-    }, []),
+      loadSelections();
+    }, [formData]),
   );
 
-  // Actualizar formData con los valores desde params
+  // Handle navigation params updates
   useEffect(() => {
     const updateFormDataFromParams = async () => {
       const updates = {};
 
-      // Categoría y Subcategoría
       if (
-        params?.categoryId &&
-        params?.categoryName &&
-        params?.subcategoryId &&
-        params?.subcategoryName &&
-        (formData.category !== params.categoryId ||
-          formData.categoryName !== params.categoryName ||
-          formData.subcategory !== params.subcategoryId ||
-          formData.subcategoryName !== params.subcategoryName)
+        route.params?.categoryId &&
+        route.params?.categoryName &&
+        route.params?.subcategoryId &&
+        route.params?.subcategoryName
       ) {
-        updates.category = params.categoryId;
-        updates.categoryName = params.categoryName;
-        updates.subcategory = params.subcategoryId;
-        updates.subcategoryName = params.subcategoryName;
-
+        updates.category = route.params.categoryId;
+        updates.categoryName = route.params.categoryName;
+        updates.subcategory = route.params.subcategoryId;
+        updates.subcategoryName = route.params.subcategoryName;
         try {
           await AsyncStorage.setItem(
             'selectedCategory',
             JSON.stringify({
-              _id: params.categoryId,
-              name: params.categoryName,
+              _id: route.params.categoryId,
+              name: route.params.categoryName,
             }),
           );
           await AsyncStorage.setItem(
             'selectedSubcategory',
             JSON.stringify({
-              _id: params.subcategoryId,
-              name: params.subcategoryName,
+              _id: route.params.subcategoryId,
+              name: route.params.subcategoryName,
             }),
           );
         } catch (error) {
-          console.error('Error al guardar selecciones en AsyncStorage:', error);
+          console.error('Error al guardar categoría/subcategoría:', error);
         }
       }
 
-      // Dirección
-      if (
-        params?.addressId &&
-        params?.addressDetails &&
-        formData.address !== params.addressId
-      ) {
-        updates.address = params.addressId;
-        updates.addressDetails = params.addressDetails;
-
+      if (route.params?.addressId && route.params?.addressDetails) {
+        updates.address = route.params.addressId;
+        updates.addressDetails = route.params.addressDetails;
         try {
           await AsyncStorage.setItem(
             'selectedAddress',
             JSON.stringify({
-              _id: params.addressId,
-              street: params.street || '',
-              city: params.city || params.addressDetails,
-              state: params.state || '',
-              country: params.country || '',
-              postalCode: params.postalCode || '',
+              _id: route.params.addressId,
+              street: route.params.street || '',
+              city: route.params.city || route.params.addressDetails,
+              state: route.params.state || '',
+              country: route.params.country || '',
+              postalCode: route.params.postalCode || '',
             }),
           );
         } catch (error) {
-          console.error('Error al guardar dirección en AsyncStorage:', error);
+          console.error('Error al guardar dirección:', error);
         }
       }
 
-      // Propiedad del Capital
       if (
-        params?.capitalOwnershipValue &&
-        params?.capitalOwnershipDisplay &&
-        formData.capitalOwnership !== params.capitalOwnershipValue
+        route.params?.capitalOwnershipValue &&
+        route.params?.capitalOwnershipDisplay
       ) {
-        updates.capitalOwnership = params.capitalOwnershipValue;
-        updates.capitalOwnershipDisplay = params.capitalOwnershipDisplay;
-
+        updates.capitalOwnership = route.params.capitalOwnershipValue;
+        updates.capitalOwnershipDisplay = route.params.capitalOwnershipDisplay;
         try {
           await AsyncStorage.setItem(
             'selectedCapitalOwnership',
             JSON.stringify({
-              value: params.capitalOwnershipValue,
-              display: params.capitalOwnershipDisplay,
+              value: route.params.capitalOwnershipValue,
+              display: route.params.capitalOwnershipDisplay,
             }),
           );
         } catch (error) {
@@ -283,21 +346,15 @@ const CreateProfessionalAccount = () => {
         }
       }
 
-      // Tamaño de la Empresa
-      if (
-        params?.companySizeValue &&
-        params?.companySizeDisplay &&
-        formData.companySize !== params.companySizeValue
-      ) {
-        updates.companySize = params.companySizeValue;
-        updates.companySizeDisplay = params.companySizeDisplay;
-
+      if (route.params?.companySizeValue && route.params?.companySizeDisplay) {
+        updates.companySize = route.params.companySizeValue;
+        updates.companySizeDisplay = route.params.companySizeDisplay;
         try {
           await AsyncStorage.setItem(
             'selectedCompanySize',
             JSON.stringify({
-              value: params.companySizeValue,
-              display: params.companySizeDisplay,
+              value: route.params.companySizeValue,
+              display: route.params.companySizeDisplay,
             }),
           );
         } catch (error) {
@@ -305,21 +362,15 @@ const CreateProfessionalAccount = () => {
         }
       }
 
-      // Forma Jurídica
-      if (
-        params?.legalFormValue &&
-        params?.legalFormDisplay &&
-        formData.legalForm !== params.legalFormValue
-      ) {
-        updates.legalForm = params.legalFormValue;
-        updates.legalFormDisplay = params.legalFormDisplay;
-
+      if (route.params?.legalFormValue && route.params?.legalFormDisplay) {
+        updates.legalForm = route.params.legalFormValue;
+        updates.legalFormDisplay = route.params.legalFormDisplay;
         try {
           await AsyncStorage.setItem(
             'selectedLegalForm',
             JSON.stringify({
-              value: params.legalFormValue,
-              display: params.legalFormDisplay,
+              value: route.params.legalFormValue,
+              display: route.params.legalFormDisplay,
             }),
           );
         } catch (error) {
@@ -327,21 +378,18 @@ const CreateProfessionalAccount = () => {
         }
       }
 
-      // Sector Económico
       if (
-        params?.economicSectorValue &&
-        params?.economicSectorDisplay &&
-        formData.economicSector !== params.economicSectorValue
+        route.params?.economicSectorValue &&
+        route.params?.economicSectorDisplay
       ) {
-        updates.economicSector = params.economicSectorValue;
-        updates.economicSectorDisplay = params.economicSectorDisplay;
-
+        updates.economicSector = route.params.economicSectorValue;
+        updates.economicSectorDisplay = route.params.economicSectorDisplay;
         try {
           await AsyncStorage.setItem(
             'selectedEconomicSector',
             JSON.stringify({
-              value: params.economicSectorValue,
-              display: params.economicSectorDisplay,
+              value: route.params.economicSectorValue,
+              display: route.params.economicSectorDisplay,
             }),
           );
         } catch (error) {
@@ -349,21 +397,18 @@ const CreateProfessionalAccount = () => {
         }
       }
 
-      // Ámbito de Actuación
       if (
-        params?.operationScopeValue &&
-        params?.operationScopeDisplay &&
-        formData.operationScope !== params.operationScopeValue
+        route.params?.operationScopeValue &&
+        route.params?.operationScopeDisplay
       ) {
-        updates.operationScope = params.operationScopeValue;
-        updates.operationScopeDisplay = params.operationScopeDisplay;
-
+        updates.operationScope = route.params.operationScopeValue;
+        updates.operationScopeDisplay = route.params.operationScopeDisplay;
         try {
           await AsyncStorage.setItem(
             'selectedOperationScope',
             JSON.stringify({
-              value: params.operationScopeValue,
-              display: params.operationScopeDisplay,
+              value: route.params.operationScopeValue,
+              display: route.params.operationScopeDisplay,
             }),
           );
         } catch (error) {
@@ -375,225 +420,19 @@ const CreateProfessionalAccount = () => {
         setFormData(prev => ({...prev, ...updates}));
       }
     };
-
-    updateFormDataFromParams();
-  }, [params, formData]);
-
-  // Función para verificar la existencia de una cuenta profesional
-  const checkAccount = async (userId, forceFetch = false) => {
-    try {
-      if (!forceFetch) {
-        const storedData = await AsyncStorage.getItem('professional_data');
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          if (
-            parsedData &&
-            parsedData.id &&
-            parsedData.name &&
-            parsedData.email &&
-            parsedData.phone_number &&
-            parsedData.description &&
-            parsedData.owner === userId
-          ) {
-            setExistingAccount(parsedData);
-            setIsLoading(false);
-            return;
-          }
-        }
-      }
-
-      const response = await axios.get(
-        `${API_BASE_URL}/professional/owner/${userId}`,
-      );
-      if (response.data) {
-        const accountData = {
-          id: response.data._id,
-          name: response.data.name,
-          email: response.data.email,
-          phone_number: response.data.phone_number,
-          description: response.data.description,
-          owner: userId,
-          ownerName: response.data.owner?.userName || userName || '',
-          avatar: response.data.avatar?.url,
-          category: response.data.category?._id || '',
-          categoryName: response.data.category?.name || '',
-          subcategory: response.data.subcategory?._id || '',
-          subcategoryName: response.data.subcategory?.name || '',
-          address: response.data.address?._id || '',
-          addressDetails: response.data.address
-            ? `${
-                response.data.address.street
-                  ? response.data.address.street + ', '
-                  : ''
-              }${response.data.address.city}${
-                response.data.address.state
-                  ? ', ' + response.data.address.state
-                  : ''
-              }${
-                response.data.address.country
-                  ? ', ' + response.data.address.country
-                  : ''
-              }${
-                response.data.address.postalCode
-                  ? ', ' + response.data.address.postalCode
-                  : ''
-              }`
-            : '',
-          capitalOwnership: response.data.capitalOwnership || '',
-          companySize: response.data.companySize || '',
-          legalForm: response.data.legalForm || '',
-          economicSector: response.data.economicSector || '',
-          operationScope: response.data.operationScope || '',
-          socialCapital: response.data.socialCapital || '',
-          numberOfEstablishments: response.data.numberOfEstablishments || '',
-          numberOfEmployees: response.data.numberOfEmployees || '',
-          nif: response.data.nif || '',
-          expedientNumber: response.data.expedientNumber || '',
-          certificateNumber: response.data.certificateNumber || '',
-        };
-        setExistingAccount(accountData);
-        await AsyncStorage.setItem(
-          'professional_data',
-          JSON.stringify(accountData),
-        );
-      } else {
-        setExistingAccount(null);
-        await AsyncStorage.removeItem('professional_data');
-      }
-    } catch (error) {
-      if (error.response?.status === 404) {
-        setExistingAccount(null);
-        await AsyncStorage.removeItem('professional_data');
-      } else if (error.response?.status === 400) {
-        Alert.alert('Error', 'El ID del usuario no es válido.');
-        await AsyncStorage.removeItem('id');
-        await AsyncStorage.multiRemove([
-          'professional_data',
-          'selectedCategory',
-          'selectedSubcategory',
-          'selectedAddress',
-          'selectedCapitalOwnership',
-          'selectedCompanySize',
-          'selectedLegalForm',
-          'selectedEconomicSector',
-          'selectedOperationScope',
-        ]);
-        navigation.navigate('LoginScreen');
-      } else {
-        console.error('Error al verificar cuenta profesional:', error);
-        Alert.alert(
-          'Error',
-          'No se pudo verificar si tienes una cuenta profesional. Intenta de nuevo.',
-        );
-      }
-    } finally {
-      setIsLoading(false);
+    if (formData) {
+      updateFormDataFromParams();
     }
-  };
-
-  // Cargar userId y datos iniciales
-  useEffect(() => {
-    const loadInitialData = async () => {
-      try {
-        setIsLoading(true);
-        const id = await AsyncStorage.getItem('id');
-        if (!id) {
-          Alert.alert(
-            'Error',
-            'Debes iniciar sesión para crear una cuenta profesional.',
-          );
-          navigation.navigate('LoginScreen');
-          return;
-        }
-        const parsedId = JSON.parse(id);
-        if (!parsedId || typeof parsedId !== 'string') {
-          await AsyncStorage.removeItem('id');
-          await AsyncStorage.multiRemove([
-            'professional_data',
-            'selectedCategory',
-            'selectedSubcategory',
-            'selectedAddress',
-            'selectedCapitalOwnership',
-            'selectedCompanySize',
-            'selectedLegalForm',
-            'selectedEconomicSector',
-            'selectedOperationScope',
-          ]);
-          Alert.alert(
-            'Error',
-            'Sesión inválida. Por favor, inicia sesión de nuevo.',
-          );
-          navigation.navigate('LoginScreen');
-          return;
-        }
-        setUserId(parsedId);
-        setFormData(prev => ({...prev, owner: parsedId}));
-
-        const userData = await AsyncStorage.getItem(`user${parsedId}`);
-        if (userData) {
-          const parsedUserData = JSON.parse(userData);
-          setUserName(parsedUserData.userName || '');
-          setFormData(prev => ({
-            ...prev,
-            email: parsedUserData.email || '',
-          }));
-        } else {
-          Alert.alert('Error', 'Datos de usuario no encontrados.');
-          navigation.navigate('LoginScreen');
-          return;
-        }
-
-        await checkAccount(parsedId);
-      } catch (error) {
-        console.error('Error al cargar datos iniciales:', error);
-        Alert.alert('Error', 'No se pudieron cargar los datos iniciales.');
-        setIsLoading(false);
-      }
-    };
-    loadInitialData();
-  }, []);
-
-  // Verificar cuenta cada vez que la pantalla recibe foco
-  useFocusEffect(
-    useCallback(() => {
-      if (userId) {
-        setIsLoading(true);
-        checkAccount(userId, params?.accountDeleted === 'true');
-      }
-    }, [userId, userName, params?.accountDeleted]),
-  );
-
-  // Verificar si la cuenta fue eliminada
-  useEffect(() => {
-    if (params?.accountDeleted === 'true') {
-      setExistingAccount(null);
-      AsyncStorage.multiRemove([
-        'professional_data',
-        'selectedCategory',
-        'selectedSubcategory',
-        'selectedAddress',
-        'selectedCapitalOwnership',
-        'selectedCompanySize',
-        'selectedLegalForm',
-        'selectedEconomicSector',
-        'selectedOperationScope',
-      ]);
-    }
-  }, [params?.accountDeleted]);
+  }, [route.params, formData]);
 
   const handleChange = (name, value) => {
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const pickImage = async () => {
-    if (avatar) {
-      Alert.alert('Límite alcanzado', 'Solo se permite subir un avatar.');
-      return;
-    }
-
     try {
       const result = await launchImageLibrary({
         mediaType: 'photo',
@@ -616,7 +455,7 @@ const CreateProfessionalAccount = () => {
     setAvatar(null);
   };
 
-  const handleSubmit = async () => {
+  const handleUpdate = async () => {
     const missingFields = [];
     if (!formData.name) missingFields.push('Nombre');
     if (!formData.email) missingFields.push('Email');
@@ -656,7 +495,7 @@ const CreateProfessionalAccount = () => {
       formDataToSend.append('email', formData.email);
       formDataToSend.append('phone_number', formData.phone_number);
       formDataToSend.append('description', formData.description);
-      formDataToSend.append('owner', userId);
+      formDataToSend.append('owner', formData.owner);
       formDataToSend.append('category', formData.category);
       formDataToSend.append('subcategory', formData.subcategory);
       formDataToSend.append('address', formData.address);
@@ -675,7 +514,7 @@ const CreateProfessionalAccount = () => {
       formDataToSend.append('expedientNumber', formData.expedientNumber);
       formDataToSend.append('certificateNumber', formData.certificateNumber);
 
-      if (avatar) {
+      if (avatar && avatar.startsWith('file://')) {
         formDataToSend.append('avatar', {
           uri: avatar,
           name: `avatar_${userId}.jpg`,
@@ -683,8 +522,8 @@ const CreateProfessionalAccount = () => {
         });
       }
 
-      const response = await axios.post(
-        `${API_BASE_URL}/professional`,
+      const response = await axios.put(
+        `${API_BASE_URL}/professional/${formData.id}`,
         formDataToSend,
         {
           headers: {
@@ -693,15 +532,17 @@ const CreateProfessionalAccount = () => {
         },
       );
 
-      const accountData = {
+      const updatedAccount = {
         id: response.data.professional._id,
         name: formData.name,
         email: formData.email,
         phone_number: formData.phone_number,
         description: formData.description,
-        owner: userId,
+        owner: formData.owner,
         ownerName: userName,
-        avatar: response.data.professional.avatar?.url,
+        avatar: avatar.startsWith('file://')
+          ? response.data.professional.avatar?.url
+          : avatar,
         category: formData.category,
         categoryName: formData.categoryName,
         subcategory: formData.subcategory,
@@ -720,164 +561,94 @@ const CreateProfessionalAccount = () => {
         expedientNumber: formData.expedientNumber,
         certificateNumber: formData.certificateNumber,
       };
+
       await AsyncStorage.setItem(
         'professional_data',
-        JSON.stringify(accountData),
+        JSON.stringify(updatedAccount),
       );
-      setExistingAccount(accountData);
 
-      // Limpiar el formulario y AsyncStorage de selecciones
-      setFormData({
-        name: '',
-        email: formData.email,
-        phone_number: '',
-        description: '',
-        owner: userId,
-        category: '',
-        categoryName: '',
-        subcategory: '',
-        subcategoryName: '',
-        address: '',
-        addressDetails: '',
-        capitalOwnership: '',
-        capitalOwnershipDisplay: '',
-        companySize: '',
-        companySizeDisplay: '',
-        legalForm: '',
-        legalFormDisplay: '',
-        economicSector: '',
-        economicSectorDisplay: '',
-        operationScope: '',
-        operationScopeDisplay: '',
-        socialCapital: '',
-        numberOfEstablishments: '',
-        numberOfEmployees: '',
-        nif: '',
-        expedientNumber: '',
-        certificateNumber: '',
-      });
-      setAvatar(null);
-      await AsyncStorage.multiRemove([
-        'selectedCategory',
-        'selectedSubcategory',
-        'selectedAddress',
-        'selectedCapitalOwnership',
-        'selectedCompanySize',
-        'selectedLegalForm',
-        'selectedEconomicSector',
-        'selectedOperationScope',
-      ]);
-
-      Alert.alert('Éxito', 'Cuenta profesional creada correctamente');
+      Alert.alert('Éxito', 'Cuenta profesional actualizada correctamente');
+      navigation.goBack();
     } catch (error) {
       console.error(
-        'Error al crear cuenta profesional:',
+        'Error al actualizar cuenta profesional:',
         error.response?.data || error.message,
       );
       Alert.alert(
         'Error',
         error.response?.data?.message ||
-          'No se pudo crear la cuenta profesional. Intenta de nuevo.',
+          'No se pudo actualizar la cuenta profesional. Intenta de nuevo.',
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // Componente para mostrar los detalles de la cuenta profesional
-  const AccountCard = ({account}) => (
-    <TouchableOpacity
-      style={styles.cardContainer}
-      onPress={() =>
-        navigation.navigate(SCREENS.EDIT_PROFESIONAL_ACCOUNT, {
-          account: JSON.stringify(account),
-        })
-      }>
-      <Text style={styles.cardTitle}>{account.name}</Text>
-      {account.avatar && (
-        <Image source={{uri: account.avatar}} style={styles.imagePreview} />
-      )}
-      <Text style={styles.cardLabel}>Propietario:</Text>
-      <Text style={styles.cardText}>{account.ownerName}</Text>
-      <Text style={styles.cardLabel}>Email:</Text>
-      <Text style={styles.cardText}>{account.email}</Text>
-      <Text style={styles.cardLabel}>Teléfono:</Text>
-      <Text style={styles.cardText}>{account.phone_number}</Text>
-      <Text style={styles.cardLabel}>Categoría:</Text>
-      <Text style={styles.cardText}>{account.categoryName}</Text>
-      <Text style={styles.cardLabel}>Subcategoría:</Text>
-      <Text style={styles.cardText}>{account.subcategoryName}</Text>
-      <Text style={styles.cardLabel}>Dirección:</Text>
-      <Text style={styles.cardText}>{account.addressDetails}</Text>
-      <Text style={styles.cardLabel}>Propiedad del Capital:</Text>
-      <Text style={styles.cardText}>{account.capitalOwnership}</Text>
-      <Text style={styles.cardLabel}>Tamaño de la Empresa:</Text>
-      <Text style={styles.cardText}>{account.companySize}</Text>
-      <Text style={styles.cardLabel}>Forma Jurídica:</Text>
-      <Text style={styles.cardText}>{account.legalForm}</Text>
-      <Text style={styles.cardLabel}>Sector Económico:</Text>
-      <Text style={styles.cardText}>{account.economicSector}</Text>
-      <Text style={styles.cardLabel}>Ámbito de Actuación:</Text>
-      <Text style={styles.cardText}>{account.operationScope}</Text>
-      <Text style={styles.cardLabel}>Capital Social:</Text>
-      <Text style={styles.cardText}>{account.socialCapital}</Text>
-      <Text style={styles.cardLabel}>Nº de Establecimientos:</Text>
-      <Text style={styles.cardText}>{account.numberOfEstablishments}</Text>
-      <Text style={styles.cardLabel}>Nº de Empleados:</Text>
-      <Text style={styles.cardText}>{account.numberOfEmployees}</Text>
-      <Text style={styles.cardLabel}>NIF:</Text>
-      <Text style={styles.cardText}>{account.nif}</Text>
-      <Text style={styles.cardLabel}>Nº de Expediente:</Text>
-      <Text style={styles.cardText}>{account.expedientNumber}</Text>
-      <Text style={styles.cardLabel}>Nº de Certificado:</Text>
-      <Text style={styles.cardText}>{account.certificateNumber}</Text>
-      <Text style={styles.cardLabel}>Descripción:</Text>
-      <Text style={styles.cardText}>{account.description}</Text>
-    </TouchableOpacity>
-  );
+  const handleDelete = async () => {
+    if (!formData.id) {
+      Alert.alert('Error', 'No se encontró el ID de la cuenta profesional.');
+      return;
+    }
 
-  // Mostrar loader centrado mientras se verifica
-  if (isLoading) {
+    Alert.alert(
+      'Confirmar eliminación',
+      '¿Estás seguro de que quieres eliminar la cuenta profesional? Esta acción no se puede deshacer.',
+      [
+        {text: 'Cancelar', style: 'cancel'},
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            setLoading(true);
+            try {
+              await axios.delete(`${API_BASE_URL}/professional/${formData.id}`);
+              await AsyncStorage.multiRemove([
+                'professional_data',
+                'selectedCategory',
+                'selectedSubcategory',
+                'selectedAddress',
+                'selectedCapitalOwnership',
+                'selectedCompanySize',
+                'selectedLegalForm',
+                'selectedEconomicSector',
+                'selectedOperationScope',
+              ]);
+              Alert.alert(
+                'Éxito',
+                'Cuenta profesional eliminada correctamente',
+              );
+              navigation.navigate('CreateProfessionalAccount', {
+                accountDeleted: 'true',
+              });
+            } catch (error) {
+              console.error(
+                'Error al eliminar cuenta profesional:',
+                error.response?.data || error.message,
+              );
+              Alert.alert(
+                'Error',
+                error.response?.data?.message ||
+                  'No se pudo eliminar la cuenta profesional. Intenta de nuevo.',
+              );
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  if (isLoading || !formData) {
     return (
       <SafeAreaView style={styles.safeContainer}>
         <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={COLORS.green} />
+          <ActivityIndicator size="large" color={COLORS.PRIMARY} />
         </View>
       </SafeAreaView>
     );
   }
 
-  // Renderizar AccountCard si existe una cuenta profesional
-  if (existingAccount) {
-    return (
-      <SafeAreaView style={styles.safeContainer}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            {ICONS.CHEVRON_LEFT &&
-              (() => {
-                const ChevronLeftIcon =
-                  IconComponents[ICONS.CHEVRON_LEFT.library];
-                return (
-                  <ChevronLeftIcon
-                    name={ICONS.CHEVRON_LEFT.name}
-                    size={ICONS.CHEVRON_LEFT.size || 30}
-                    color={COLORS.green}
-                  />
-                );
-              })()}
-          </TouchableOpacity>
-          <Text style={styles.headerText}>
-            Detalles de la Cuenta Profesional
-          </Text>
-        </View>
-        <ScrollView contentContainerStyle={styles.container}>
-          <AccountCard account={existingAccount} />
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
-
-  // Renderizar formulario si no hay cuenta profesional
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.header}>
@@ -890,12 +661,12 @@ const CreateProfessionalAccount = () => {
                 <ChevronLeftIcon
                   name={ICONS.CHEVRON_LEFT.name}
                   size={ICONS.CHEVRON_LEFT.size || 30}
-                  color={COLORS.green}
+                  color={COLORS.PRIMARY}
                 />
               );
             })()}
         </TouchableOpacity>
-        <Text style={styles.headerText}>Crear Cuenta Profesional</Text>
+        <Text style={styles.headerText}>Editar Cuenta Profesional</Text>
       </View>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.inputGroup}>
@@ -905,7 +676,7 @@ const CreateProfessionalAccount = () => {
             value={userName}
             editable={false}
             placeholder="Nombre del propietario"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
           />
         </View>
         <View style={styles.inputGroup}>
@@ -919,7 +690,7 @@ const CreateProfessionalAccount = () => {
             ]}
             onPress={() =>
               navigation.navigate(SCREENS.CATEGORY_SELECTION_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
+                returnScreen: 'EditProfessionalAccount',
               })
             }>
             <Text
@@ -941,7 +712,7 @@ const CreateProfessionalAccount = () => {
                   <ChevronRightIcon
                     name={ICONS.CHEVRON_RIGHT.name}
                     size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
+                    color={COLORS.PLACEHOLDER}
                   />
                 );
               })()}
@@ -956,7 +727,7 @@ const CreateProfessionalAccount = () => {
             ]}
             onPress={() =>
               navigation.navigate(SCREENS.SELECT_CITY_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
+                returnScreen: 'EditProfessionalAccount',
               })
             }>
             <Text
@@ -974,7 +745,7 @@ const CreateProfessionalAccount = () => {
                   <ChevronRightIcon
                     name={ICONS.CHEVRON_RIGHT.name}
                     size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
+                    color={COLORS.PLACEHOLDER}
                   />
                 );
               })()}
@@ -989,7 +760,7 @@ const CreateProfessionalAccount = () => {
             ]}
             onPress={() =>
               navigation.navigate(SCREENS.CAPITAL_OWNER_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
+                returnScreen: 'EditProfessionalAccount',
               })
             }>
             <Text
@@ -1008,7 +779,7 @@ const CreateProfessionalAccount = () => {
                   <ChevronRightIcon
                     name={ICONS.CHEVRON_RIGHT.name}
                     size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
+                    color={COLORS.PLACEHOLDER}
                   />
                 );
               })()}
@@ -1023,7 +794,7 @@ const CreateProfessionalAccount = () => {
             ]}
             onPress={() =>
               navigation.navigate(SCREENS.COMPANY_SIZE_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
+                returnScreen: 'EditProfessionalAccount',
               })
             }>
             <Text
@@ -1042,7 +813,7 @@ const CreateProfessionalAccount = () => {
                   <ChevronRightIcon
                     name={ICONS.CHEVRON_RIGHT.name}
                     size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
+                    color={COLORS.PLACEHOLDER}
                   />
                 );
               })()}
@@ -1057,7 +828,7 @@ const CreateProfessionalAccount = () => {
             ]}
             onPress={() =>
               navigation.navigate(SCREENS.LEGAL_FORM_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
+                returnScreen: 'EditProfessionalAccount',
               })
             }>
             <Text
@@ -1075,7 +846,7 @@ const CreateProfessionalAccount = () => {
                   <ChevronRightIcon
                     name={ICONS.CHEVRON_RIGHT.name}
                     size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
+                    color={COLORS.PLACEHOLDER}
                   />
                 );
               })()}
@@ -1090,7 +861,7 @@ const CreateProfessionalAccount = () => {
             ]}
             onPress={() =>
               navigation.navigate(SCREENS.ECONOMIC_SECTOR_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
+                returnScreen: 'EditProfessionalAccount',
               })
             }>
             <Text
@@ -1108,7 +879,7 @@ const CreateProfessionalAccount = () => {
                   <ChevronRightIcon
                     name={ICONS.CHEVRON_RIGHT.name}
                     size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
+                    color={COLORS.PLACEHOLDER}
                   />
                 );
               })()}
@@ -1122,8 +893,8 @@ const CreateProfessionalAccount = () => {
               formData.operationScope && styles.selectionPickerSelected,
             ]}
             onPress={() =>
-              navigation.navigate(SCREENS.OPERATION_SCOPEREEN, {
-                returnScreen: 'CreateProfessionalAccount',
+              navigation.navigate(SCREENS.OPERATION_SCOPE_SCREEN, {
+                returnScreen: 'EditProfessionalAccount',
               })
             }>
             <Text
@@ -1142,7 +913,7 @@ const CreateProfessionalAccount = () => {
                   <ChevronRightIcon
                     name={ICONS.CHEVRON_RIGHT.name}
                     size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
+                    color={COLORS.PLACEHOLDER}
                   />
                 );
               })()}
@@ -1155,7 +926,7 @@ const CreateProfessionalAccount = () => {
             value={formData.name}
             onChangeText={text => handleChange('name', text)}
             placeholder="Ej: Juan Pérez Profesional"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
           />
         </View>
         <View style={styles.inputGroup}>
@@ -1165,7 +936,7 @@ const CreateProfessionalAccount = () => {
             value={formData.email}
             onChangeText={text => handleChange('email', text)}
             placeholder="Ej: profesional@ejemplo.com"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -1177,7 +948,7 @@ const CreateProfessionalAccount = () => {
             value={formData.phone_number}
             onChangeText={text => handleChange('phone_number', text)}
             placeholder="Ej: +24022255555"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
             keyboardType="phone-pad"
           />
         </View>
@@ -1188,7 +959,7 @@ const CreateProfessionalAccount = () => {
             value={formData.socialCapital}
             onChangeText={text => handleChange('socialCapital', text)}
             placeholder="Ej: 1,000,000 FCFA"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
           />
         </View>
         <View style={styles.inputGroup}>
@@ -1198,7 +969,7 @@ const CreateProfessionalAccount = () => {
             value={formData.numberOfEstablishments}
             onChangeText={text => handleChange('numberOfEstablishments', text)}
             placeholder="Ej: 1"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
             keyboardType="numeric"
           />
         </View>
@@ -1209,7 +980,7 @@ const CreateProfessionalAccount = () => {
             value={formData.numberOfEmployees}
             onChangeText={text => handleChange('numberOfEmployees', text)}
             placeholder="Ej: 12"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
             keyboardType="numeric"
           />
         </View>
@@ -1220,7 +991,7 @@ const CreateProfessionalAccount = () => {
             value={formData.nif}
             onChangeText={text => handleChange('nif', text)}
             placeholder="Ej: 038446EG-24"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
           />
         </View>
         <View style={styles.inputGroup}>
@@ -1230,7 +1001,7 @@ const CreateProfessionalAccount = () => {
             value={formData.expedientNumber}
             onChangeText={text => handleChange('expedientNumber', text)}
             placeholder="Ej: 05069/2024"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
           />
         </View>
         <View style={styles.inputGroup}>
@@ -1240,7 +1011,7 @@ const CreateProfessionalAccount = () => {
             value={formData.certificateNumber}
             onChangeText={text => handleChange('certificateNumber', text)}
             placeholder="Ej: 3025"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
             keyboardType="numeric"
           />
         </View>
@@ -1251,16 +1022,14 @@ const CreateProfessionalAccount = () => {
             value={formData.description}
             onChangeText={text => handleChange('description', text)}
             placeholder="Describe tus servicios profesionales"
-            placeholderTextColor={COLORS.placeholder}
+            placeholderTextColor={COLORS.PLACEHOLDER}
             multiline
             numberOfLines={4}
           />
         </View>
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Avatar*</Text>
-          <TouchableOpacity
-            style={styles.imagePicker}
-            onPress={() => pickImage()}>
+          <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
             {avatar ? (
               <View style={styles.imageContainer}>
                 <Image
@@ -1277,7 +1046,7 @@ const CreateProfessionalAccount = () => {
                 />
                 <TouchableOpacity
                   style={styles.deleteButton}
-                  onPress={() => removeImage()}>
+                  onPress={removeImage}>
                   {ICONS.DELETE &&
                     (() => {
                       const DeleteIcon = IconComponents[ICONS.DELETE.library];
@@ -1285,7 +1054,7 @@ const CreateProfessionalAccount = () => {
                         <DeleteIcon
                           name={ICONS.DELETE.name}
                           size={ICONS.DELETE.size || 24}
-                          color={COLORS.red}
+                          color={COLORS.ERROR}
                         />
                       );
                     })()}
@@ -1300,7 +1069,7 @@ const CreateProfessionalAccount = () => {
                       <ImageIcon
                         name={ICONS.IMAGE.name}
                         size={ICONS.IMAGE.size || 40}
-                        color={COLORS.placeholder}
+                        color={COLORS.PLACEHOLDER}
                       />
                     );
                   })()}
@@ -1311,28 +1080,57 @@ const CreateProfessionalAccount = () => {
             )}
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={[styles.submitButton, loading && styles.submitButtonDisabled]}
-          onPress={handleSubmit}
-          disabled={loading}>
-          {ICONS.WORK &&
-            (() => {
-              const WorkIcon = IconComponents[ICONS.WORK.library];
-              return (
-                <WorkIcon
-                  name={ICONS.WORK.name}
-                  size={ICONS.WORK.size || 24}
-                  color={COLORS.white}
-                />
-              );
-            })()}
-          <Text style={styles.submitButtonText}>
-            {loading ? 'Creando...' : 'Crear Cuenta Profesional'}
-          </Text>
-        </TouchableOpacity>
+        {/* Botones de acción */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[
+              styles.updateButton,
+              loading && styles.submitButtonDisabled,
+            ]}
+            onPress={handleUpdate}
+            disabled={loading}>
+            {ICONS.UPDATE &&
+              (() => {
+                const UpdateIcon = IconComponents[ICONS.UPDATE.library];
+                return (
+                  <UpdateIcon
+                    name={ICONS.UPDATE.name || 'update'}
+                    size={ICONS.UPDATE.size || 24}
+                    color={COLORS.WHITE}
+                  />
+                );
+              })()}
+            <Text style={styles.submitButtonText}>
+              {loading ? 'Actualizando...' : 'Actualizar Cuenta Profesional'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.deleteStoreButton,
+              loading && styles.submitButtonDisabled,
+            ]}
+            onPress={handleDelete}
+            disabled={loading}>
+            {ICONS.DELETE_FOREVER &&
+              (() => {
+                const DeleteForeverIcon =
+                  IconComponents[ICONS.DELETE_FOREVER.library];
+                return (
+                  <DeleteForeverIcon
+                    name={ICONS.DELETE_FOREVER.name || 'delete-forever'}
+                    size={ICONS.DELETE_FOREVER.size || 24}
+                    color={COLORS.WHITE}
+                  />
+                );
+              })()}
+            <Text style={styles.submitButtonText}>
+              Eliminar Cuenta Profesional
+            </Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default CreateProfessionalAccount;
+export default EditProfessionalAccount;
