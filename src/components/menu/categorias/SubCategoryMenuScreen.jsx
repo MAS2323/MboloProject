@@ -13,6 +13,7 @@ import styles from './styles/SubCategoryMenuScreenStyle';
 import axios from 'axios';
 import {API_BASE_URL} from '../../../config/Service.Config';
 import SCREENS from '../../../screens';
+
 const SubCategoryMenuScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -20,7 +21,7 @@ const SubCategoryMenuScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [subcategoryInfo, setSubcategoryInfo] = useState(null);
-  const {id} = route.params || {};
+  const {id, subcategoryName, subcategoryDescription} = route.params || {};
 
   // Función para cargar los menús de la subcategoría
   const fetchMenus = async () => {
@@ -92,10 +93,12 @@ const SubCategoryMenuScreen = () => {
       {/* Header con nombre de la subcategoría */}
       <View style={styles.appBarWrapper}>
         <Text style={styles.title}>
-          {subcategoryInfo?.name || 'Subcategoría'}
+          {subcategoryName || subcategoryInfo?.name || 'Subcategoría'}
         </Text>
-        {subcategoryInfo?.description && (
-          <Text style={styles.subtitle}>{subcategoryInfo.description}</Text>
+        {(subcategoryDescription || subcategoryInfo?.description) && (
+          <Text style={styles.subtitle}>
+            {subcategoryDescription || subcategoryInfo?.description}
+          </Text>
         )}
       </View>
 

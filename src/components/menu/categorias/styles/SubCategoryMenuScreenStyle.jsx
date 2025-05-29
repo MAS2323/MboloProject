@@ -12,6 +12,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+    alignItems: 'center', // Center horizontally
+    justifyContent: 'center', // Center vertically
   },
   title: {
     fontSize: 24,
@@ -21,6 +23,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
+    textAlign: 'center',
     marginTop: 5,
   },
   content: {
