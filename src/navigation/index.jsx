@@ -57,6 +57,8 @@ import LegalFormSelectionScreen from '../components/profile/settings/select/Lega
 import OperationScopeSelectionScreen from '../components/profile/settings/select/OperationScopeSelectionScreen';
 import EditarTiendaScreen from '../components/stores/EditarTiendaScreen';
 import EditProfessionalAccoun from '../components/profile/bussines/EditProfessionalAccoun';
+import OfficialAccountProfileScreen from '../components/menu/categorias/OfficialAccountProfileScreen';
+import OfficialAccountProductsScreen from '../components/menu/categorias/OfficialAccountProductsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -240,6 +242,16 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.CUENTA_OFICIAL}
         component={CuentaOficialScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.OFFICIAL_ACCOUNT_PROFILE_SCREEN}
+        component={OfficialAccountProfileScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.OFFICIAL_ACCOUNT_PRODUCTS_SCREEN}
+        component={OfficialAccountProductsScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen

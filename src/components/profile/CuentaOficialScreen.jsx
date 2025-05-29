@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Alert,
-  SafeAreaView, // Using SafeAreaView from react-native
+  SafeAreaView,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -35,26 +35,33 @@ const CuentaOficialScreen = () => {
         // Obtener userId desde AsyncStorage
         const userId = await AsyncStorage.getItem('id');
         if (!userId) {
-          Alert.alert(
-            'Error',
+          throw new Error(
             'Debes iniciar sesión para ver tu cuenta profesional.',
           );
-          navigation.navigate('Login'); // Updated to use navigate
-          return;
         }
         const cleanUserId = userId.replace(/"/g, '');
 
         // Llamada a la API para obtener la cuenta profesional del usuario
         const response = await axios.get(
           `${API_BASE_URL}/professional/owner/${cleanUserId}`,
+          {
+            headers: {
+              // Agrega el token de autenticación si es necesario
+              // Authorization: `Bearer ${await AsyncStorage.getItem('token')}`,
+            },
+          },
         );
 
         // La API devuelve un objeto profesional o null si no existe
-        const professional = response.data.professional;
+        const professional = response.data.professional || response.data;
         setCuentasOficiales(professional ? [professional] : []);
       } catch (err) {
         console.error('Error al cargar cuenta profesional:', err.message);
-        setError('No se pudo cargar la cuenta profesional. Intenta de nuevo.');
+        setError(
+          err.response?.status === 404
+            ? 'No tienes una cuenta profesional aún.'
+            : 'No se pudo cargar la cuenta profesional. Intenta de nuevo.',
+        );
         setCuentasOficiales([]);
       } finally {
         setIsLoading(false);
@@ -66,7 +73,14 @@ const CuentaOficialScreen = () => {
 
   // Componente para renderizar la cuenta profesional
   const renderCuentaOficial = ({item}) => (
-    <View style={styles.cuentaCard}>
+    <TouchableOpacity
+      style={styles.cuentaCard}
+      onPress={() =>
+        navigation.navigate({
+          name: SCREENS.CREATE_PROFESIONAL_ACCOUNT,
+          params: {professionalId: item._id},
+        })
+      }>
       {item.avatar?.url ? (
         <Image
           source={{uri: item.avatar.url}}
@@ -86,10 +100,10 @@ const CuentaOficialScreen = () => {
       <View style={styles.cuentaInfo}>
         <Text style={styles.cuentaNombre}>{item.name}</Text>
         <Text style={styles.cuentaDescripcion} numberOfLines={2}>
-          {item.description}
+          {item.description || 'Sin descripción disponible'}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   if (isLoading) {
@@ -110,22 +124,29 @@ const CuentaOficialScreen = () => {
           <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Cuenta Profesional</Text>
-        {/* No mostramos el botón de "Agregar" si ya existe una cuenta */}
         {cuentasOficiales.length === 0 && (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate(SCREENS.CREATE_PROFESIONAL_ACCOUNT)
-            } // Updated to use navigate
-          >
+              navigation.navigate({name: SCREENS.CREATE_PROFESIONAL_ACCOUNT})
+            }>
             <Ionicons name="add" size={24} color={COLORS.primary} />
           </TouchableOpacity>
         )}
       </View>
 
-      {/* Lista de cuentas profesionales */}
+      {/* Lista de cuentas profesionales o mensaje de creación */}
       {error ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity
+            style={styles.createButton}
+            onPress={() =>
+              navigation.navigate({name: SCREENS.CREATE_PROFESIONAL_ACCOUNT})
+            }>
+            <Text style={styles.createButtonText}>
+              Crear Cuenta Profesional
+            </Text>
+          </TouchableOpacity>
         </View>
       ) : cuentasOficiales.length > 0 ? (
         <FlatList
@@ -143,9 +164,8 @@ const CuentaOficialScreen = () => {
           <TouchableOpacity
             style={styles.createButton}
             onPress={() =>
-              navigation.navigate(SCREENS.CREATE_PROFESIONAL_ACCOUNT)
-            } // Updated to use navigate
-          >
+              navigation.navigate({name: SCREENS.CREATE_PROFESIONAL_ACCOUNT})
+            }>
             <Text style={styles.createButtonText}>
               Crear Cuenta Profesional
             </Text>

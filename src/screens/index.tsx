@@ -60,6 +60,8 @@ const SCREENS = {
   OPERATION_SCOPEREEN: 'OperationScopeSelectionScreen',
   EDITAR_STORE_DETAILS: 'EditarTiendaScreen',
   EDIT_PROFESIONAL_ACCOUNT: 'EditProfessionalAccount',
+  OFFICIAL_ACCOUNT_PROFILE_SCREEN: 'OfficialAccountProfileScreen',
+  OFFICIAL_ACCOUNT_PRODUCTS_SCREEN: 'OfficialAccountProductsScreen',
 };
 
 export default SCREENS;
