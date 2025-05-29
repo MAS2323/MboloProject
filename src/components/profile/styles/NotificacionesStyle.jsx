@@ -3,7 +3,8 @@ import {COLORS} from '../../../constants';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white, // Added explicit background color
+    backgroundColor: COLORS.white, // Added explicit background color\
+    marginTop: 20, // Adjust for status bar height
   },
   header: {
     flexDirection: 'row',
