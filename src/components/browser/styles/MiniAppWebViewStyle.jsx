@@ -4,6 +4,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    marginTop: 20, // Adjust for status bar height
   },
   header: {
     flexDirection: 'row',
