@@ -3,7 +3,7 @@ import {COLORS} from '../../../constants';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white || '#fff',
+    // backgroundColor: COLORS.white || '#fff',
   },
   loginContainer: {
     flex: 1,
@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    // shadowRadius: 4,
+    marginTop: 20,
   },
   headerText: {
     fontSize: 22,
