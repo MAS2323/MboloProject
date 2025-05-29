@@ -12,6 +12,7 @@ import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {API_BASE_URL} from '../../../../config/Service.Config';
 import {ICONS, COLORS} from '../../../../constants';
+import SCREENS from '../../../../screens';
 
 // Importar los componentes de iconos dinámicamente
 const IconComponents = {
@@ -37,7 +38,7 @@ const CategorySelectionScreen = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/categories?type=menu`,
+          `${API_BASE_URL}/categories?type=product`,
         );
         setCategories(response.data);
       } catch (error) {
@@ -93,7 +94,7 @@ const CategorySelectionScreen = () => {
 
   const handleSubcategoryPress = subcategory => {
     setSelectedSubcategory(subcategory);
-    navigation.navigate(returnScreen || 'CreateProfessionalAccount', {
+    navigation.navigate(returnScreen || SCREENS.ADD_SCREENS, {
       categoryId: selectedCategory._id,
       categoryName: selectedCategory.name,
       subcategoryId: subcategory._id,
