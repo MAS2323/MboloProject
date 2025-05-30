@@ -59,6 +59,7 @@ import EditarTiendaScreen from '../components/stores/EditarTiendaScreen';
 import EditProfessionalAccoun from '../components/profile/bussines/EditProfessionalAccoun';
 import OfficialAccountProfileScreen from '../components/menu/categorias/OfficialAccountProfileScreen';
 import OfficialAccountProductsScreen from '../components/menu/categorias/OfficialAccountProductsScreen';
+import ProductEdition from '../components/products/ProductEdition';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -167,6 +168,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.COMPANY_SIZE_SCREEN}
         component={CompanySizeSelectionScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.PRODUCT_EDITION}
+        component={ProductEdition}
         options={{headerShown: false}}
       />
       <Stack.Screen

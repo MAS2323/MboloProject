@@ -12,20 +12,44 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {useState, useEffect} from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_BASE_URL} from '../../config/Service.Config';
-import {COLORS} from '../../constants';
+import {COLORS, ICONS} from '../../constants';
 import styles from './styles/MiTiendaScreenAdminStyle';
 import SCREENS from '../../screens';
+
+// Importar los componentes de iconos dinámicamente
+const IconComponents = {
+  Feather: require('react-native-vector-icons/Feather').default,
+  Ionicons: require('react-native-vector-icons/Ionicons').default,
+  MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
+  AntDesign: require('react-native-vector-icons/AntDesign').default,
+  FontAwesome: require('react-native-vector-icons/FontAwesome').default,
+  MaterialCommunityIcons:
+    require('react-native-vector-icons/MaterialCommunityIcons').default,
+  SimpleLineIcons: require('react-native-vector-icons/SimpleLineIcons').default,
+  Entypo: require('react-native-vector-icons/Entypo').default,
+  Fontisto: require('react-native-vector-icons/Fontisto').default,
+};
+
 const MiTiendaScreenAdmin = () => {
-  const navigation = useNavigation(); // Replaced useRouter with useNavigation
+  const navigation = useNavigation();
   const [tienda, setTienda] = useState(null);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
+
+  // Definir los componentes de íconos específicos
+  const BackArrowIcon = IconComponents[ICONS.BACK_ARROW.library];
+  const AddIcon = IconComponents[ICONS.ADD.library];
+  const ImageOutlineIcon = IconComponents[ICONS.IMAGE_OUTLINE.library];
+  const PanoramaOutlineIcon = IconComponents[ICONS.PANORAMA_OUTLINE.library];
+  const StorefrontOutlineIcon =
+    IconComponents[ICONS.STOREFRONT_OUTLINE.library];
+  const CloseIcon = IconComponents[ICONS.CLOSE.library];
+  const EditIcon = IconComponents[ICONS.EDIT.library];
 
   // Cargar los datos de la tienda y los productos
   useEffect(() => {
@@ -145,10 +169,8 @@ const MiTiendaScreenAdmin = () => {
   const renderProduct = ({item}) => (
     <TouchableOpacity
       style={styles.productCard}
-      onPress={() =>
-        navigation.navigate(SCREENS.PRODUCT_DETAIL, {id: item._id})
-      } // Updated navigation
-    >
+      onPress={() => navigation.navigate(SCREENS.PRODUCT_DETAIL, {item})}
+      accessibilityLabel={`Editar producto ${item.title}`}>
       {item.images && item.images.length > 0 && item.images[0].url ? (
         <Image
           source={{uri: item.images[0].url}}
@@ -162,7 +184,11 @@ const MiTiendaScreenAdmin = () => {
         />
       ) : (
         <View style={[styles.productImage, styles.placeholderImage]}>
-          <Ionicons name="image-outline" size={40} color={COLORS.gray} />
+          <ImageOutlineIcon
+            name={ICONS.IMAGE_OUTLINE.name}
+            size={40}
+            color={COLORS.gray}
+          />
         </View>
       )}
       <View style={styles.productInfo}>
@@ -172,6 +198,14 @@ const MiTiendaScreenAdmin = () => {
           {item.description}
         </Text>
       </View>
+      <TouchableOpacity style={styles.editButton}>
+        <EditIcon
+          onPress={() => navigation.navigate(SCREENS.PRODUCT_EDITION, {item})}
+          name={ICONS.EDIT.name}
+          size={20}
+          color={COLORS.primary}
+        />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 
@@ -189,13 +223,22 @@ const MiTiendaScreenAdmin = () => {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
+        <TouchableOpacity
+          style={styles.headerButton}
+          onPress={() => navigation.goBack()}
+          accessibilityLabel="Volver">
+          <BackArrowIcon
+            name={ICONS.BACK_ARROW.name}
+            size={24}
+            color={COLORS.primary}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Mi Tienda</Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate(SCREENS.ADD_SCREENS)}>
-          <Ionicons name="add" size={24} color={COLORS.primary} />
+          style={styles.headerButton}
+          onPress={() => navigation.navigate(SCREENS.ADD_SCREENS)}
+          accessibilityLabel="Añadir producto">
+          <AddIcon name={ICONS.ADD.name} size={24} color={COLORS.primary} />
         </TouchableOpacity>
       </View>
 
@@ -206,17 +249,23 @@ const MiTiendaScreenAdmin = () => {
           <View style={styles.tiendaCard}>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               {tienda.banner ? (
-                <Image
-                  source={{uri: tienda.banner}}
-                  style={styles.tiendaBanner}
-                  onError={e =>
-                    console.error('Error cargando banner:', e.nativeEvent.error)
-                  }
-                />
+                <View style={styles.bannerContainer}>
+                  <Image
+                    source={{uri: tienda.banner}}
+                    style={styles.tiendaBanner}
+                    onError={e =>
+                      console.error(
+                        'Error cargando banner:',
+                        e.nativeEvent.error,
+                      )
+                    }
+                  />
+                  <View style={styles.bannerOverlay} />
+                </View>
               ) : (
                 <View style={[styles.tiendaBanner, styles.placeholderImage]}>
-                  <Ionicons
-                    name="panorama-outline"
+                  <PanoramaOutlineIcon
+                    name={ICONS.PANORAMA_OUTLINE.name}
                     size={40}
                     color={COLORS.gray}
                   />
@@ -234,14 +283,26 @@ const MiTiendaScreenAdmin = () => {
                 />
               ) : (
                 <View style={[styles.tiendaLogo, styles.placeholderImage]}>
-                  <Ionicons
-                    name="storefront-outline"
+                  <StorefrontOutlineIcon
+                    name={ICONS.STOREFRONT_OUTLINE.name}
                     size={40}
                     color={COLORS.gray}
                   />
                 </View>
               )}
               <Text style={styles.tiendaTitle}>{tienda.nombre}</Text>
+              <TouchableOpacity
+                style={styles.editStoreButton}
+                onPress={() =>
+                  navigation.navigate(SCREENS.EDITAR_STORE_DETAILS)
+                }
+                accessibilityLabel="Editar tienda">
+                <EditIcon
+                  name={ICONS.EDIT.name}
+                  size={20}
+                  color={COLORS.primary}
+                />
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -256,17 +317,30 @@ const MiTiendaScreenAdmin = () => {
               style={styles.productsList}
             />
           ) : (
-            <Text style={styles.emptyProductsText}>
-              No hay productos publicados aún.
-            </Text>
+            <View style={styles.emptyProductsContainer}>
+              <ImageOutlineIcon
+                name={ICONS.IMAGE_OUTLINE.name}
+                size={60}
+                color={COLORS.gray}
+              />
+              <Text style={styles.emptyProductsText}>
+                No hay productos publicados aún.
+              </Text>
+            </View>
           )}
         </ScrollView>
       ) : (
         <View style={styles.emptyContainer}>
+          <StorefrontOutlineIcon
+            name={ICONS.STOREFRONT_OUTLINE.name}
+            size={80}
+            color={COLORS.gray}
+          />
           <Text style={styles.emptyText}>No has creado una tienda aún.</Text>
           <TouchableOpacity
             style={styles.createButton}
-            onPress={() => navigation.navigate(SCREENS.CREAR_TIENDA)}>
+            onPress={() => navigation.navigate(SCREENS.CREAR_TIENDA)}
+            accessibilityLabel="Crear tienda">
             <Text style={styles.createButtonText}>Crear Tienda</Text>
           </TouchableOpacity>
         </View>
@@ -288,7 +362,11 @@ const MiTiendaScreenAdmin = () => {
           ) : (
             <View
               style={[styles.modalBannerBackground, styles.placeholderImage]}>
-              <Ionicons name="panorama-outline" size={40} color={COLORS.gray} />
+              <PanoramaOutlineIcon
+                name={ICONS.PANORAMA_OUTLINE.name}
+                size={40}
+                color={COLORS.gray}
+              />
             </View>
           )}
           <View style={styles.modalContent}>
@@ -299,8 +377,14 @@ const MiTiendaScreenAdmin = () => {
                 )}
                 <Text style={styles.modalTitle}>{tienda?.nombre}</Text>
               </View>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color={COLORS.white} />
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                accessibilityLabel="Cerrar modal">
+                <CloseIcon
+                  name={ICONS.CLOSE.name}
+                  size={24}
+                  color={COLORS.white}
+                />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.modalDetailsContainer}>

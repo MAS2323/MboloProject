@@ -19,6 +19,7 @@ export const ICONS = {
     name: 'store',
     size: 24,
   },
+
   LOCATION: {
     library: 'SimpleLineIcons',
     name: 'location-pin',
@@ -365,6 +366,19 @@ export const ICONS = {
     name: 'delete-forever',
     size: 24,
   },
+  SAVE_OUTLINE: {
+    library: 'Ionicons',
+    name: 'save-outline',
+    size: 30,
+  },
+  PANORAMA_OUTLINE: {library: 'Ionicons', name: 'panorama-outline', size: 40},
+  STOREFRONT_OUTLINE: {
+    library: 'Ionicons',
+    name: 'storefront-outline',
+    size: 40,
+  },
+  CLOSE: {library: 'Ionicons', name: 'close', size: 24},
+  EDIT: {library: 'MaterialIcons', name: 'edit', size: 20},
 };
 
 export default ICONS;

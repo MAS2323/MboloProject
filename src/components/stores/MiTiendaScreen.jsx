@@ -273,7 +273,7 @@ const MiTiendaScreen = () => {
           <Text style={styles.emptyText}>No se encontró la tienda.</Text>
           <TouchableOpacity
             style={styles.createButton}
-            onPress={() => navigation.navigate(SCREENS.CREAR_TIEDNA)}>
+            onPress={() => navigation.navigate(SCREENS.CREAR_TIENDA)}>
             <Text style={styles.createButtonText}>Crear Tienda</Text>
           </TouchableOpacity>
         </View>

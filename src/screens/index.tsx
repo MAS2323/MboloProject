@@ -62,6 +62,7 @@ const SCREENS = {
   EDIT_PROFESIONAL_ACCOUNT: 'EditProfessionalAccount',
   OFFICIAL_ACCOUNT_PROFILE_SCREEN: 'OfficialAccountProfileScreen',
   OFFICIAL_ACCOUNT_PRODUCTS_SCREEN: 'OfficialAccountProductsScreen',
+  PRODUCT_EDITION: 'ProductEdition',
 };
 
 export default SCREENS;
