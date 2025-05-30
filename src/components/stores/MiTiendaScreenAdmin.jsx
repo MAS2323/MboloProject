@@ -163,7 +163,7 @@ const MiTiendaScreenAdmin = () => {
         setIsLoading(false);
       }
     };
-    loadStoreAndProducts();
+    loadStoreAndProducts();   
   }, []);
 
   const renderProduct = ({item}) => (

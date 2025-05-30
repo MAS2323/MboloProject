@@ -8,16 +8,20 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  Share,
 } from 'react-native';
 import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import styles from './styles/ProductDetails.style';
 import {COLORS, ICONS, SIZES} from '../../constants';
-import SCREENS from '../../screens';
+import SCREENS from '../../screens'; // Verify this file defines the correct screen name
 import {API_BASE_URL} from '../../config/Service.Config';
 import RelatedProducts from './components/RelatedProducts';
 import StoreCard from './components/StoreCard';
 import HeaderSearch from '../header/HeaderSearch';
+
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
+
 const IconComponents = {
   Ionicons: require('react-native-vector-icons/Ionicons').default,
   SimpleLineIcons: require('react-native-vector-icons/SimpleLineIcons').default,
@@ -33,14 +37,13 @@ const ProductDetails = () => {
   const [store, setStore] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showHeader, setShowHeader] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Extract item from route params or use ID for API fetch
   const params = route.params || {};
   const {item, id} = params;
 
-  // Map icon libraries
   const BackArrowIcon = IconComponents[ICONS.BACK_ARROW.library];
-  // Fetch product data
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -64,7 +67,6 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id, item]);
 
-  // Fetch store data
   useEffect(() => {
     const loadStoreData = async () => {
       try {
@@ -111,7 +113,6 @@ const ProductDetails = () => {
     loadStoreData();
   }, [product]);
 
-  // Función para compartir el producto
   const handleShare = async () => {
     try {
       if (!product?._id) {
@@ -119,6 +120,7 @@ const ProductDetails = () => {
       }
 
       const productUrl = `${API_BASE_URL}/products/shortLink/${product._id}`;
+      console.log('Sharing URL:', productUrl); // Log the URL for debugging
       const response = await axios.post(productUrl);
 
       if (!response.data?.shortLink) {
@@ -140,36 +142,48 @@ const ProductDetails = () => {
         console.log('Compartir cancelado');
       }
     } catch (error) {
-      console.error('Error al compartir:', error);
-      Alert.alert('Hubo un problema al generar el enlace.');
+      console.error('Error al compartir:', error.message, error.response?.data);
+      Alert.alert(
+        'Error',
+        'Hubo un problema al generar el enlace. Intenta de nuevo.',
+      );
     }
   };
-  // Handle header click
+
   const handleHeaderPress = event => {
-    event.stopPropagation(); // Prevent event bubbling to FlatList
-    navigation.navigate(SCREENS.HOME_STACK); // Navigate to home screen (adjust as needed)
+    event.stopPropagation();
+    navigation.navigate(SCREENS.HOME_STACK);
   };
 
-  // Handle scroll to show/hide header
   const handleScroll = ({nativeEvent}) => {
     const scrollY = nativeEvent.contentOffset.y;
-    const imageSectionHeight = Dimensions.get('window').height * 0.4;
+    const imageSectionHeight = SCREEN_HEIGHT * 0.4;
     setShowHeader(scrollY > imageSectionHeight / 2);
   };
 
-  // Fallback UI for no product
+  const handleImageScroll = ({nativeEvent}) => {
+    const index = Math.round(nativeEvent.contentOffset.x / SCREEN_WIDTH);
+    setCurrentImageIndex(index);
+  };
+
+  const handleRelatedProductPress = productId => {
+    navigation.replace(SCREENS.PRODUCT_DETAIL, {id: productId}); 
+  };
+
   if (!product && !loading) {
     return (
-      <View style={styles.container}>
+      <View style={styles.errorContainer}>
         <Text style={styles.errorText}>Error: Producto no disponible</Text>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backText}>Volver</Text>
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={() => navigation.goBack()}
+          accessibilityLabel="Volver">
+          <Text style={styles.retryButtonText}>Volver</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
-  // Loading state
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -178,7 +192,6 @@ const ProductDetails = () => {
     );
   }
 
-  // Define sections for FlatList
   const sections = [
     {type: 'images', data: product.images || []},
     {type: 'details', data: product},
@@ -195,28 +208,11 @@ const ProductDetails = () => {
     },
   ];
 
-  // Render sections
   const renderSection = ({item}) => {
     switch (item.type) {
       case 'images':
         return (
-          <View style={styles.sectionContainer}>
-            <View style={styles.upperRow}>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <BackArrowIcon
-                  name={ICONS.BACK_ARROW.name}
-                  size={ICONS.BACK_ARROW.size}
-                  color={COLORS.black}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleShare}>
-                <IconComponents.MaterialCommunityIcons
-                  name="share-variant"
-                  size={30}
-                  color={COLORS.black}
-                />
-              </TouchableOpacity>
-            </View>
+          <View style={styles.imageSectionContainer}>
             <FlatList
               data={item.data}
               renderItem={({item: image, index}) => (
@@ -241,7 +237,44 @@ const ProductDetails = () => {
               horizontal
               showsHorizontalScrollIndicator={false}
               pagingEnabled
+              onScroll={handleImageScroll}
+              scrollEventThrottle={16}
             />
+            <View style={styles.upperRow}>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => navigation.goBack()}
+                accessibilityLabel="Volver">
+                <BackArrowIcon
+                  name={ICONS.BACK_ARROW.name}
+                  size={ICONS.BACK_ARROW.size || 24}
+                  color={COLORS.white}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={handleShare}
+                accessibilityLabel="Compartir producto">
+                <IconComponents.MaterialCommunityIcons
+                  name="share-variant"
+                  size={24}
+                  color={COLORS.white}
+                />
+              </TouchableOpacity>
+            </View>
+            {item.data.length > 1 && (
+              <View style={styles.paginationContainer}>
+                {item.data.map((_, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.paginationDot,
+                      index === currentImageIndex && styles.paginationDotActive,
+                    ]}
+                  />
+                ))}
+              </View>
+            )}
           </View>
         );
 
@@ -250,7 +283,7 @@ const ProductDetails = () => {
           <View style={styles.sectionContainer}>
             <View style={styles.details}>
               <View style={styles.priceRow}>
-                <Text style={styles.price}>XFA{item.data.price || '0'}</Text>
+                <Text style={styles.price}>XFA {item.data.price || '0'}</Text>
               </View>
               <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
                 {item.data.title || 'Producto sin título'}
@@ -325,9 +358,9 @@ const ProductDetails = () => {
             subcategoryId={item.data.subcategoryId}
             currentProductId={item.data.currentProductId}
             tiendaId={item.data.tiendaId}
+            onProductPress={handleRelatedProductPress}
           />
         );
-
       default:
         return null;
     }
@@ -339,7 +372,8 @@ const ProductDetails = () => {
         <TouchableOpacity
           style={styles.header}
           onPress={handleHeaderPress}
-          activeOpacity={0.7}>
+          activeOpacity={0.7}
+          accessibilityLabel="Ir a la página principal">
           <HeaderSearch />
         </TouchableOpacity>
       )}

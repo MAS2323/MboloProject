@@ -20,6 +20,7 @@ const RelatedProducts = ({
   subcategoryId,
   currentProductId,
   tiendaId,
+  onProductPress, // Added as a prop to handle navigation/reload
 }) => {
   const navigation = useNavigation();
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -101,9 +102,8 @@ const RelatedProducts = ({
       return (
         <TouchableOpacity
           style={styles.productCard}
-          onPress={() =>
-            navigation.navigate(SCREENS.PRODUCT_DETAIL, {id: item._id})
-          }>
+          onPress={() => onProductPress(item._id)} // Use onProductPress instead of navigate
+        >
           <View style={styles.imageContainer}>
             <Image
               source={{
@@ -126,7 +126,7 @@ const RelatedProducts = ({
         </TouchableOpacity>
       );
     },
-    [navigation],
+    [onProductPress], // Added onProductPress to dependency array
   );
 
   if (loading) {
