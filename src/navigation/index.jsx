@@ -320,11 +320,11 @@ const StackNavigation = () => {
         component={DeliveryDetails}
         options={{headerShown: false}}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={SCREENS.MY_STORE}
         component={MiTiendaScreen}
         options={{headerShown: false}}
-      />
+      /> */}
       <Stack.Screen
         name={SCREENS.HOME_STACK}
         component={MyTabs}

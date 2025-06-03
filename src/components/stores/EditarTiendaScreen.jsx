@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_BASE_URL} from '../../config/Service.Config';
 import {COLORS, ICONS} from '../../constants';
+import SCREENS from '../../screens';
 
 // Importar los componentes de iconos dinámicamente
 const IconComponents = {
@@ -213,7 +214,7 @@ const EditarTiendaScreen = () => {
       await AsyncStorage.setItem('store_data', JSON.stringify(updatedStore));
 
       Alert.alert('Éxito', 'Tienda actualizada correctamente');
-      navigation.navigate('CrearTiendaScreen');
+      navigation.navigate(SCREENS.EDITAR_STORE_DETAILS);
     } catch (error) {
       console.error(
         'Error al actualizar tienda:',

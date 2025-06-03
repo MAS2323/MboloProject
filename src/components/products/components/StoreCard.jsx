@@ -40,7 +40,9 @@ const StoreCard = ({store, productComments}) => {
           </Text>
         </View>
         <TouchableOpacity
-          onPress={() => navigation.navigate(SCREENS.MY_STORE, {id: store.id})}
+          onPress={() =>
+            navigation.navigate(SCREENS.TIENDA_DETALLE_SCREEN, {id: store.id})
+          }
           style={styles.storeButton}>
           <Text style={styles.storeButtonText}>Visitar tienda</Text>
         </TouchableOpacity>

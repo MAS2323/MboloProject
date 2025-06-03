@@ -14,7 +14,7 @@ import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import styles from './styles/ProductDetails.style';
 import {COLORS, ICONS, SIZES} from '../../constants';
-import SCREENS from '../../screens'; // Verify this file defines the correct screen name
+import SCREENS from '../../screens';
 import {API_BASE_URL} from '../../config/Service.Config';
 import RelatedProducts from './components/RelatedProducts';
 import StoreCard from './components/StoreCard';
@@ -120,7 +120,7 @@ const ProductDetails = () => {
       }
 
       const productUrl = `${API_BASE_URL}/products/shortLink/${product._id}`;
-      console.log('Sharing URL:', productUrl); // Log the URL for debugging
+      console.log('Sharing URL:', productUrl);
       const response = await axios.post(productUrl);
 
       if (!response.data?.shortLink) {
@@ -167,7 +167,7 @@ const ProductDetails = () => {
   };
 
   const handleRelatedProductPress = productId => {
-    navigation.replace(SCREENS.PRODUCT_DETAIL, {id: productId}); 
+    navigation.replace(SCREENS.PRODUCT_DETAIL, {id: productId});
   };
 
   if (!product && !loading) {
@@ -291,12 +291,102 @@ const ProductDetails = () => {
               <View style={styles.detailsWrapper}>
                 <Text style={styles.detailItem}>
                   Categoría:{' '}
-                  {item.data.subcategory?.category?.name || 'No especificada'}
+                  {item.data.subcategory?.category?.name ||
+                    item.data.category?.name ||
+                    'No especificada'}
                 </Text>
                 <Text style={styles.detailItem}>
                   Subcategoría:{' '}
                   {item.data.subcategory?.name || 'No especificada'}
                 </Text>
+                {item.data.brand && (
+                  <Text style={styles.detailItem}>
+                    Marca: {item.data.brand}
+                  </Text>
+                )}
+                {item.data.condition && (
+                  <Text style={styles.detailItem}>
+                    Condición:{' '}
+                    {item.data.condition === 'new'
+                      ? 'Nuevo'
+                      : item.data.condition === 'used'
+                      ? 'Usado'
+                      : item.data.condition === 'refurbished'
+                      ? 'Reacondicionado'
+                      : item.data.condition}
+                  </Text>
+                )}
+                {item.data.year && (
+                  <Text style={styles.detailItem}>Año: {item.data.year}</Text>
+                )}
+                {item.data.location && (
+                  <Text style={styles.detailItem}>
+                    Ubicación:{' '}
+                    {item.data.location.name ||
+                      item.data.location.address ||
+                      'No especificada'}
+                  </Text>
+                )}
+                {(item.data.dimensions?.length ||
+                  item.data.dimensions?.width ||
+                  item.data.dimensions?.height) && (
+                  <Text style={styles.detailItem}>
+                    Dimensiones:{' '}
+                    {[
+                      item.data.dimensions.length &&
+                        `${item.data.dimensions.length}${item.data.dimensions.unit}`,
+                      item.data.dimensions.width &&
+                        `${item.data.dimensions.width}${item.data.dimensions.unit}`,
+                      item.data.dimensions.height &&
+                        `${item.data.dimensions.height}${item.data.dimensions.unit}`,
+                    ]
+                      .filter(Boolean)
+                      .join(' x ') || 'No especificadas'}
+                  </Text>
+                )}
+                {item.data.weight?.value && (
+                  <Text style={styles.detailItem}>
+                    Peso: {item.data.weight.value}
+                    {item.data.weight.unit}
+                  </Text>
+                )}
+                {item.data.features?.length > 0 && (
+                  <Text style={styles.detailItem}>
+                    Características: {item.data.features.join(', ')}
+                  </Text>
+                )}
+                {item.data.specifications &&
+                  Object.keys(item.data.specifications).length > 0 && (
+                    <View style={styles.specificationsWrapper}>
+                      <Text style={styles.detailItem}>Especificaciones:</Text>
+                      {Object.entries(item.data.specifications).map(
+                        ([key, value], index) => (
+                          <Text key={index} style={styles.detailItem}>
+                            {key}: {value}
+                          </Text>
+                        ),
+                      )}
+                    </View>
+                  )}
+                {item.data.stock !== undefined && (
+                  <Text style={styles.detailItem}>
+                    Stock: {item.data.stock}
+                  </Text>
+                )}
+                {(item.data.warranty?.duration ||
+                  item.data.warranty?.description) && (
+                  <Text style={styles.detailItem}>
+                    Garantía:{' '}
+                    {item.data.warranty.duration
+                      ? `${item.data.warranty.duration} meses`
+                      : ''}
+                    {item.data.warranty.duration &&
+                    item.data.warranty.description
+                      ? ', '
+                      : ''}
+                    {item.data.warranty.description || ''}
+                  </Text>
+                )}
                 {item.data.tallas?.length > 0 && (
                   <Text style={styles.detailItem}>
                     Tallas disponibles: {item.data.tallas.join(', ')}

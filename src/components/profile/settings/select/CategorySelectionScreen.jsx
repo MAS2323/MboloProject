@@ -105,11 +105,11 @@ const CategorySelectionScreen = () => {
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate(returnScreen)}>
           <BackIcon
             name={ICONS.BACK.name || 'chevron-left'}
             size={ICONS.BACK.size || 30}
-            color={COLORS.PRIMARY}
+            color={COLORS.primary}
           />
         </TouchableOpacity>
         <Text style={styles.headerText}>Selecciona una Categoría</Text>
@@ -129,7 +129,7 @@ const CategorySelectionScreen = () => {
                 <ChevronRightIcon
                   name={ICONS.CHEVRON_RIGHT.name || 'chevron-right'}
                   size={ICONS.CHEVRON_RIGHT.size || 24}
-                  color={COLORS.SECONDARY}
+                  color={COLORS.secondary}
                 />
               </View>
             </TouchableOpacity>
