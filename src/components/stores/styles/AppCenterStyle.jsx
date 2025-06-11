@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
     backgroundColor: '#f5f7fa',
+    marginTop: 20, // Adjust for status bar height
   },
   header: {
     flexDirection: 'row',
