@@ -322,8 +322,8 @@ export const ICONS = {
     size: 24,
   },
   INFO_CIRCLE_OUTLINE: {
-    library: 'Ionicons',
-    name: 'information-circle-outline',
+    library: 'MaterialCommunityIcons',
+    name: 'information-outline',
     size: 24,
   },
   IMAGE: {

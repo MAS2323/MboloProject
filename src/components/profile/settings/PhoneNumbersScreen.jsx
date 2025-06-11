@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -124,9 +125,11 @@ const PhoneNumbersScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text>Cargando...</Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loginContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      </SafeAreaView>
     );
   }
 
@@ -142,7 +145,7 @@ const PhoneNumbersScreen = () => {
             <ChevronLeftIcon
               name={ICONS.CHEVRON_LEFT.name}
               size={ICONS.CHEVRON_LEFT.size}
-              color="#00C853"
+              color={COLORS.black}
             />
           </TouchableOpacity>
           <Text style={styles.headerText}>Añadir número de teléfono</Text>
@@ -176,7 +179,7 @@ const PhoneNumbersScreen = () => {
           <ChevronLeftIcon
             name={ICONS.CHEVRON_LEFT.name}
             size={ICONS.CHEVRON_LEFT.size}
-            color="#00C853"
+            color={COLORS.black}
           />
         </TouchableOpacity>
         <Text style={styles.headerText}>Número de teléfono</Text>
@@ -191,7 +194,7 @@ const PhoneNumbersScreen = () => {
               <CheckCircleIcon
                 name={ICONS.CHECK_CIRCLE.name}
                 size={ICONS.CHECK_CIRCLE.size}
-                color="#00C853"
+                color={COLORS.primary}
               />
             </View>
             <Text style={styles.confirmedText}>Confirmado</Text>
@@ -291,12 +294,18 @@ const styles = StyleSheet.create({
   },
   confirmedText: {
     fontSize: 14,
-    color: '#00C853',
+    color: COLORS.primary,
     marginBottom: 20,
+  },
+  loginContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#00C853',
+    borderColor: COLORS.primary,
     borderRadius: 5,
     padding: 12,
     marginBottom: 20,
@@ -305,7 +314,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   saveButton: {
-    backgroundColor: '#00C853',
+    backgroundColor: COLORS.primary,
     borderRadius: 5,
     padding: 15,
     alignItems: 'center',

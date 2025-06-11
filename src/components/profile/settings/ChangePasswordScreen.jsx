@@ -31,7 +31,7 @@ const Header = ({onBack, title}) => {
         <ChevronLeftIcon
           name={ICONS.CHEVRON_LEFT.name}
           size={ICONS.CHEVRON_LEFT.size}
-          color={COLORS.green}
+          color={COLORS.black}
         />
       </TouchableOpacity>
       <Text style={styles.headerText}>{title}</Text>
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   saveButton: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.primary,
     borderRadius: 5,
     padding: 15,
     alignItems: 'center',
