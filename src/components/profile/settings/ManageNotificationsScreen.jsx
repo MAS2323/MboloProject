@@ -7,11 +7,12 @@ import {
   Switch,
   Alert,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
-import {API_BASE_URL} from '../../config/Service.Config';
+import {API_BASE_URL} from '../../../config/Service.Config';
 import {COLORS, ICONS} from '../../../constants';
 
 // Importar los componentes de iconos dinámicamente
@@ -29,7 +30,7 @@ const Header = ({onBack, title}) => {
         <ChevronLeftIcon
           name={ICONS.CHEVRON_LEFT.name}
           size={ICONS.CHEVRON_LEFT.size}
-          color={COLORS.green}
+          color={COLORS.black}
         />
       </TouchableOpacity>
       <Text style={styles.headerText}>{title}</Text>
@@ -45,7 +46,7 @@ const NotificationToggle = ({label, value, onValueChange}) => (
     <Switch
       value={value}
       onValueChange={onValueChange}
-      trackColor={{false: COLORS.gray, true: COLORS.green}}
+      trackColor={{false: COLORS.gray, true: COLORS.primary}}
       thumbColor={value ? COLORS.white : COLORS.thumbGray}
     />
   </View>
@@ -137,9 +138,11 @@ const ManageNotificationsScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text>Cargando...</Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      </SafeAreaView>
     );
   }
 
@@ -192,6 +195,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     marginTop: 30,
   },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.offwhite,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -222,7 +231,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   saveButton: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.primary,
     borderRadius: 5,
     padding: 15,
     alignItems: 'center',

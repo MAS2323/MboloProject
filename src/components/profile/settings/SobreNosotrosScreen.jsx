@@ -1,15 +1,44 @@
-import {StyleSheet, Text, View, ScrollView, Linking} from 'react-native';
+import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Linking,
+  TouchableOpacity,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {COLORS} from '../../../constants';
+import {useNavigation} from '@react-navigation/native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {COLORS, ICONS} from '../../../constants';
+
+// Header Component
+const Header = ({onBack, title}) => {
+  return (
+    <View style={styles.header}>
+      <TouchableOpacity onPress={onBack}>
+        <MaterialIcons
+          name={ICONS.CHEVRON_LEFT.name}
+          size={ICONS.CHEVRON_LEFT.size}
+          color={COLORS.black}
+        />
+      </TouchableOpacity>
+      <Text style={styles.headerText}>{title}</Text>
+      <View style={{width: 30}} /> {/* Spacer for symmetry */}
+    </View>
+  );
+};
 
 const SobreNosotrosScreen = () => {
+  const navigation = useNavigation();
+
   const handleEmailPress = () => {
     Linking.openURL('mailto:masonewe@gmail.com');
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Contenido con Scroll */}
+      <Header onBack={() => navigation.goBack()} title="Sobre MboloApp" />
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={styles.content}>
@@ -77,16 +106,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGray || COLORS.separator,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.black || COLORS.title,
+    textAlign: 'center',
+    flex: 1, // Ensures title is centered
+  },
   scrollContainer: {
     flex: 1,
   },
   content: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
     paddingBottom: 30,
   },
   section: {
-    marginBottom: 15,
-    marginTop: 15,
+    marginVertical: 15,
   },
   sectionTitle: {
     fontSize: 18,

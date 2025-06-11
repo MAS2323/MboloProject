@@ -6,7 +6,9 @@ import {COLORS, ICONS} from '../../../constants';
 
 // Importar los componentes de iconos dinámicamente
 const IconComponents = {
-  Ionicons: require('react-native-vector-icons/Ionicons').default,
+  MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
+  MaterialCommunityIcons:
+    require('react-native-vector-icons/MaterialCommunityIcons').default,
 };
 
 const DisableFeedbackScreen = () => {
@@ -24,12 +26,12 @@ const DisableFeedbackScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           {(() => {
-            const ArrowBackIcon = IconComponents[ICONS.ARROW_BACK.library];
+            const ArrowBackIcon = IconComponents[ICONS.BACK_ARROW.library];
             return (
               <ArrowBackIcon
-                name={ICONS.ARROW_BACK.name}
-                size={ICONS.ARROW_BACK.size}
-                color={COLORS.green}
+                name={ICONS.BACK_ARROW.name}
+                size={ICONS.BACK_ARROW.size}
+                color={COLORS.black}
               />
             );
           })()}
@@ -62,7 +64,7 @@ const DisableFeedbackScreen = () => {
           <Switch
             value={isFeedbackEnabled}
             onValueChange={value => setIsFeedbackEnabled(value)}
-            trackColor={{false: COLORS.lightGray, true: COLORS.green}}
+            trackColor={{false: COLORS.lightGray, true: COLORS.primary}}
             thumbColor={isFeedbackEnabled ? COLORS.white : COLORS.white}
           />
         </View>
