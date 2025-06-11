@@ -7,11 +7,10 @@ import {
   ScrollView,
   FlatList,
   ActivityIndicator,
-  StyleSheet,
   Platform,
   Alert,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {SafeAreaView} from 'react-native-safe-area-context';

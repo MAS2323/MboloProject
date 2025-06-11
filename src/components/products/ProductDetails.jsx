@@ -23,7 +23,7 @@ import HeaderSearch from '../header/HeaderSearch';
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const IconComponents = {
-  Ionicons: require('react-native-vector-icons/Ionicons').default,
+  MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
   SimpleLineIcons: require('react-native-vector-icons/SimpleLineIcons').default,
   MaterialCommunityIcons:
     require('react-native-vector-icons/MaterialCommunityIcons').default,
@@ -43,6 +43,7 @@ const ProductDetails = () => {
   const {item, id} = params;
 
   const BackArrowIcon = IconComponents[ICONS.BACK_ARROW.library];
+  const ShaerIcons = IconComponents[ICONS.SHARE_ICON.library];
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -255,9 +256,9 @@ const ProductDetails = () => {
                 style={styles.iconButton}
                 onPress={handleShare}
                 accessibilityLabel="Compartir producto">
-                <IconComponents.MaterialCommunityIcons
-                  name="share-variant"
-                  size={24}
+                <ShaerIcons
+                  name={ICONS.SHARE_ICON.name}
+                  size={ICONS.SHARE_ICON.size || 24}
                   color={COLORS.white}
                 />
               </TouchableOpacity>

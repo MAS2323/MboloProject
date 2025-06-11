@@ -72,8 +72,8 @@ export const ICONS = {
   },
   BACK_ARROW: {
     // Added for navigation back button
-    library: 'Ionicons',
-    name: 'chevron-back-circle',
+    library: 'MaterialIcons',
+    name: 'arrow-back',
     size: 30,
   },
   IMAGE_OUTLINE: {
@@ -152,6 +152,11 @@ export const ICONS = {
   USER: {
     library: 'MaterialIcons',
     name: 'person-outline',
+    size: 24,
+  },
+  SHARE_ICON: {
+    library: 'MaterialCommunityIcons',
+    name: 'share',
     size: 24,
   },
   LOCK: {
@@ -342,7 +347,7 @@ export const ICONS = {
     size: 20,
   },
   CLOSE_CIRCLE: {
-    library: 'Ionicons',
+    library: 'MaterialCommunityIcons',
     name: 'close-circle',
     size: 20,
   },
@@ -367,8 +372,8 @@ export const ICONS = {
     size: 24,
   },
   SAVE_OUTLINE: {
-    library: 'Ionicons',
-    name: 'save-outline',
+    library: 'MaterialCommunityIcons',
+    name: 'update',
     size: 30,
   },
   PANORAMA_OUTLINE: {library: 'Ionicons', name: 'panorama-outline', size: 40},

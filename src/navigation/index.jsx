@@ -21,7 +21,6 @@ import SubCategoryMenuScreen from '../components/menu/categorias/SubCategoryMenu
 import MenuItemDetails from '../components/menu/categorias/MenuItemDetails';
 import ProducListCategory from '../components/products/categorias/ProducListCategory';
 import DetallesScreen from '../components/tendencia/DetallesScreen';
-import tendenciaGalleryScreen from '../components/tendencia/tendenciaGalleryScreen';
 import TiendaDetalle from '../components/stores/TiendaDetalle';
 import AppCenter from '../components/stores/AppCenter';
 import MiniAppWebView from '../components/browser/MiniAppWebView';
@@ -223,11 +222,6 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.CART}
         component={CartScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name={SCREENS.TENDENCIAS_SCREEN_GALERY}
-        component={tendenciaGalleryScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen

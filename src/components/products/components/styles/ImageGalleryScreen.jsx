@@ -1,4 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
+
 const {width, height} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
@@ -8,7 +9,7 @@ const styles = StyleSheet.create({
   closeButton: {
     position: 'absolute',
     top: 40,
-    left: 20,
+    // left: 20,
     zIndex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 10,
@@ -21,11 +22,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width,
+    width: width,
     height: height * 0.8,
-    resizeMode: 'contain',
   },
-  imageCounter: {
+  counterContainer: {
     position: 'absolute',
     bottom: 20,
     alignSelf: 'center',
@@ -44,7 +44,9 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: 'white',
+    fontSize: 16,
     marginTop: 10,
   },
 });
+
 export default styles;

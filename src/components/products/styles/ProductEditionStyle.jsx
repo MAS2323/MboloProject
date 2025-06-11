@@ -4,7 +4,7 @@ import {COLORS} from '../../../constants';
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background || '#F5F5F5',
+    // backgroundColor: COLORS.background || '#F5F5F5',
   },
   header: {
     flexDirection: 'row',
@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: COLORS.white || '#FFFFFF',
-    elevation: 2, // Sombra en Android
+    // elevation: 2, // Sombra en Android
     shadowColor: '#000', // Sombra en iOS
     shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.1,
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
   },
   imageList: {
     paddingHorizontal: 4,
+    margin: 8,
   },
   infoText: {
     fontSize: 14,

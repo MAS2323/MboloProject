@@ -26,7 +26,7 @@ const DetallesScreen = () => {
       'index:',
       index,
     );
-    navigation.navigate(SCREENS.TENDENCIAS_SCREEN_GALERY, {
+    navigation.navigate(SCREENS.IMAGE_GALLERY_SCREEN, {
       images: JSON.stringify(images),
       index: index.toString(),
     });

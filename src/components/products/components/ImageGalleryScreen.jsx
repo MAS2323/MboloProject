@@ -6,15 +6,15 @@ import {
   TouchableOpacity,
   Dimensions,
   Text,
-  StyleSheet,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import styles from './styles/ImageGalleryScreen';
 import {COLORS, ICONS} from '../../../constants';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const IconComponents = {
   Ionicons: require('react-native-vector-icons/Ionicons').default,
+  MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
 };
 
 const ImageGalleryScreen = () => {
@@ -26,6 +26,7 @@ const ImageGalleryScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const ImageIcone = IconComponents[ICONS.IMAGE_OUTLINE.library];
+  const BackArrowIcon = IconComponents[ICONS.BACK_ARROW.library];
   useEffect(() => {
     try {
       const parsedImages =
@@ -48,7 +49,11 @@ const ImageGalleryScreen = () => {
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.closeButton}>
-        <Ionicons name="close" size={30} color="white" />
+        <BackArrowIcon
+          name={ICONS.BACK_ARROW.name}
+          size={ICONS.BACK_ARROW.size || 24}
+          color={COLORS.white}
+        />
       </TouchableOpacity>
 
       {/* FlatList para navegar entre imágenes */}
@@ -105,51 +110,3 @@ const ImageGalleryScreen = () => {
 };
 
 export default ImageGalleryScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 40,
-    left: 20,
-    zIndex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 10,
-    borderRadius: 20,
-  },
-  imageContainer: {
-    width,
-    height,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: width,
-    height: height * 0.8,
-  },
-  counterContainer: {
-    position: 'absolute',
-    bottom: 20,
-    alignSelf: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    padding: 8,
-    borderRadius: 10,
-  },
-  counterText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyText: {
-    color: 'white',
-    fontSize: 16,
-    marginTop: 10,
-  },
-});
