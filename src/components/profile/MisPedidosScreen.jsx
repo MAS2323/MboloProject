@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   SafeAreaView, // Using SafeAreaView from react-native
 } from 'react-native';
-import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
