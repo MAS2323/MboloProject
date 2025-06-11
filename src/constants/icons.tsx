@@ -231,7 +231,7 @@ export const ICONS = {
     size: 24,
   },
   CACHED: {
-    ibrary: 'MaterialIcons',
+    library: 'MaterialIcons',
     name: 'cached',
     size: 24,
   },
@@ -282,8 +282,8 @@ export const ICONS = {
     size: 24,
   },
   WAVING_HAND: {
-    library: 'MaterialIcons',
-    name: 'waving-hand',
+    library: 'MaterialCommunityIcons',
+    name: 'hand-wave-outline',
     size: 24,
   },
   FACEBOOK: {

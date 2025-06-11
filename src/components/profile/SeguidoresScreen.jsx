@@ -11,6 +11,7 @@ import {
 import React, {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from './styles/SeguidoresStyle';
 import {COLORS} from '../../constants';
 
@@ -109,7 +110,7 @@ const SeguidoresScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
+          <MaterialIcons name="chevron-left" size={30} color={COLORS.black} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Seguidores</Text>
         <View style={{width: 24}} /> {/* Espacio para mantener simetría */}

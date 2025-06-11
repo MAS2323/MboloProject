@@ -56,7 +56,7 @@ const BusinessInfoScreen = () => {
           <ChevronLeftIcon
             name={ICONS.CHEVRON_LEFT.name}
             size={ICONS.CHEVRON_LEFT.size}
-            color="#00C853"
+            color={COLORS.black}
           />
         </TouchableOpacity>
         <Text style={styles.headerText}>Detalles del negocio</Text>

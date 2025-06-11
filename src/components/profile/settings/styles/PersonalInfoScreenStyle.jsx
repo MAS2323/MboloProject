@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {COLORS} from '../../../../constants';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,13 +23,13 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   savedButton: {
-    backgroundColor: '#E0F7FA',
+    backgroundColor: COLORS.secondary || '#E6F0FF',
     borderRadius: 20,
     paddingVertical: 5,
     paddingHorizontal: 15,
   },
   savedButtonText: {
-    color: '#00C853',
+    color: COLORS.black,
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   approvedText: {
-    color: '#00C853',
+    color: COLORS.primary,
     fontSize: 14,
     marginLeft: 5,
   },
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   saveButton: {
-    backgroundColor: '#00C853',
+    backgroundColor: COLORS.primary || '#007BFF',
     borderRadius: 5,
     padding: 15,
     alignItems: 'center',

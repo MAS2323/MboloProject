@@ -9,8 +9,9 @@ import {
   Alert,
   SafeAreaView,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -121,7 +122,7 @@ const CuentaOficialScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
+          <MaterialIcons name="chevron-left" size={30} color={COLORS.black} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Cuenta Profesional</Text>
         {cuentasOficiales.length === 0 && (

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -18,7 +19,7 @@ import styles from './styles/NotificacionesStyle';
 const Header = ({onBack, title}) => (
   <View style={styles.header}>
     <TouchableOpacity onPress={onBack}>
-      <MaterialIcons name="chevron-left" size={30} color="#00C853" />
+      <MaterialIcons name="chevron-left" size={30} color={COLORS.black} />
     </TouchableOpacity>
     <Text style={styles.headerText}>{title}</Text>
     <View style={{width: 30}} />
@@ -137,9 +138,11 @@ const NotificacionesScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text>Cargando...</Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      </SafeAreaView>
     );
   }
 

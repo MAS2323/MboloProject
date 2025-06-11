@@ -7,9 +7,11 @@ import {
   SafeAreaView, // Using SafeAreaView from react-native
 } from 'react-native';
 import React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import styles from './styles/MisPedidosStyles';
+import {COLORS} from '../../constants';
 
 const MisPedidosScreen = () => {
   const navigation = useNavigation(); // Replaced useRouter with useNavigation
@@ -40,11 +42,15 @@ const MisPedidosScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#00C853" />
+          <MaterialIcons name="chevron-left" size={30} color={COLORS.black} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Mis Pedidos</Text>
         <TouchableOpacity>
-          <Ionicons name="filter-outline" size={24} color="#333" />
+          <MaterialCommunityIcons
+            name="dots-horizontal"
+            size={30}
+            color={COLORS.black}
+          />
         </TouchableOpacity>
       </View>
 

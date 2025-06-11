@@ -38,7 +38,7 @@ const Header = ({onBack, title}) => {
           <ChevronLeftIcon
             name={ICONS.CHEVRON_LEFT.name}
             size={ICONS.CHEVRON_LEFT.size}
-            color={COLORS.green || '#00C853'}
+            color={COLORS.black || '#000'}
           />
         ) : (
           <Text>←</Text>

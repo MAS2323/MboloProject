@@ -19,7 +19,7 @@ import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {API_BASE_URL} from '../../../config/Service.Config';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import {ICONS} from '../../../constants';
+import {COLORS, ICONS} from '../../../constants';
 import IMAGES from '../../../assets/images';
 import styles from './styles/PersonalInfoScreenStyle';
 import SCREENS from '../../../screens';
@@ -27,6 +27,8 @@ import SCREENS from '../../../screens';
 // Importar los componentes de iconos dinámicamente
 const IconComponents = {
   MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
+  MaterialCommunityIcons:
+    require('react-native-vector-icons/MaterialCommunityIcons').default,
   FontAwesome: require('react-native-vector-icons/FontAwesome').default,
   Fontisto: require('react-native-vector-icons/Fontisto').default,
   SimpleLineIcons: require('react-native-vector-icons/SimpleLineIcons').default,
@@ -42,11 +44,11 @@ const Header = ({onBack, title}) => {
         <ChevronLeftIcon
           name={ICONS.CHEVRON_LEFT.name}
           size={ICONS.CHEVRON_LEFT.size}
-          color="#00C853"
+          color={COLORS.black}
         />
       </TouchableOpacity>
       <Text style={styles.headerText}>{title}</Text>
-      <TouchableOpacity style={styles.savedButton} disabled>
+      <TouchableOpacity style={styles.savedButton}>
         <Text style={styles.savedButtonText}>Guardado</Text>
       </TouchableOpacity>
     </View>
@@ -72,7 +74,7 @@ const AvatarSection = ({image, onPickImage}) => {
         <CheckCircleIcon
           name={ICONS.CHECK_CIRCLE.name}
           size={ICONS.CHECK_CIRCLE.size}
-          color="#00C853"
+          color={COLORS.primary}
         />
         <Text style={styles.approvedText}>aprobado</Text>
       </View>

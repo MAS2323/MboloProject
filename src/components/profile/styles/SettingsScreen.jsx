@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.lightGray || '#E0E0E0',
     backgroundColor: COLORS.white || '#fff',
-    elevation: 2,
+    // elevation: 2,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
