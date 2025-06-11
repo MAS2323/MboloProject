@@ -30,13 +30,6 @@ class MainApplication : Application(), ReactApplication {
         override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
         override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
       }
-    @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.asList(
-        new MainReactPackage(),
-        new ImagePickerPackage()
-      );
-    }
   override val reactHost: ReactHost
     get() = getDefaultReactHost(applicationContext, reactNativeHost)
 
