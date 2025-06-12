@@ -24,6 +24,8 @@ import SCREENS from '../../screens';
 // Importar los componentes de iconos dinámicamente
 const IconComponents = {
   MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
+  MaterialCommunityIcons:
+    require('react-native-vector-icons/MaterialCommunityIcons').default,
 };
 
 const CrearTiendaScreen = () => {
@@ -45,7 +47,7 @@ const CrearTiendaScreen = () => {
   const [existingStore, setExistingStore] = useState(null);
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState('');
-
+  const SaveIcon = IconComponents[ICONS.SAVE.library];
   // Función para verificar la existencia de una tienda
   const checkStore = async (userId, forceFetch = false) => {
     try {
@@ -377,7 +379,7 @@ const CrearTiendaScreen = () => {
     return (
       <SafeAreaView style={styles.safeContainer}>
         <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={COLORS.green} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
         </View>
       </SafeAreaView>
     );
@@ -392,7 +394,7 @@ const CrearTiendaScreen = () => {
             <IconComponents.MaterialIcons
               name={ICONS.CHEVRON_LEFT.name}
               size={ICONS.CHEVRON_LEFT.size}
-              color={COLORS.green}
+              color={COLORS.black}
             />
           </TouchableOpacity>
           <Text style={styles.headerText}>Detalles de la Tienda</Text>
@@ -412,7 +414,7 @@ const CrearTiendaScreen = () => {
           <IconComponents.MaterialIcons
             name={ICONS.CHEVRON_LEFT.name}
             size={ICONS.CHEVRON_LEFT.size}
-            color={COLORS.green}
+            color={COLORS.black}
           />
         </TouchableOpacity>
         <Text style={styles.headerText}>Crear Nueva Tienda</Text>
@@ -570,9 +572,9 @@ const CrearTiendaScreen = () => {
           style={[styles.submitButton, loading && styles.submitButtonDisabled]}
           onPress={handleSubmit}
           disabled={loading}>
-          <IconComponents.MaterialIcons
-            name={ICONS.STORE.name}
-            size={ICONS.STORE.size}
+          <SaveIcon
+            name={ICONS.SAVE.name}
+            size={ICONS.SAVE.size}
             color={COLORS.white}
           />
           <Text style={styles.submitButtonText}>

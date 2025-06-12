@@ -59,7 +59,7 @@ const MiTiendaScreenAdmin = () => {
         const userId = await AsyncStorage.getItem('id');
         if (!userId) {
           Alert.alert('Error', 'Debes iniciar sesión para ver tu tienda.');
-          navigation.navigate('LoginScreen');
+          navigation.navigate(SCREENS.LOGIN);
           return;
         }
         const cleanUserId = userId.replace(/"/g, '');
@@ -163,7 +163,7 @@ const MiTiendaScreenAdmin = () => {
         setIsLoading(false);
       }
     };
-    loadStoreAndProducts();   
+    loadStoreAndProducts();
   }, []);
 
   const renderProduct = ({item}) => (

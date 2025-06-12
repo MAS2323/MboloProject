@@ -39,46 +39,6 @@ const IconComponents = {
   FontAwesome: require('react-native-vector-icons/FontAwesome').default,
 };
 
-// Componente para el título de la ubicación
-const LocationTitle = () => {
-  const [city, setCity] = useState('Guinea Ecuatorial');
-  const navigation = useNavigation();
-
-  const loadCity = async () => {
-    try {
-      const id = await AsyncStorage.getItem('id');
-      if (id) {
-        const cleanUserId = id.replace(/"/g, '');
-        const userKey = `user${cleanUserId}`;
-        const userData = await AsyncStorage.getItem(userKey);
-        if (userData) {
-          const parsedUserData = JSON.parse(userData);
-          const cityName = parsedUserData.ciudad?.name || 'Guinea Ecuatorial';
-          setCity(cityName);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading city:', error.message);
-      setCity('Guinea Ecuatorial');
-    }
-  };
-
-  useEffect(() => {
-    loadCity();
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadCity();
-    });
-    return unsubscribe;
-  }, [navigation]);
-
-  return (
-    <TouchableOpacity
-      onPress={() => navigation.navigate(SCREENS.SELECT_CITY_SCREEN)}>
-      <Text style={styles.locationTitle}>{city}</Text>
-    </TouchableOpacity>
-  );
-};
-
 const AddScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -812,7 +772,7 @@ const AddScreen = () => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.loaderContainer}>
           {loader ? (
-            <ActivityIndicator size="large" color={COLORS.green} />
+            <ActivityIndicator size="large" color={COLORS.primary} />
           ) : (
             <Text style={styles.errorText}>
               Debes iniciar sesión y tener una tienda para agregar un producto.
@@ -830,7 +790,6 @@ const AddScreen = () => {
           <Text style={styles.cancelButtonText}>Cancelar</Text>
         </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <LocationTitle />
           <Text style={styles.headerText}>Agregar Producto</Text>
         </View>
         <TouchableOpacity onPress={() => setMenuVisible(true)}>
@@ -851,7 +810,7 @@ const AddScreen = () => {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              colors={[COLORS.green]}
+              colors={[COLORS.primary]}
             />
           }>
           <View style={styles.inputGroup}>
@@ -891,7 +850,7 @@ const AddScreen = () => {
                 <AddIcon
                   name={ICONS.ADD.name}
                   size={styles.iconSize}
-                  color={COLORS.green}
+                  color={COLORS.primary}
                 />
               </TouchableOpacity>
               {(images.length > 0 || videos.length > 0) && (

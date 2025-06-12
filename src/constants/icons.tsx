@@ -78,7 +78,7 @@ export const ICONS = {
   },
   IMAGE_OUTLINE: {
     // Added for navigation back button
-    library: 'Ionicons',
+    library: 'MaterialCommunityIcons',
     name: 'image-outline',
     size: 50,
   },
@@ -342,7 +342,7 @@ export const ICONS = {
     size: 24,
   },
   CHEVRON_DOWN: {
-    library: 'Ionicons',
+    library: 'MaterialCommunityIcons',
     name: 'chevron-down',
     size: 20,
   },
@@ -352,8 +352,8 @@ export const ICONS = {
     size: 20,
   },
   ELLIPSIS_VERTICAL: {
-    library: 'Ionicons',
-    name: 'ellipsis-vertical',
+    library: 'FontAwesome',
+    name: 'ellipsis-v',
     size: 24,
   },
   BACK: {
@@ -364,6 +364,11 @@ export const ICONS = {
   UPDATE: {
     library: 'MaterialIcons',
     name: 'update',
+    size: 24,
+  },
+  SAVE: {
+    library: 'MaterialIcons',
+    name: 'save-alt',
     size: 24,
   },
   DELETE_FOREVER: {
@@ -378,7 +383,7 @@ export const ICONS = {
   },
   PANORAMA_OUTLINE: {library: 'Ionicons', name: 'panorama-outline', size: 40},
   STOREFRONT_OUTLINE: {
-    library: 'Ionicons',
+    library: 'MaterialCommunityIcons',
     name: 'storefront-outline',
     size: 40,
   },

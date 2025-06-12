@@ -4,7 +4,7 @@ import {COLORS} from '../../../constants';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background || '#F5F5F5',
+    // backgroundColor: COLORS.background || '#F5F5F5',
     marginTop: 20,
   },
   header: {
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: COLORS.white || '#FFFFFF',
-    elevation: 2,
+    // elevation: 2,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.1,

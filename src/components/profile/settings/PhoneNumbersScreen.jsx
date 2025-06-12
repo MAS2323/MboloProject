@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {API_BASE_URL} from '../../config/Service.Config';
+import {API_BASE_URL} from '../../../config/Service.Config';
 import {useNavigation} from '@react-navigation/native';
 import {COLORS, ICONS} from '../../../constants';
 
@@ -222,7 +222,7 @@ const PhoneNumbersScreen = () => {
             <AddIcon
               name={ICONS.ADD.name}
               size={ICONS.ADD.size}
-              color="#00C853"
+              color={COLORS.primary}
             />
             <Text style={styles.addButtonText}>Añadir número de teléfono</Text>
           </TouchableOpacity>

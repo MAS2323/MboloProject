@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 3},
     shadowOpacity: 0.15,
     shadowRadius: 6,
-    elevation: 5,
+    // elevation: 5,
+    marginTop: 20, // Adjusted for better spacing
   },
   headerCenter: {
     flex: 1,
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   submitButton: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.primary,
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',

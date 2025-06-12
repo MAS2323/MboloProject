@@ -24,7 +24,7 @@ const Header = ({onBack, title}) => {
         />
       </TouchableOpacity>
       <Text style={styles.headerText}>{title}</Text>
-      <View style={{width: 30}} /> {/* Spacer for symmetry */}
+      <View style={{width: 30}} />
     </View>
   );
 };
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    backgroundColor: COLORS.headerBackground || COLORS.white,
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 10,
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.title,
+    color: COLORS.primary,
     marginBottom: 10,
   },
   text: {

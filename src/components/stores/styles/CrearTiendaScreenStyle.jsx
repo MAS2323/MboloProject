@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.green || '#10B981',
+    backgroundColor: COLORS.primary,
     paddingVertical: 16,
     borderRadius: 8,
     marginTop: 24,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   submitButtonDisabled: {
-    backgroundColor: COLORS.disabled || '#6EE7B7',
+    backgroundColor: COLORS.secondary || '#E0E0E0',
     opacity: 0.6,
   },
   submitButtonText: {
