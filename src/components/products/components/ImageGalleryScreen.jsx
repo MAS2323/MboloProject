@@ -15,6 +15,8 @@ const {width} = Dimensions.get('window');
 const IconComponents = {
   Ionicons: require('react-native-vector-icons/Ionicons').default,
   MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
+  MaterialCommunityIcons:
+    require('react-native-vector-icons/MaterialCommunityIcons').default,
 };
 
 const ImageGalleryScreen = () => {

@@ -21,6 +21,7 @@ import {useNavigation} from '@react-navigation/native';
 import styles from './styles/CartScreenStyle';
 import IMAGES from '../../assets/images';
 import SCREENS from '../../screens';
+
 // ======================================================
 // Main Component
 // ======================================================
@@ -29,7 +30,7 @@ const CartScreen = () => {
   const [cart, setCart] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const navigation = useNavigation(); // Replaced useRouter with useNavigation
+  const navigation = useNavigation();
 
   // ======================================================
   // User ID Functions
@@ -52,7 +53,6 @@ const CartScreen = () => {
       setLoading(true);
       if (!userId) return;
 
-      // Check cached data first
       const cachedCart = await getCachedData(`cart_${userId}`);
       if (cachedCart) {
         setCart(cachedCart);
@@ -154,7 +154,7 @@ const CartScreen = () => {
   if (loading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4c86A8" />
+        <ActivityIndicator size="large" color="#1E3A8A" />
         <Text style={styles.loadingText}>Cargando tu carrito...</Text>
       </SafeAreaView>
     );
@@ -165,14 +165,20 @@ const CartScreen = () => {
   // ======================================================
   return (
     <SafeAreaView style={styles.safeArea}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Mi Carrito</Text>
+        <TouchableOpacity onPress={handleRefresh}>
+          <MaterialIcons name="refresh" size={24} color="#fff" />
+        </TouchableOpacity>
+      </View>
       <ScrollView
         style={styles.container}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            colors={['#4c86A8']}
-            tintColor="#4c86A8"
+            colors={['#1E3A8A']}
+            tintColor="#1E3A8A"
           />
         }>
         {cart?.products?.length === 0 ? (
@@ -191,9 +197,8 @@ const CartScreen = () => {
             </Text>
             <TouchableOpacity
               style={styles.addButton}
-              onPress={() => navigation.navigate(SCREENS.PRODUCT_LIST)} // Updated navigation
-            >
-              <FontAwesome name="shopping-cart" size={20} color="white" />
+              onPress={() => navigation.navigate(SCREENS.PRODUCT_LIST)}>
+              <FontAwesome name="shopping-cart" size={20} color="#fff" />
               <Text style={styles.addButtonText}>Explorar productos</Text>
             </TouchableOpacity>
           </View>
@@ -244,7 +249,7 @@ const CartScreen = () => {
                       <TouchableOpacity
                         style={styles.whatsappButton}
                         onPress={() => handleWhatsApp(product.whatsapp)}>
-                        <FontAwesome name="whatsapp" size={16} color="white" />
+                        <FontAwesome name="whatsapp" size={16} color="#fff" />
                         <Text style={styles.whatsappText}> Contactar</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
@@ -253,7 +258,7 @@ const CartScreen = () => {
                         <MaterialIcons
                           name="delete-outline"
                           size={24}
-                          color="#ff4444"
+                          color="#DC2626"
                         />
                       </TouchableOpacity>
                     </View>
@@ -271,9 +276,8 @@ const CartScreen = () => {
         {cart?.products?.length > 0 && (
           <TouchableOpacity
             style={styles.checkoutButton}
-            onPress={() => navigation.navigate(SCREENS.PRODUCT_LIST)} // Updated navigation
-          >
-            <FontAwesome name="plus" size={20} color="white" />
+            onPress={() => navigation.navigate(SCREENS.PRODUCT_LIST)}>
+            <FontAwesome name="plus" size={20} color="#fff" />
             <Text style={styles.checkoutText}>Añadir más productos</Text>
           </TouchableOpacity>
         )}
