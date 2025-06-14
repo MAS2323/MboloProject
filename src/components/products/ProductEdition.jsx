@@ -56,6 +56,7 @@ const ProductEdition = () => {
         setEditedProduct({
           ...parsedProduct,
           domicilio: parsedProduct.domicilio || {name: ''},
+          phone_number: parsedProduct.phone_number || '', // Ensure phone_number is included
         });
         setImages(parsedProduct.images?.map(img => img.url) || []);
         setLoading(false);
@@ -72,7 +73,6 @@ const ProductEdition = () => {
       setLoading(false);
     }
   }, [route.params?.item]);
-
   // Función para solicitar permisos
   const requestPermissions = async () => {
     if (Platform.OS === 'android') {
@@ -181,8 +181,6 @@ const ProductEdition = () => {
         domicilio: editedProduct.domicilio,
         description: editedProduct.description,
         product_location: editedProduct.product_location,
-        phoneNumber: editedProduct.phoneNumber,
-        whatsapp: editedProduct.whatsapp,
         images: images.map(url => ({url})),
       };
 
@@ -202,7 +200,6 @@ const ProductEdition = () => {
       Alert.alert('Error', 'Ocurrió un error al actualizar el producto.');
     }
   };
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -354,32 +351,22 @@ const ProductEdition = () => {
                 placeholderTextColor={COLORS.placeholder || '#999'}
               />
             </View>
-
-            <View style={styles.contactRow}>
-              <View
-                style={[styles.inputContainer, styles.contactInputContainer]}>
-                <Text style={styles.inputLabel}>Teléfono</Text>
-                <TextInput
-                  style={styles.contactInput}
-                  value={editedProduct.phoneNumber}
-                  onChangeText={text => handleInputChange('phoneNumber', text)}
-                  placeholder="Número de teléfono"
-                  keyboardType="phone-pad"
-                  placeholderTextColor={COLORS.placeholder || '#999'}
-                />
-              </View>
-              <View
-                style={[styles.inputContainer, styles.contactInputContainer]}>
-                <Text style={styles.inputLabel}>WhatsApp</Text>
-                <TextInput
-                  style={styles.contactInput}
-                  value={editedProduct.whatsapp}
-                  onChangeText={text => handleInputChange('whatsapp', text)}
-                  placeholder="Número de WhatsApp"
-                  keyboardType="phone-pad"
-                  placeholderTextColor={COLORS.placeholder || '#999'}
-                />
-              </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Número de teléfono</Text>
+              <TextInput
+                style={[
+                  styles.locationInput,
+                  {backgroundColor: COLORS.grayLight},
+                ]}
+                value={editedProduct.phone_number || 'No disponible'}
+                editable={false}
+                placeholder="Número de teléfono de la tienda"
+                placeholderTextColor={COLORS.placeholder || '#999'}
+              />
+              <Text style={styles.infoText}>
+                Este número proviene de la configuración de tu tienda. Para
+                cambiarlo, edita los detalles de tu tienda.
+              </Text>
             </View>
           </View>
         </View>

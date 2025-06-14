@@ -103,6 +103,7 @@ const MiTiendaScreenAdmin = () => {
               banner: storeResponse.data.banner?.url,
               owner: cleanUserId,
             };
+            console.log('Loaded store data:', storeData); // Debug: Log store data
             setTienda(storeData);
             tiendaId = storeData.id;
             await AsyncStorage.setItem('store_data', JSON.stringify(storeData));
@@ -294,7 +295,9 @@ const MiTiendaScreenAdmin = () => {
               <TouchableOpacity
                 style={styles.editStoreButton}
                 onPress={() =>
-                  navigation.navigate(SCREENS.EDITAR_STORE_DETAILS)
+                  navigation.navigate(SCREENS.EDITAR_STORE_DETAILS, {
+                    store: JSON.stringify(tienda),
+                  })
                 }
                 accessibilityLabel="Editar tienda">
                 <EditIcon

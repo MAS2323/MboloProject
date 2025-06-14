@@ -206,6 +206,28 @@ const styles = StyleSheet.create({
     color: COLORS.white || '#FFFFFF',
     fontWeight: '600',
   },
+  contactWrapper: {
+    marginTop: 10,
+  },
+  contactButtons: {
+    flexDirection: 'row',
+    marginTop: 5,
+    gap: 10,
+    justifyContent: 'space-between', // Ensures buttons are spread out
+  },
+  contactButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+    flex: 1, // Makes buttons take equal width
+  },
+  contactButtonText: {
+    color: COLORS.white,
+    fontSize: SIZES.medium,
+    marginLeft: 5,
+  },
 });
 
 export default styles;

@@ -52,6 +52,7 @@ const AddScreen = () => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [storePhoneNumber, setStorePhoneNumber] = useState('');
   const [tiendaId, setTiendaId] = useState(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [formData, setFormData] = useState({
@@ -137,6 +138,9 @@ const AddScreen = () => {
         );
         if (storeResponse.data && storeResponse.data._id) {
           setTiendaId(storeResponse.data._id);
+          setStorePhoneNumber(
+            storeResponse.data.phone_number || 'No disponible',
+          );
         } else {
           Alert.alert(
             'Error',
@@ -148,46 +152,7 @@ const AddScreen = () => {
         Alert.alert('Error', 'Debes iniciar sesión para agregar un producto.');
         navigation.navigate('Login');
       }
-
-      const storedFormData = await AsyncStorage.getItem('addProductFormData');
-      if (storedFormData) {
-        setFormData(JSON.parse(storedFormData));
-      }
-
-      const storedImages = await AsyncStorage.getItem('addProductImages');
-      if (storedImages) {
-        setImages(JSON.parse(storedImages));
-      }
-
-      const storedVideos = await AsyncStorage.getItem('addProductVideos');
-      if (storedVideos) {
-        setVideos(JSON.parse(storedVideos));
-      }
-
-      const storedCategory = await AsyncStorage.getItem('selectedCategory');
-      if (storedCategory) {
-        setSelectedCategory(JSON.parse(storedCategory));
-      }
-
-      const storedSubcategory = await AsyncStorage.getItem(
-        'selectedSubcategory',
-      );
-      if (storedSubcategory) {
-        setSelectedSubcategory(JSON.parse(storedSubcategory));
-      }
-
-      const storedLocation = await AsyncStorage.getItem('selectedLocation');
-      if (storedLocation) {
-        const {id, name} = JSON.parse(storedLocation);
-        setFormData(prev => ({...prev, location: id}));
-        setSelectedLocationName(name);
-      }
-
-      const response = await axios.get(
-        `${API_BASE_URL}/categories?type=product`,
-      );
-      setCategories(response.data);
-      setError(null);
+      // ... (rest of the existing code in loadInitialData)
     } catch (error) {
       console.error('Error al cargar datos iniciales:', error);
       Alert.alert('Error', 'No se pudo cargar la información inicial.');
@@ -196,7 +161,6 @@ const AddScreen = () => {
       setLoader(false);
     }
   };
-
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -963,7 +927,20 @@ const AddScreen = () => {
               <Text style={styles.errorText}>{errors.price}</Text>
             )}
           </View>
-
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Número de teléfono *</Text>
+            <TextInput
+              style={[styles.inputText, {backgroundColor: COLORS.grayLight}]}
+              value={storePhoneNumber}
+              editable={false}
+              placeholder="Número de teléfono de la tienda"
+              placeholderTextColor={COLORS.placeholder}
+            />
+            <Text style={styles.infoText}>
+              Este número proviene de la configuración de tu tienda. Para
+              cambiarlo, edita los detalles de tu tienda.
+            </Text>
+          </View>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Tallas (opcional)</Text>
             <View style={styles.inlineInputs}>

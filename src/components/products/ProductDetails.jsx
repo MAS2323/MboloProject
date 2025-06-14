@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import {Linking} from 'react-native';
 import styles from './styles/ProductDetails.style';
 import {COLORS, ICONS, SIZES} from '../../constants';
 import SCREENS from '../../screens';
@@ -28,6 +29,7 @@ const IconComponents = {
   MaterialCommunityIcons:
     require('react-native-vector-icons/MaterialCommunityIcons').default,
   Fontisto: require('react-native-vector-icons/Fontisto').default,
+  FontAwesome: require('react-native-vector-icons/FontAwesome').default,
 };
 
 const ProductDetails = () => {
@@ -409,6 +411,78 @@ const ProductDetails = () => {
                 <Text style={styles.description}>
                   {item.data.description || 'Sin descripción'}
                 </Text>
+                {item.data.phone_number && (
+                  <View style={styles.contactWrapper}>
+                    <Text style={styles.detailItem}>
+                      Contacto: {item.data.phone_number}
+                    </Text>
+                    <View style={styles.contactButtons}>
+                      <TouchableOpacity
+                        style={[
+                          styles.contactButton,
+                          {backgroundColor: COLORS.green},
+                        ]}
+                        onPress={() => {
+                          const phoneNumber = item.data.phone_number.replace(
+                            /\D/g,
+                            '',
+                          );
+                          Linking.openURL(
+                            `whatsapp://send?phone=${phoneNumber}`,
+                          ).catch(() =>
+                            Alert.alert(
+                              'Error',
+                              'No se pudo abrir WhatsApp. Asegúrate de tener la aplicación instalada.',
+                            ),
+                          );
+                        }}
+                        accessibilityLabel="Contactar por WhatsApp">
+                        {(() => {
+                          const WhatsAppIcon =
+                            IconComponents[ICONS.WHATSAPP.library];
+                          return (
+                            <WhatsAppIcon
+                              name={ICONS.WHATSAPP.name}
+                              size={ICONS.WHATSAPP.size}
+                              color={COLORS.white}
+                            />
+                          );
+                        })()}
+                        <Text style={styles.contactButtonText}>WhatsApp</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[
+                          styles.contactButton,
+                          {backgroundColor: COLORS.blue},
+                        ]}
+                        onPress={() => {
+                          const phoneNumber = item.data.phone_number.replace(
+                            /\D/g,
+                            '',
+                          );
+                          Linking.openURL(`tel:${phoneNumber}`).catch(() =>
+                            Alert.alert(
+                              'Error',
+                              'No se pudo realizar la llamada. Asegúrate de que tu dispositivo pueda hacer llamadas.',
+                            ),
+                          );
+                        }}
+                        accessibilityLabel="Llamar">
+                        {(() => {
+                          const PhoneIcon = IconComponents[ICONS.PHONE.library];
+                          return (
+                            <PhoneIcon
+                              name={ICONS.PHONE.name}
+                              size={ICONS.PHONE.size}
+                              color={COLORS.white}
+                            />
+                          );
+                        })()}
+                        <Text style={styles.contactButtonText}>Llamar</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
               </View>
               {item.data.comentarios?.length > 0 && (
                 <View style={styles.commentsWrapper}>

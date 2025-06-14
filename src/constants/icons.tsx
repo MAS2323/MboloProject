@@ -30,6 +30,8 @@ export const ICONS = {
     name: 'shopping-bag',
     size: 24,
   },
+  WHATSAPP: {name: 'whatsapp', library: 'FontAwesome', size: 24},
+  PHONE: {name: 'phone', library: 'FontAwesome', size: 24},
   TENDENCIA: {
     library: 'Entypo',
     name: 'bar-graph',
