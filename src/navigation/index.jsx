@@ -59,6 +59,9 @@ import EditProfessionalAccoun from '../components/profile/bussines/EditProfessio
 import OfficialAccountProfileScreen from '../components/menu/categorias/OfficialAccountProfileScreen';
 import OfficialAccountProductsScreen from '../components/menu/categorias/OfficialAccountProductsScreen';
 import ProductEdition from '../components/products/ProductEdition';
+import AddDeliveryOptionScreen from '../components/profile/bussines/AddDeliveryOptionScreen';
+import OfficialAccount from '../components/stores/OfficialAccount';
+import OfficialAccountDetailScreen from '../components/stores/OfficialAccountDetailScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -83,6 +86,21 @@ const StackNavigation = () => {
         name={SCREENS.IMAGE_GALLERY_SCREEN}
         component={ImageGalleryScreen}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.OFFICIAL_ACCOUNT_DETAIL}
+        component={OfficialAccountDetailScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.ADD_DELIVERY_OPTION}
+        component={AddDeliveryOptionScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.OFFICIAL_ACCOUNT}
+        component={OfficialAccount}
+        options={{headerShown: true, title: 'Cuentas Oficiales'}}
       />
       <Stack.Screen
         name={SCREENS.CATEGORY_MENU_SCREEN}

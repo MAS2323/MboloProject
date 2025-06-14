@@ -453,7 +453,7 @@ const ProductDetails = () => {
                       <TouchableOpacity
                         style={[
                           styles.contactButton,
-                          {backgroundColor: COLORS.blue},
+                          {backgroundColor: COLORS.primary},
                         ]}
                         onPress={() => {
                           const phoneNumber = item.data.phone_number.replace(

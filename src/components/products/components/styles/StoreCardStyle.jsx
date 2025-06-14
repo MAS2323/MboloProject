@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     color: COLORS.gray,
   },
   storeButton: {
-    backgroundColor: COLORS.blue,
+    backgroundColor: COLORS.primary,
     borderRadius: 4,
     paddingVertical: SIZES.xSmall / 2,
     paddingHorizontal: SIZES.xSmall,

@@ -19,7 +19,7 @@ import styles from './styles/AllStoreScreenStyle';
 const AllStoreScreen = () => {
   const [tiendas, setTiendas] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('Cuentas Oficiales');
+  const [activeTab, setActiveTab] = useState('Tiendas'); // Changed to 'Tiendas' as default
   const {width} = useWindowDimensions();
   const navigation = useNavigation();
 
@@ -61,10 +61,10 @@ const AllStoreScreen = () => {
     fetchTiendas();
   }, []);
 
-  // Asegurarse de que al regresar se muestre "Cuentas Oficiales"
+  // Asegurarse de que al regresar se muestre "Tiendas"
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      setActiveTab('Tiendas');
+      setActiveTab('Tiendas'); // Changed to 'Tiendas' on focus
     });
     return unsubscribe;
   }, [navigation]);
@@ -122,6 +122,9 @@ const AllStoreScreen = () => {
               if (tab === 'AppCenter') {
                 console.log('Navigating to AppCenter');
                 navigation.navigate(SCREENS.APP_CENTER);
+              } else if (tab === 'Cuentas Oficiales') {
+                console.log('Navigating to OfficialAccount');
+                navigation.navigate(SCREENS.OFFICIAL_ACCOUNT);
               }
             }}>
             <Text
@@ -135,7 +138,7 @@ const AllStoreScreen = () => {
         ))}
       </ScrollView>
 
-      {/* Lista de tiendas para Cuentas Oficiales */}
+      {/* Lista de tiendas para la pestaña Tiendas */}
       {activeTab === 'Tiendas' && (
         <FlatList
           data={tiendas}
