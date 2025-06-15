@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   Image,
   Alert,
   ScrollView,
@@ -34,10 +33,10 @@ const CreateProfessionalAccount = () => {
   const route = useRoute();
   const params = route.params || {};
   const [formData, setFormData] = useState({
-    name: 'E.G. BLUE SEA MALESTI LOPEZ',
+    name: '',
     email: '',
     phone_number: '',
-    description: 'MANTENIMIENTO DE INMUEBLES',
+    description: '',
     owner: '',
     category: '',
     categoryName: '',
@@ -55,12 +54,12 @@ const CreateProfessionalAccount = () => {
     economicSectorDisplay: '',
     operationScope: '',
     operationScopeDisplay: '',
-    socialCapital: '1,000,000 FCFA',
-    numberOfEstablishments: '1',
-    numberOfEmployees: '12',
-    nif: '038446EG-24',
-    expedientNumber: '05069/2024',
-    certificateNumber: '3025',
+    socialCapital: '',
+    numberOfEstablishments: '',
+    numberOfEmployees: '',
+    nif: '',
+    expedientNumber: '',
+    certificateNumber: '',
   });
   const [avatar, setAvatar] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -92,74 +91,61 @@ const CreateProfessionalAccount = () => {
           'selectedOperationScope',
         );
 
+        const updates = {};
+
         if (storedCategory && storedSubcategory) {
           const category = JSON.parse(storedCategory);
           const subcategory = JSON.parse(storedSubcategory);
-          setFormData(prev => ({
-            ...prev,
-            category: category._id,
-            categoryName: category.name,
-            subcategory: subcategory._id,
-            subcategoryName: subcategory.name,
-          }));
+          updates.category = category._id;
+          updates.categoryName = category.name;
+          updates.subcategory = subcategory._id;
+          updates.subcategoryName = subcategory.name;
         }
 
         if (storedAddress) {
           const address = JSON.parse(storedAddress);
-          setFormData(prev => ({
-            ...prev,
-            address: address._id,
-            addressDetails: `${address.street ? address.street + ', ' : ''}${
-              address.city
-            }${address.state ? ', ' + address.state : ''}${
-              address.country ? ', ' + address.country : ''
-            }${address.postalCode ? ', ' + address.postalCode : ''}`,
-          }));
+          updates.address = address._id;
+          updates.addressDetails = `${
+            address.street ? address.street + ', ' : ''
+          }${address.city}${address.state ? ', ' + address.state : ''}${
+            address.country ? ', ' + address.country : ''
+          }${address.postalCode ? ', ' + address.postalCode : ''}`
+            .trim()
+            .replace(/,\s*$/, '');
         }
 
         if (storedCapitalOwnership) {
           const capitalOwnership = JSON.parse(storedCapitalOwnership);
-          setFormData(prev => ({
-            ...prev,
-            capitalOwnership: capitalOwnership.value,
-            capitalOwnershipDisplay: capitalOwnership.display,
-          }));
+          updates.capitalOwnership = capitalOwnership.value;
+          updates.capitalOwnershipDisplay = capitalOwnership.display;
         }
 
         if (storedCompanySize) {
           const companySize = JSON.parse(storedCompanySize);
-          setFormData(prev => ({
-            ...prev,
-            companySize: companySize.value,
-            companySizeDisplay: companySize.display,
-          }));
+          updates.companySize = companySize.value;
+          updates.companySizeDisplay = companySize.display;
         }
 
         if (storedLegalForm) {
           const legalForm = JSON.parse(storedLegalForm);
-          setFormData(prev => ({
-            ...prev,
-            legalForm: legalForm.value,
-            legalFormDisplay: legalForm.display,
-          }));
+          updates.legalForm = legalForm.value;
+          updates.legalFormDisplay = legalForm.display;
         }
 
         if (storedEconomicSector) {
           const economicSector = JSON.parse(storedEconomicSector);
-          setFormData(prev => ({
-            ...prev,
-            economicSector: economicSector.value,
-            economicSectorDisplay: economicSector.display,
-          }));
+          updates.economicSector = economicSector.value;
+          updates.economicSectorDisplay = economicSector.display;
         }
 
         if (storedOperationScope) {
           const operationScope = JSON.parse(storedOperationScope);
-          setFormData(prev => ({
-            ...prev,
-            operationScope: operationScope.value,
-            operationScopeDisplay: operationScope.display,
-          }));
+          updates.operationScope = operationScope.value;
+          updates.operationScopeDisplay = operationScope.display;
+        }
+
+        if (Object.keys(updates).length > 0) {
+          setFormData(prev => ({...prev, ...updates}));
         }
       } catch (error) {
         console.error('Error al cargar selecciones previas:', error);
@@ -168,35 +154,10 @@ const CreateProfessionalAccount = () => {
     loadSelections();
   }, []);
 
-  // Reload selectedAddress when the screen regains focus
-  useFocusEffect(
-    useCallback(() => {
-      const loadAddress = async () => {
-        try {
-          const storedAddress = await AsyncStorage.getItem('selectedAddress');
-          if (storedAddress) {
-            const address = JSON.parse(storedAddress);
-            setFormData(prev => ({
-              ...prev,
-              address: address._id,
-              addressDetails: `${address.street ? address.street + ', ' : ''}${
-                address.city
-              }${address.state ? ', ' + address.state : ''}${
-                address.country ? ', ' + address.country : ''
-              }${address.postalCode ? ', ' + address.postalCode : ''}`,
-            }));
-          }
-        } catch (error) {
-          console.error('Error al cargar dirección desde AsyncStorage:', error);
-        }
-      };
-      loadAddress();
-    }, []),
-  );
-
   // Actualizar formData con los valores desde params
   useEffect(() => {
     const updateFormDataFromParams = async () => {
+      console.log('Received params:', params); // Log para depuración
       const updates = {};
 
       // Categoría y Subcategoría
@@ -206,9 +167,7 @@ const CreateProfessionalAccount = () => {
         params?.subcategoryId &&
         params?.subcategoryName &&
         (formData.category !== params.categoryId ||
-          formData.categoryName !== params.categoryName ||
-          formData.subcategory !== params.subcategoryId ||
-          formData.subcategoryName !== params.subcategoryName)
+          formData.subcategory !== params.subcategoryId)
       ) {
         updates.category = params.categoryId;
         updates.categoryName = params.categoryName;
@@ -245,23 +204,25 @@ const CreateProfessionalAccount = () => {
         updates.addressDetails = params.addressDetails;
 
         try {
+          const addressData = {
+            _id: params.addressId,
+            street: params.street || '',
+            city: params.city || params.addressDetails,
+            state: params.state || '',
+            country: params.country || '',
+            postalCode: params.postalCode || '',
+          };
+          console.log('Saving address to AsyncStorage:', addressData); // Log para depuración
           await AsyncStorage.setItem(
             'selectedAddress',
-            JSON.stringify({
-              _id: params.addressId,
-              street: params.street || '',
-              city: params.city || params.addressDetails,
-              state: params.state || '',
-              country: params.country || '',
-              postalCode: params.postalCode || '',
-            }),
+            JSON.stringify(addressData),
           );
         } catch (error) {
           console.error('Error al guardar dirección en AsyncStorage:', error);
         }
       }
 
-      // Propiedad del Capital
+      // Otros campos (Propiedad del Capital, Tamaño de la Empresa, etc.)
       if (
         params?.capitalOwnershipValue &&
         params?.capitalOwnershipDisplay &&
@@ -269,7 +230,6 @@ const CreateProfessionalAccount = () => {
       ) {
         updates.capitalOwnership = params.capitalOwnershipValue;
         updates.capitalOwnershipDisplay = params.capitalOwnershipDisplay;
-
         try {
           await AsyncStorage.setItem(
             'selectedCapitalOwnership',
@@ -283,7 +243,6 @@ const CreateProfessionalAccount = () => {
         }
       }
 
-      // Tamaño de la Empresa
       if (
         params?.companySizeValue &&
         params?.companySizeDisplay &&
@@ -291,7 +250,6 @@ const CreateProfessionalAccount = () => {
       ) {
         updates.companySize = params.companySizeValue;
         updates.companySizeDisplay = params.companySizeDisplay;
-
         try {
           await AsyncStorage.setItem(
             'selectedCompanySize',
@@ -305,7 +263,6 @@ const CreateProfessionalAccount = () => {
         }
       }
 
-      // Forma Jurídica
       if (
         params?.legalFormValue &&
         params?.legalFormDisplay &&
@@ -313,7 +270,6 @@ const CreateProfessionalAccount = () => {
       ) {
         updates.legalForm = params.legalFormValue;
         updates.legalFormDisplay = params.legalFormDisplay;
-
         try {
           await AsyncStorage.setItem(
             'selectedLegalForm',
@@ -327,7 +283,6 @@ const CreateProfessionalAccount = () => {
         }
       }
 
-      // Sector Económico
       if (
         params?.economicSectorValue &&
         params?.economicSectorDisplay &&
@@ -335,7 +290,6 @@ const CreateProfessionalAccount = () => {
       ) {
         updates.economicSector = params.economicSectorValue;
         updates.economicSectorDisplay = params.economicSectorDisplay;
-
         try {
           await AsyncStorage.setItem(
             'selectedEconomicSector',
@@ -349,7 +303,6 @@ const CreateProfessionalAccount = () => {
         }
       }
 
-      // Ámbito de Actuación
       if (
         params?.operationScopeValue &&
         params?.operationScopeDisplay &&
@@ -357,7 +310,6 @@ const CreateProfessionalAccount = () => {
       ) {
         updates.operationScope = params.operationScopeValue;
         updates.operationScopeDisplay = params.operationScopeDisplay;
-
         try {
           await AsyncStorage.setItem(
             'selectedOperationScope',
@@ -377,7 +329,7 @@ const CreateProfessionalAccount = () => {
     };
 
     updateFormDataFromParams();
-  }, [params, formData]);
+  }, [params]);
 
   // Función para verificar la existencia de una cuenta profesional
   const checkAccount = async (userId, forceFetch = false) => {
@@ -438,6 +390,8 @@ const CreateProfessionalAccount = () => {
                   ? ', ' + response.data.address.postalCode
                   : ''
               }`
+                .trim()
+                .replace(/,\s*$/, '')
             : '',
           capitalOwnership: response.data.capitalOwnership || '',
           companySize: response.data.companySize || '',
@@ -651,6 +605,7 @@ const CreateProfessionalAccount = () => {
     setLoading(true);
 
     try {
+      console.log('Submitting formData:', formData); // Log para depuración
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
       formDataToSend.append('email', formData.email);
@@ -769,6 +724,7 @@ const CreateProfessionalAccount = () => {
       ]);
 
       Alert.alert('Éxito', 'Cuenta profesional creada correctamente');
+      navigation.navigate(SCREENS.CUENTA_OFICIAL);
     } catch (error) {
       console.error(
         'Error al crear cuenta profesional:',
@@ -808,7 +764,9 @@ const CreateProfessionalAccount = () => {
       <Text style={styles.cardLabel}>Subcategoría:</Text>
       <Text style={styles.cardText}>{account.subcategoryName}</Text>
       <Text style={styles.cardLabel}>Dirección:</Text>
-      <Text style={styles.cardText}>{account.addressDetails}</Text>
+      <Text style={styles.cardText}>
+        {account.addressDetails || 'Sin dirección especificada'}
+      </Text>
       <Text style={styles.cardLabel}>Propiedad del Capital:</Text>
       <Text style={styles.cardText}>{account.capitalOwnership}</Text>
       <Text style={styles.cardLabel}>Tamaño de la Empresa:</Text>
@@ -879,459 +837,468 @@ const CreateProfessionalAccount = () => {
 
   // Renderizar formulario si no hay cuenta profesional
   return (
-    <SafeAreaView style={styles.safeContainer}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          {ICONS.CHEVRON_LEFT &&
-            (() => {
-              const ChevronLeftIcon =
-                IconComponents[ICONS.CHEVRON_LEFT.library];
-              return (
-                <ChevronLeftIcon
-                  name={ICONS.CHEVRON_LEFT.name}
-                  size={ICONS.CHEVRON_LEFT.size || 30}
-                  color={COLORS.green}
-                />
-              );
-            })()}
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Crear Cuenta Profesional</Text>
-      </View>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Propietario*</Text>
-          <TextInput
-            style={[styles.input, styles.disabledInput]}
-            value={userName}
-            editable={false}
-            placeholder="Nombre del propietario"
-            placeholderTextColor={COLORS.placeholder}
-          />
+    <>
+      <SafeAreaView style={styles.safeContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            {ICONS.CHEVRON_LEFT &&
+              (() => {
+                const ChevronLeftIcon =
+                  IconComponents[ICONS.CHEVRON_LEFT.library];
+                return (
+                  <ChevronLeftIcon
+                    name={ICONS.CHEVRON_LEFT.name}
+                    size={ICONS.CHEVRON_LEFT.size || 30}
+                    color={COLORS.green}
+                  />
+                );
+              })()}
+          </TouchableOpacity>
+          <Text style={styles.headerText}>Crear Cuenta Profesional</Text>
         </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Categoría y Subcategoría*</Text>
-          <TouchableOpacity
-            style={[
-              styles.selectionPicker,
-              formData.categoryName &&
-                formData.subcategoryName &&
-                styles.selectionPickerSelected,
-            ]}
-            onPress={() =>
-              navigation.navigate(SCREENS.CATEGORY_SELECTION_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
-              })
-            }>
-            <Text
+        <ScrollView contentContainerStyle={styles.container}>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Propietario*</Text>
+            <TextInput
+              style={[styles.input, styles.disabledInput]}
+              value={userName}
+              editable={false}
+              placeholder="Nombre del propietario"
+              placeholderTextColor={COLORS.placeholder}
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Categoría y Subcategoría*</Text>
+            <TouchableOpacity
               style={[
-                styles.selectionPickerText,
+                styles.selectionPicker,
                 formData.categoryName &&
                   formData.subcategoryName &&
-                  styles.selectionPickerTextSelected,
-              ]}>
-              {formData.categoryName && formData.subcategoryName
-                ? `${formData.categoryName} - ${formData.subcategoryName}`
-                : 'Seleccionar Categoría y Subcategoría'}
-            </Text>
-            {ICONS.CHEVRON_RIGHT &&
-              (() => {
-                const ChevronRightIcon =
-                  IconComponents[ICONS.CHEVRON_RIGHT.library];
-                return (
-                  <ChevronRightIcon
-                    name={ICONS.CHEVRON_RIGHT.name}
-                    size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
-                  />
-                );
-              })()}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Dirección*</Text>
-          <TouchableOpacity
-            style={[
-              styles.selectionPicker,
-              formData.address && styles.selectionPickerSelected,
-            ]}
-            onPress={() =>
-              navigation.navigate(SCREENS.SELECT_CITY_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
-              })
-            }>
-            <Text
+                  styles.selectionPickerSelected,
+              ]}
+              onPress={() =>
+                navigation.navigate(SCREENS.CATEGORY_SELECTION_SCREEN, {
+                  returnScreen: 'CreateProfessionalAccount',
+                })
+              }>
+              <Text
+                style={[
+                  styles.selectionPickerText,
+                  formData.categoryName &&
+                    formData.subcategoryName &&
+                    styles.selectionPickerTextSelected,
+                ]}>
+                {formData.categoryName && formData.subcategoryName
+                  ? `${formData.categoryName} - ${formData.subcategoryName}`
+                  : 'Seleccionar Categoría y Subcategoría'}
+              </Text>
+              {ICONS.CHEVRON_RIGHT &&
+                (() => {
+                  const ChevronRightIcon =
+                    IconComponents[ICONS.CHEVRON_RIGHT.library];
+                  return (
+                    <ChevronRightIcon
+                      name={ICONS.CHEVRON_RIGHT.name}
+                      size={ICONS.CHEVRON_RIGHT.size || 24}
+                      color={COLORS.placeholder}
+                    />
+                  );
+                })()}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Dirección*</Text>
+            <TouchableOpacity
               style={[
-                styles.selectionPickerText,
-                formData.address && styles.selectionPickerTextSelected,
-              ]}>
-              {formData.addressDetails || 'Seleccionar Dirección'}
-            </Text>
-            {ICONS.CHEVRON_RIGHT &&
-              (() => {
-                const ChevronRightIcon =
-                  IconComponents[ICONS.CHEVRON_RIGHT.library];
-                return (
-                  <ChevronRightIcon
-                    name={ICONS.CHEVRON_RIGHT.name}
-                    size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
-                  />
-                );
-              })()}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Propiedad del Capital*</Text>
-          <TouchableOpacity
-            style={[
-              styles.selectionPicker,
-              formData.capitalOwnership && styles.selectionPickerSelected,
-            ]}
-            onPress={() =>
-              navigation.navigate(SCREENS.CAPITAL_OWNER_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
-              })
-            }>
-            <Text
+                styles.selectionPicker,
+                formData.address && styles.selectionPickerSelected,
+              ]}
+              onPress={() =>
+                navigation.navigate(SCREENS.SELECT_CITY_SCREEN, {
+                  returnScreen: 'CreateProfessionalAccount',
+                })
+              }>
+              <Text
+                style={[
+                  styles.selectionPickerText,
+                  formData.address && styles.selectionPickerTextSelected,
+                ]}>
+                {formData.addressDetails || 'Seleccionar Dirección'}
+              </Text>
+              {ICONS.CHEVRON_RIGHT &&
+                (() => {
+                  const ChevronRightIcon =
+                    IconComponents[ICONS.CHEVRON_RIGHT.library];
+                  return (
+                    <ChevronRightIcon
+                      name={ICONS.CHEVRON_RIGHT.name}
+                      size={ICONS.CHEVRON_RIGHT.size || 24}
+                      color={COLORS.placeholder}
+                    />
+                  );
+                })()}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Propiedad del Capital*</Text>
+            <TouchableOpacity
               style={[
-                styles.selectionPickerText,
-                formData.capitalOwnership && styles.selectionPickerTextSelected,
-              ]}>
-              {formData.capitalOwnershipDisplay ||
-                'Seleccionar Propiedad del Capital'}
-            </Text>
-            {ICONS.CHEVRON_RIGHT &&
-              (() => {
-                const ChevronRightIcon =
-                  IconComponents[ICONS.CHEVRON_RIGHT.library];
-                return (
-                  <ChevronRightIcon
-                    name={ICONS.CHEVRON_RIGHT.name}
-                    size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
-                  />
-                );
-              })()}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Tamaño de la Empresa*</Text>
-          <TouchableOpacity
-            style={[
-              styles.selectionPicker,
-              formData.companySize && styles.selectionPickerSelected,
-            ]}
-            onPress={() =>
-              navigation.navigate(SCREENS.COMPANY_SIZE_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
-              })
-            }>
-            <Text
+                styles.selectionPicker,
+                formData.capitalOwnership && styles.selectionPickerSelected,
+              ]}
+              onPress={() =>
+                navigation.navigate(SCREENS.CAPITAL_OWNER_SCREEN, {
+                  returnScreen: 'CreateProfessionalAccount',
+                })
+              }>
+              <Text
+                style={[
+                  styles.selectionPickerText,
+                  formData.capitalOwnership &&
+                    styles.selectionPickerTextSelected,
+                ]}>
+                {formData.capitalOwnershipDisplay ||
+                  'Seleccionar Propiedad del Capital'}
+              </Text>
+              {ICONS.CHEVRON_RIGHT &&
+                (() => {
+                  const ChevronRightIcon =
+                    IconComponents[ICONS.CHEVRON_RIGHT.library];
+                  return (
+                    <ChevronRightIcon
+                      name={ICONS.CHEVRON_RIGHT.name}
+                      size={ICONS.CHEVRON_RIGHT.size || 24}
+                      color={COLORS.placeholder}
+                    />
+                  );
+                })()}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Tamaño de la Empresa*</Text>
+            <TouchableOpacity
               style={[
-                styles.selectionPickerText,
-                formData.companySize && styles.selectionPickerTextSelected,
-              ]}>
-              {formData.companySizeDisplay ||
-                'Seleccionar Tamaño de la Empresa'}
-            </Text>
-            {ICONS.CHEVRON_RIGHT &&
-              (() => {
-                const ChevronRightIcon =
-                  IconComponents[ICONS.CHEVRON_RIGHT.library];
-                return (
-                  <ChevronRightIcon
-                    name={ICONS.CHEVRON_RIGHT.name}
-                    size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
-                  />
-                );
-              })()}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Forma Jurídica*</Text>
-          <TouchableOpacity
-            style={[
-              styles.selectionPicker,
-              formData.legalForm && styles.selectionPickerSelected,
-            ]}
-            onPress={() =>
-              navigation.navigate(SCREENS.LEGAL_FORM_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
-              })
-            }>
-            <Text
+                styles.selectionPicker,
+                formData.companySize && styles.selectionPickerSelected,
+              ]}
+              onPress={() =>
+                navigation.navigate(SCREENS.COMPANY_SIZE_SCREEN, {
+                  returnScreen: 'CreateProfessionalAccount',
+                })
+              }>
+              <Text
+                style={[
+                  styles.selectionPickerText,
+                  formData.companySize && styles.selectionPickerTextSelected,
+                ]}>
+                {formData.companySizeDisplay ||
+                  'Seleccionar Tamaño de la Empresa'}
+              </Text>
+              {ICONS.CHEVRON_RIGHT &&
+                (() => {
+                  const ChevronRightIcon =
+                    IconComponents[ICONS.CHEVRON_RIGHT.library];
+                  return (
+                    <ChevronRightIcon
+                      name={ICONS.CHEVRON_RIGHT.name}
+                      size={ICONS.CHEVRON_RIGHT.size || 24}
+                      color={COLORS.placeholder}
+                    />
+                  );
+                })()}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Forma Jurídica*</Text>
+            <TouchableOpacity
               style={[
-                styles.selectionPickerText,
-                formData.legalForm && styles.selectionPickerTextSelected,
-              ]}>
-              {formData.legalFormDisplay || 'Seleccionar Forma Jurídica'}
-            </Text>
-            {ICONS.CHEVRON_RIGHT &&
-              (() => {
-                const ChevronRightIcon =
-                  IconComponents[ICONS.CHEVRON_RIGHT.library];
-                return (
-                  <ChevronRightIcon
-                    name={ICONS.CHEVRON_RIGHT.name}
-                    size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
-                  />
-                );
-              })()}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Sector Económico*</Text>
-          <TouchableOpacity
-            style={[
-              styles.selectionPicker,
-              formData.economicSector && styles.selectionPickerSelected,
-            ]}
-            onPress={() =>
-              navigation.navigate(SCREENS.ECONOMIC_SECTOR_SCREEN, {
-                returnScreen: 'CreateProfessionalAccount',
-              })
-            }>
-            <Text
+                styles.selectionPicker,
+                formData.legalForm && styles.selectionPickerSelected,
+              ]}
+              onPress={() =>
+                navigation.navigate(SCREENS.LEGAL_FORM_SCREEN, {
+                  returnScreen: 'CreateProfessionalAccount',
+                })
+              }>
+              <Text
+                style={[
+                  styles.selectionPickerText,
+                  formData.legalForm && styles.selectionPickerTextSelected,
+                ]}>
+                {formData.legalFormDisplay || 'Seleccionar Forma Jurídica'}
+              </Text>
+              {ICONS.CHEVRON_RIGHT &&
+                (() => {
+                  const ChevronRightIcon =
+                    IconComponents[ICONS.CHEVRON_RIGHT.library];
+                  return (
+                    <ChevronRightIcon
+                      name={ICONS.CHEVRON_RIGHT.name}
+                      size={ICONS.CHEVRON_RIGHT.size || 24}
+                      color={COLORS.placeholder}
+                    />
+                  );
+                })()}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Sector Económico*</Text>
+            <TouchableOpacity
               style={[
-                styles.selectionPickerText,
-                formData.economicSector && styles.selectionPickerTextSelected,
-              ]}>
-              {formData.economicSectorDisplay || 'Seleccionar Sector Económico'}
-            </Text>
-            {ICONS.CHEVRON_RIGHT &&
-              (() => {
-                const ChevronRightIcon =
-                  IconComponents[ICONS.CHEVRON_RIGHT.library];
-                return (
-                  <ChevronRightIcon
-                    name={ICONS.CHEVRON_RIGHT.name}
-                    size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
-                  />
-                );
-              })()}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Ámbito de Actuación*</Text>
-          <TouchableOpacity
-            style={[
-              styles.selectionPicker,
-              formData.operationScope && styles.selectionPickerSelected,
-            ]}
-            onPress={() =>
-              navigation.navigate(SCREENS.OPERATION_SCOPEREEN, {
-                returnScreen: 'CreateProfessionalAccount',
-              })
-            }>
-            <Text
+                styles.selectionPicker,
+                formData.economicSector && styles.selectionPickerSelected,
+              ]}
+              onPress={() =>
+                navigation.navigate(SCREENS.ECONOMIC_SECTOR_SCREEN, {
+                  returnScreen: 'CreateProfessionalAccount',
+                })
+              }>
+              <Text
+                style={[
+                  styles.selectionPickerText,
+                  formData.economicSector && styles.selectionPickerTextSelected,
+                ]}>
+                {formData.economicSectorDisplay ||
+                  'Seleccionar Sector Económico'}
+              </Text>
+              {ICONS.CHEVRON_RIGHT &&
+                (() => {
+                  const ChevronRightIcon =
+                    IconComponents[ICONS.CHEVRON_RIGHT.library];
+                  return (
+                    <ChevronRightIcon
+                      name={ICONS.CHEVRON_RIGHT.name}
+                      size={ICONS.CHEVRON_RIGHT.size || 24}
+                      color={COLORS.placeholder}
+                    />
+                  );
+                })()}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Ámbito de Actuación*</Text>
+            <TouchableOpacity
               style={[
-                styles.selectionPickerText,
-                formData.operationScope && styles.selectionPickerTextSelected,
-              ]}>
-              {formData.operationScopeDisplay ||
-                'Seleccionar Ámbito de Actuación'}
-            </Text>
-            {ICONS.CHEVRON_RIGHT &&
-              (() => {
-                const ChevronRightIcon =
-                  IconComponents[ICONS.CHEVRON_RIGHT.library];
-                return (
-                  <ChevronRightIcon
-                    name={ICONS.CHEVRON_RIGHT.name}
-                    size={ICONS.CHEVRON_RIGHT.size || 24}
-                    color={COLORS.placeholder}
+                styles.selectionPicker,
+                formData.operationScope && styles.selectionPickerSelected,
+              ]}
+              onPress={() =>
+                navigation.navigate(SCREENS.OPERATION_SCOPEREEN, {
+                  returnScreen: 'CreateProfessionalAccount',
+                })
+              }>
+              <Text
+                style={[
+                  styles.selectionPickerText,
+                  formData.operationScope && styles.selectionPickerTextSelected,
+                ]}>
+                {formData.operationScopeDisplay ||
+                  'Seleccionar Ámbito de Actuación'}
+              </Text>
+              {ICONS.CHEVRON_RIGHT &&
+                (() => {
+                  const ChevronRightIcon =
+                    IconComponents[ICONS.CHEVRON_RIGHT.library];
+                  return (
+                    <ChevronRightIcon
+                      name={ICONS.CHEVRON_RIGHT.name}
+                      size={ICONS.CHEVRON_RIGHT.size || 24}
+                      color={COLORS.placeholder}
+                    />
+                  );
+                })()}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Nombre profesional*</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.name}
+              onChangeText={text => handleChange('name', text)}
+              placeholder="Ej: Juan Pérez Profesional"
+              placeholderTextColor={COLORS.placeholder}
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Email*</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.email}
+              onChangeText={text => handleChange('email', text)}
+              placeholder="Ej: profesional@ejemplo.com"
+              placeholderTextColor={COLORS.placeholder}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Teléfono de contacto*</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.phone_number}
+              onChangeText={text => handleChange('phone_number', text)}
+              placeholder="Ej: +24022255555"
+              placeholderTextColor={COLORS.placeholder}
+              keyboardType="phone-pad"
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Capital Social*</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.socialCapital}
+              onChangeText={text => handleChange('socialCapital', text)}
+              placeholder="Ej: 1,000,000 FCFA"
+              placeholderTextColor={COLORS.placeholder}
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Nº de Establecimientos*</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.numberOfEstablishments}
+              onChangeText={text =>
+                handleChange('numberOfEstablishments', text)
+              }
+              placeholder="Ej: 1"
+              placeholderTextColor={COLORS.placeholder}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Nº de Empleados*</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.numberOfEmployees}
+              onChangeText={text => handleChange('numberOfEmployees', text)}
+              placeholder="Ej: 12"
+              placeholderTextColor={COLORS.placeholder}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>NIF*</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.nif}
+              onChangeText={text => handleChange('nif', text)}
+              placeholder="Ej: 038446EG-24"
+              placeholderTextColor={COLORS.placeholder}
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Nº de Expediente*</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.expedientNumber}
+              onChangeText={text => handleChange('expedientNumber', text)}
+              placeholder="Ej: 05069/2024"
+              placeholderTextColor={COLORS.placeholder}
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Nº de Certificado*</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.certificateNumber}
+              onChangeText={text => handleChange('certificateNumber', text)}
+              placeholder="Ej: 3025"
+              placeholderTextColor={COLORS.placeholder}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Descripción*</Text>
+            <TextInput
+              style={[styles.input, styles.multilineInput]}
+              value={formData.description}
+              onChangeText={text => handleChange('description', text)}
+              placeholder="Describe tus servicios profesionales"
+              placeholderTextColor={COLORS.placeholder}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Avatar*</Text>
+            <TouchableOpacity
+              style={styles.imagePicker}
+              onPress={() => pickImage()}>
+              {avatar ? (
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={{uri: avatar}}
+                    style={styles.imagePreview}
+                    key={avatar}
+                    onError={e => {
+                      console.error(
+                        'Error cargando avatar:',
+                        e.nativeEvent.error,
+                      );
+                      Alert.alert('Error', 'No se pudo cargar el avatar.');
+                    }}
                   />
-                );
-              })()}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Nombre profesional*</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.name}
-            onChangeText={text => handleChange('name', text)}
-            placeholder="Ej: Juan Pérez Profesional"
-            placeholderTextColor={COLORS.placeholder}
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Email*</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.email}
-            onChangeText={text => handleChange('email', text)}
-            placeholder="Ej: profesional@ejemplo.com"
-            placeholderTextColor={COLORS.placeholder}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Teléfono de contacto*</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.phone_number}
-            onChangeText={text => handleChange('phone_number', text)}
-            placeholder="Ej: +24022255555"
-            placeholderTextColor={COLORS.placeholder}
-            keyboardType="phone-pad"
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Capital Social*</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.socialCapital}
-            onChangeText={text => handleChange('socialCapital', text)}
-            placeholder="Ej: 1,000,000 FCFA"
-            placeholderTextColor={COLORS.placeholder}
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Nº de Establecimientos*</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.numberOfEstablishments}
-            onChangeText={text => handleChange('numberOfEstablishments', text)}
-            placeholder="Ej: 1"
-            placeholderTextColor={COLORS.placeholder}
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Nº de Empleados*</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.numberOfEmployees}
-            onChangeText={text => handleChange('numberOfEmployees', text)}
-            placeholder="Ej: 12"
-            placeholderTextColor={COLORS.placeholder}
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>NIF*</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.nif}
-            onChangeText={text => handleChange('nif', text)}
-            placeholder="Ej: 038446EG-24"
-            placeholderTextColor={COLORS.placeholder}
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Nº de Expediente*</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.expedientNumber}
-            onChangeText={text => handleChange('expedientNumber', text)}
-            placeholder="Ej: 05069/2024"
-            placeholderTextColor={COLORS.placeholder}
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Nº de Certificado*</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.certificateNumber}
-            onChangeText={text => handleChange('certificateNumber', text)}
-            placeholder="Ej: 3025"
-            placeholderTextColor={COLORS.placeholder}
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Descripción*</Text>
-          <TextInput
-            style={[styles.input, styles.multilineInput]}
-            value={formData.description}
-            onChangeText={text => handleChange('description', text)}
-            placeholder="Describe tus servicios profesionales"
-            placeholderTextColor={COLORS.placeholder}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Avatar*</Text>
-          <TouchableOpacity
-            style={styles.imagePicker}
-            onPress={() => pickImage()}>
-            {avatar ? (
-              <View style={styles.imageContainer}>
-                <Image
-                  source={{uri: avatar}}
-                  style={styles.imagePreview}
-                  key={avatar}
-                  onError={e => {
-                    console.error(
-                      'Error cargando avatar:',
-                      e.nativeEvent.error,
-                    );
-                    Alert.alert('Error', 'No se pudo cargar el avatar.');
-                  }}
-                />
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => removeImage()}>
-                  {ICONS.DELETE &&
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => removeImage()}>
+                    {ICONS.DELETE &&
+                      (() => {
+                        const DeleteIcon = IconComponents[ICONS.DELETE.library];
+                        return (
+                          <DeleteIcon
+                            name={ICONS.DELETE.name}
+                            size={ICONS.DELETE.size || 24}
+                            color={COLORS.red}
+                          />
+                        );
+                      })()}
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={styles.imagePlaceholder}>
+                  {ICONS.IMAGE &&
                     (() => {
-                      const DeleteIcon = IconComponents[ICONS.DELETE.library];
+                      const ImageIcon = IconComponents[ICONS.IMAGE.library];
                       return (
-                        <DeleteIcon
-                          name={ICONS.DELETE.name}
-                          size={ICONS.DELETE.size || 24}
-                          color={COLORS.red}
+                        <ImageIcon
+                          name={ICONS.IMAGE.name}
+                          size={ICONS.IMAGE.size || 40}
+                          color={COLORS.placeholder}
                         />
                       );
                     })()}
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View style={styles.imagePlaceholder}>
-                {ICONS.IMAGE &&
-                  (() => {
-                    const ImageIcon = IconComponents[ICONS.IMAGE.library];
-                    return (
-                      <ImageIcon
-                        name={ICONS.IMAGE.name}
-                        size={ICONS.IMAGE.size || 40}
-                        color={COLORS.placeholder}
-                      />
-                    );
-                  })()}
-                <Text style={styles.imagePickerText}>
-                  Seleccionar Avatar (1:1)
-                </Text>
-              </View>
-            )}
+                  <Text style={styles.imagePickerText}>
+                    Seleccionar Avatar (1:1)
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              loading && styles.submitButtonDisabled,
+            ]}
+            onPress={handleSubmit}
+            disabled={loading}>
+            {ICONS.WORK &&
+              (() => {
+                const WorkIcon = IconComponents[ICONS.WORK.library];
+                return (
+                  <WorkIcon
+                    name={ICONS.WORK.name}
+                    size={ICONS.WORK.size || 24}
+                    color={COLORS.white}
+                  />
+                );
+              })()}
+            <Text style={styles.submitButtonText}>
+              {loading ? 'Creando...' : 'Crear Cuenta Profesional'}
+            </Text>
           </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          style={[styles.submitButton, loading && styles.submitButtonDisabled]}
-          onPress={handleSubmit}
-          disabled={loading}>
-          {ICONS.WORK &&
-            (() => {
-              const WorkIcon = IconComponents[ICONS.WORK.library];
-              return (
-                <WorkIcon
-                  name={ICONS.WORK.name}
-                  size={ICONS.WORK.size || 24}
-                  color={COLORS.white}
-                />
-              );
-            })()}
-          <Text style={styles.submitButtonText}>
-            {loading ? 'Creando...' : 'Crear Cuenta Profesional'}
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 };
 

@@ -12,7 +12,7 @@ import axios from 'axios';
 import {COLORS, ICONS} from '../../../../constants';
 import SCREENS from '../../../../screens';
 import {API_BASE_URL} from '../../../../config/Service.Config';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import styles from './styles/SelectCityStyle';
 
 // Importar los componentes de iconos dinámicamente
@@ -28,6 +28,8 @@ const SelectCityScreen = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const navigation = useNavigation();
+  const route = useRoute();
+  const {returnScreen} = route.params || {};
   const ChevronLeftIcon = IconComponents[ICONS.CHEVRON_LEFT.library];
 
   // Verificar usuario existente y cargar datos desde AsyncStorage
@@ -91,32 +93,57 @@ const SelectCityScreen = () => {
   // Manejar la selección de una ciudad
   const handleSelectCity = async city => {
     try {
-      if (!API_BASE_URL) {
-        throw new Error('API_BASE_URL is not defined');
-      }
-      console.log('Updating city for userId:', userId, 'City:', city);
-      const url = `${API_BASE_URL}/user/${userId}`;
-      const payload = {ciudad: {id: city._id, name: city.name}};
-      console.log('PUT request to:', url, 'Payload:', payload);
-      const response = await axios.put(url, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log('Update response:', response.data);
-
-      const updatedUserData = {
-        ...userData,
-        ciudad: {id: city._id, name: city.name},
+      // Guardar la ciudad como dirección en AsyncStorage
+      const addressData = {
+        _id: city._id,
+        city: city.name,
+        street: '', // No disponible en la API actual
+        state: '',
+        country: '', // Podrías definir un país por defecto si es necesario
+        postalCode: '',
       };
       await AsyncStorage.setItem(
-        `user${userId}`,
-        JSON.stringify(updatedUserData),
+        'selectedAddress',
+        JSON.stringify(addressData),
       );
-      setUserData(updatedUserData);
+      console.log('Saved address to AsyncStorage:', addressData);
 
-      Alert.alert('Éxito', 'Ubicación actualizada correctamente');
-      navigation.goBack();
+      // Si la pantalla tiene un returnScreen definido, pasar los parámetros
+      if (returnScreen === 'CreateProfessionalAccount') {
+        navigation.navigate(returnScreen, {
+          addressId: city._id,
+          addressDetails: city.name,
+          city: city.name,
+        });
+      } else {
+        // Actualizar la ciudad del usuario en el backend (mantener comportamiento original)
+        if (!API_BASE_URL) {
+          throw new Error('API_BASE_URL is not defined');
+        }
+        console.log('Updating city for userId:', userId, 'City:', city);
+        const url = `${API_BASE_URL}/user/${userId}`;
+        const payload = {ciudad: {id: city._id, name: city.name}};
+        console.log('PUT request to:', url, 'Payload:', payload);
+        const response = await axios.put(url, payload, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Update response:', response.data);
+
+        const updatedUserData = {
+          ...userData,
+          ciudad: {id: city._id, name: city.name},
+        };
+        await AsyncStorage.setItem(
+          `user${userId}`,
+          JSON.stringify(updatedUserData),
+        );
+        setUserData(updatedUserData);
+
+        Alert.alert('Éxito', 'Ubicación actualizada correctamente');
+        navigation.goBack();
+      }
     } catch (error) {
       console.error('Error al actualizar la ubicación:', {
         message: error.message,

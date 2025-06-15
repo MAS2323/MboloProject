@@ -17,7 +17,6 @@ import {COLORS, SIZES} from '../../constants';
 
 const OfficialAccount = () => {
   const [accounts, setAccounts] = useState([]);
-  const [filteredAccounts, setFilteredAccounts] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,7 +32,6 @@ const OfficialAccount = () => {
           throw new Error(data.message || 'Error fetching official accounts');
         }
         setAccounts(data);
-        setFilteredAccounts(data); // Inicialmente, mostrar todas las cuentas
       } catch (error) {
         console.error('Error fetching official accounts:', error.message);
         Alert.alert('Error', 'No se pudieron cargar las cuentas oficiales');
@@ -60,16 +58,13 @@ const OfficialAccount = () => {
     fetchCategories();
   }, []);
 
-  // Filter accounts by selected category
+  // Handle category selection
   const handleCategorySelect = category => {
     setSelectedCategory(category);
     if (category) {
-      const filtered = accounts.filter(
-        account => account.categoryId === category._id,
-      );
-      setFilteredAccounts(filtered);
-    } else {
-      setFilteredAccounts(accounts); // Mostrar todas las cuentas si no hay categoría seleccionada
+      navigation.navigate(SCREENS.PRODUCT_LIST_CATEGORY, {
+        categoryId: category._id,
+      });
     }
   };
 
@@ -151,7 +146,7 @@ const OfficialAccount = () => {
 
       {/* Lista de Cuentas Oficiales */}
       <FlatList
-        data={filteredAccounts}
+        data={accounts}
         renderItem={renderAccountItem}
         keyExtractor={item => item._id}
         contentContainerStyle={styles.listContainer}
