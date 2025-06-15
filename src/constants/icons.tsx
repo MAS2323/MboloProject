@@ -52,11 +52,6 @@ export const ICONS = {
     name: 'shopping-bag',
     size: 24,
   },
-  WHATSAPP: {
-    library: 'Fontisto',
-    name: 'whatsapp',
-    size: 24,
-  },
   START: {
     library: 'Ionicons',
     name: 'star',
@@ -92,12 +87,6 @@ export const ICONS = {
     library: 'MaterialIcons',
     name: 'add-circle',
     size: 30,
-  },
-  PHONE: {
-    // Added for phone call button
-    library: 'MaterialIcons',
-    name: 'call',
-    size: 24,
   },
   BACK_ARROW_ICON: {
     library: 'MaterialIcons',
@@ -315,16 +304,6 @@ export const ICONS = {
     library: 'MaterialIcons',
     name: 'image-not-supported',
     size: 40,
-  },
-  ADD: {
-    library: 'MaterialIcons',
-    name: 'add',
-    size: 24,
-  },
-  ARROW_BACK: {
-    library: 'Ionicons',
-    name: 'arrow-back',
-    size: 24,
   },
   INFO_CIRCLE_OUTLINE: {
     library: 'MaterialCommunityIcons',
