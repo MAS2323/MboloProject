@@ -62,7 +62,7 @@ const AddDeliveryOptionScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          {renderIcon(ICONS.ARROW_BACK, COLORS?.PRIMARY || '#00C853')}
+          {renderIcon(ICONS.ARROW_BACK, COLORS?.primary || '#00C853')}
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Opción de Entrega</Text>
         <TouchableOpacity>

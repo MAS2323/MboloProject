@@ -42,7 +42,6 @@ import ChangePasswordScreen from '../components/profile/settings/ChangePasswordS
 import DisableFeedbackScreen from '../components/profile/settings/DisableFeedbackScreen';
 import SobreNosotrosScreen from '../components/profile/settings/SobreNosotrosScreen';
 import ManageNotificationsScreen from '../components/profile/settings/ManageNotificationsScreen';
-import CompanyDetails from '../components/profile/bussines/CompanyDetails';
 import StoreDetails from '../components/profile/bussines/StoreDetails';
 import DeliveryDetails from '../components/profile/bussines/DeliveryDetails';
 import CreateProfessionalAccount from '../components/profile/bussines/CreateProfessionalAccount';
@@ -193,6 +192,11 @@ const StackNavigation = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name={SCREENS.FAVORITE}
+        component={FavoriteScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name={SCREENS.MANAGE_NOTIFICATIONS}
         component={ManageNotificationsScreen}
         options={{headerShown: false}}
@@ -318,11 +322,6 @@ const StackNavigation = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name={SCREENS.COMPANY_DETAILS}
-        component={CompanyDetails}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
         name={SCREENS.STORE_DETAILS}
         component={StoreDetails}
         options={{headerShown: false}}
@@ -388,26 +387,6 @@ function MyTabs() {
           tabBarInactiveTintColor: COLORS.GRAY_LIGHT,
         }}
       />
-      <Tab.Screen
-        name={SCREENS.FAVORITE}
-        component={FavoriteScreen}
-        options={{
-          title: 'Favorite',
-          tabBarIcon: ({focused}) => (
-            <Image
-              source={IMAGES.WISHLIST}
-              style={{
-                width: 30,
-                height: 30,
-                tintColor: focused ? COLORS.primary : COLORS.GRAY_LIGHT,
-              }}
-            />
-          ),
-          tabBarActiveTintColor: COLORS.primary,
-          tabBarInactiveTintColor: COLORS.GRAY_LIGHT,
-        }}
-      />
-
       <Tab.Screen
         name={SCREENS.PROFILE}
         component={ProfileScreen}

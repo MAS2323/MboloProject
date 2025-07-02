@@ -526,11 +526,33 @@ const ProductDetails = () => {
             onProductPress={handleRelatedProductPress}
           />
         );
+
       default:
         return null;
     }
   };
 
+  // return (
+  //   <View style={styles.container}>
+  //     {showHeader && (
+  //       <TouchableOpacity
+  //         style={styles.header}
+  //         onPress={handleHeaderPress}
+  //         activeOpacity={0.7}
+  //         accessibilityLabel="Ir a la página principal">
+  //         <HeaderSearch />
+  //       </TouchableOpacity>
+  //     )}
+  //     <FlatList
+  //       data={sections}
+  //       renderItem={renderSection}
+  //       keyExtractor={(item, index) => `${item.type}-${index}`}
+  //       showsVerticalScrollIndicator={false}
+  //       onScroll={handleScroll}
+  //       scrollEventThrottle={16}
+  //     />
+  //   </View>
+  // );
   return (
     <View style={styles.container}>
       {showHeader && (
@@ -542,6 +564,7 @@ const ProductDetails = () => {
           <HeaderSearch />
         </TouchableOpacity>
       )}
+
       <FlatList
         data={sections}
         renderItem={renderSection}
@@ -549,7 +572,23 @@ const ProductDetails = () => {
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
+        contentContainerStyle={styles.contentContainer} // Añade padding para el footer
       />
+
+      {/* Footer con botones de acción */}
+      <View style={styles.footerContainer}>
+        <TouchableOpacity
+          style={styles.cartButton}
+          onPress={() => console.log('Añadir al carrito')}>
+          <Text style={styles.cartButtonText}>AL CARRITO</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buyButton}
+          onPress={() => console.log('Comprar ahora')}>
+          <Text style={styles.buyButtonText}>COMPRAR</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

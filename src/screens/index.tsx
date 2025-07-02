@@ -48,7 +48,6 @@ const SCREENS = {
   ADD_SCREENS: 'AddScreens',
   DELIVERY_SCREEN: 'DeliveryDetails',
   STORE_DETAILS: 'StoreDetails',
-  COMPANY_DETAILS: 'CompanyDetailsScreen',
   SELECT_CITY_SCREEN: 'SelectCityScreen',
   SELECT_SEX_SCREEN: 'SelectSexScreen',
   CAPITAL_OWNER_SCREEN: 'CapitalOwnershipSelectionScreen',
@@ -64,7 +63,7 @@ const SCREENS = {
   PRODUCT_EDITION: 'ProductEdition',
   ADD_DELIVERY_OPTION: 'AddDeliveryOption',
   OFFICIAL_ACCOUNT: 'OfficialAccountSettings',
-  OFFICIAL_ACCOUNT_DETAIL:  'OfficialAccountDetailScreen',
+  OFFICIAL_ACCOUNT_DETAIL: 'OfficialAccountDetailScreen',
 };
 
 export default SCREENS;

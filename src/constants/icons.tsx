@@ -94,6 +94,12 @@ export const ICONS = {
     name: 'add-circle',
     size: 30,
   },
+  HEART: {
+    // Added for navigation back button
+    library: 'Entypo',
+    name: 'heart',
+    size: 30,
+  },
   BACK_ARROW_ICON: {
     library: 'MaterialIcons',
     name: 'arrow-back',

@@ -238,6 +238,27 @@ const ProfileScreen = () => {
         navigation.navigate(SCREENS.SEGUIDORES);
       },
     },
+    {
+      icon: (() => {
+        const Icon = IconComponents[ICONS.HEART.library];
+        return Icon ? (
+          <Icon
+            name={ICONS.HEART.name}
+            size={ICONS.HEART.size}
+            color={COLORS.black || '#000'}
+          />
+        ) : null;
+      })(),
+      label: 'Favoritos',
+      onPress: () => {
+        if (!SCREENS.FAVORITE) {
+          console.error('SCREENS.SEGUIDORES is undefined');
+          Alert.alert('Error', 'SeguidoresScreen is not defined');
+          return;
+        }
+        navigation.navigate(SCREENS.FAVORITE);
+      },
+    },
   ];
 
   if (!isLoggedIn) {
