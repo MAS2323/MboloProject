@@ -82,6 +82,12 @@ export const ICONS = {
   ARROW_BACK: {name: 'arrow-back', library: 'Ionicons', size: 24},
   SHARE_OUTLINE: {name: 'share-outline', library: 'Ionicons', size: 24},
   ADD: {name: 'add', library: 'Ionicons', size: 20},
+  ADD_NUMBER: {
+    // Added for adding phone numbers
+    library: 'MaterialIcons',
+    name: 'add-circle-outline',
+    size: 24,
+  },
   ADDCIRCLE: {
     // Added for navigation back button
     library: 'MaterialIcons',

@@ -21,6 +21,10 @@ export default function CompanyDetailsScreen() {
       label: 'Crear una cuenta profesional',
       screen: SCREENS.CREATE_PROFESIONAL_ACCOUNT,
     },
+    {
+      label: 'Entrega',
+      screen: SCREENS.DELIVERY_SCREEN,
+    },
   ];
 
   const renderMenuItem = (label, screen) => {
@@ -49,7 +53,7 @@ export default function CompanyDetailsScreen() {
               <ChevronLeftIcon
                 name={ICONS.CHEVRON_LEFT.name}
                 size={ICONS.CHEVRON_LEFT.size}
-                color={COLORS.green}
+                color={COLORS.black}
               />
             );
           })()}
@@ -67,8 +71,8 @@ export default function CompanyDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
-    marginTop: 30,
+    // backgroundColor: COLORS.background,
+    // marginTop: 30,
   },
   header: {
     flexDirection: 'row',
@@ -77,7 +81,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGray,
+    borderBottomColor: '#E0E0E0',
     zIndex: 1,
   },
   headerText: {

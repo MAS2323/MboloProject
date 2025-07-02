@@ -22,6 +22,7 @@ const IconComponents = {
     require('react-native-vector-icons/MaterialCommunityIcons').default,
   Fontisto: require('react-native-vector-icons/Fontisto').default,
   Entypo: require('react-native-vector-icons/Entypo').default,
+  FontAwesome: require('react-native-vector-icons/FontAwesome').default,
   AntDesign: require('react-native-vector-icons/AntDesign').default,
   MaterialIcons: require('react-native-vector-icons/MaterialIcons').default,
   Feather: require('react-native-vector-icons/Feather').default,

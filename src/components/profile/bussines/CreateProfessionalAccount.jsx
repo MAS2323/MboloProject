@@ -799,7 +799,7 @@ const CreateProfessionalAccount = () => {
     return (
       <SafeAreaView style={styles.safeContainer}>
         <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={COLORS.green} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
         </View>
       </SafeAreaView>
     );
@@ -849,7 +849,7 @@ const CreateProfessionalAccount = () => {
                   <ChevronLeftIcon
                     name={ICONS.CHEVRON_LEFT.name}
                     size={ICONS.CHEVRON_LEFT.size || 30}
-                    color={COLORS.green}
+                    color={COLORS.black}
                   />
                 );
               })()}

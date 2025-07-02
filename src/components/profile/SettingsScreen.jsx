@@ -255,7 +255,7 @@ const SettingsScreen = () => {
             />
           ) : null,
           label: 'Información de negocio',
-          onPress: () => navigation.navigate(SCREENS.BUSINESS_INFO),
+          onPress: () => navigation.navigate(SCREENS.COMPANY_DETAILS),
           iconColor: COLORS.white,
           iconBackgroundColor: COLORS.orange || '#FF9500',
         },

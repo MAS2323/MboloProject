@@ -4,6 +4,7 @@ const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
     backgroundColor: COLORS.background,
+    marginTop: 30, // Adjusted to match the header height
   },
   header: {
     flexDirection: 'row',
@@ -84,8 +85,8 @@ const styles = StyleSheet.create({
     // elevation: 1,
   },
   selectionPickerSelected: {
-    borderColor: COLORS.green,
-    backgroundColor: '#E6F4EA', // Light green for selected state
+    borderColor: COLORS.secondary,
+    backgroundColor: COLORS.secondary, // Light green for selected state
   },
   selectionPickerText: {
     fontSize: 16,
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   selectionPickerTextSelected: {
-    color: COLORS.green,
+    color: COLORS.black,
     fontWeight: '500',
   },
   imagePicker: {
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.primary,
     paddingVertical: 16,
     borderRadius: 8,
     marginTop: 24,
