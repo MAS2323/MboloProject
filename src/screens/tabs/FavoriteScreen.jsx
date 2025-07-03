@@ -35,7 +35,6 @@ const FavoriteScreen = () => {
         console.error('Error retrieving userId from AsyncStorage:', error);
       }
     };
-
     getUserId();
   }, []);
 
@@ -48,7 +47,8 @@ const FavoriteScreen = () => {
   const fetchFavorites = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/favorites/${userId}`);
-      const favoritesData = response.data?.subcategories || [];
+      const favoritesData =
+        response.data?.products || response.data?.subcategories || [];
       setFavorites(favoritesData);
     } catch (error) {
       console.error(

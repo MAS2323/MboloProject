@@ -228,40 +228,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     marginLeft: 5,
   },
-  tabBarStyle: {
-    backgroundColor: COLORS.white || '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: COLORS.lightGray || '#E0E0E0',
-    paddingBottom: 5,
-    height: 60,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: -2},
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  tabIconContainer: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  badge: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    backgroundColor: COLORS.primary || '#007AFF',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  badgeText: {
-    color: COLORS.white || '#FFFFFF',
-    fontSize: SIZES.small,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
+ 
 });
 
 export default styles;

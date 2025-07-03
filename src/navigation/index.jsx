@@ -62,6 +62,7 @@ import AddDeliveryOptionScreen from '../components/profile/bussines/AddDeliveryO
 import OfficialAccount from '../components/stores/OfficialAccount';
 import OfficialAccountDetailScreen from '../components/stores/OfficialAccountDetailScreen';
 import CompanyDetailsScreen from '../components/stores/CompanyDetailsScreen';
+import OrderProcessingScreen from '../components/stores/OrderProcessingScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -171,6 +172,11 @@ const StackNavigation = () => {
         name={SCREENS.SOBRE_NOSOTROS}
         component={SobreNosotrosScreen}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.ORDER_PROCESSING}
+        component={OrderProcessingScreen}
+        options={{title: 'Confirmar Compra'}}
       />
       <Stack.Screen
         name={SCREENS.CAPITAL_OWNER_SCREEN}

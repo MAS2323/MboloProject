@@ -65,6 +65,8 @@ const SCREENS = {
   OFFICIAL_ACCOUNT: 'OfficialAccountSettings',
   OFFICIAL_ACCOUNT_DETAIL: 'OfficialAccountDetailScreen',
   COMPANY_DETAILS: 'CompanyDetailsScreen',
+  ORDER_CONFIRMATION: 'OrderConfirmationScreen',
+  ORDER_PROCESSING: 'OrderProcessingScreen',
 };
 
 export default SCREENS;
