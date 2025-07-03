@@ -1,17 +1,30 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Alert, ActivityIndicator} from 'react-native'; // Import ActivityIndicator
+import {View, Text, Alert, ActivityIndicator} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useNavigation, useIsFocused} from '@react-navigation/native'; // useIsFocused para actualizar estado si es necesario
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import styles from './styles/ProductDetails.style'; // Asumiendo que tienes tabBarStyle aquí
-import {COLORS, API_BASE_URL, SIZES} from '../../constants';
+import styles from './styles/ProductDetails.style';
+import {COLORS, SIZES} from '../../constants';
+import {API_BASE_URL} from '../../config/Service.Config';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SCREENS from '../../screens';
 
+// Define named components outside the function
+const ProductDetailsMainScreen = ({route}) =>
+  route.params?.productContent || null;
+const BuyProductScreen = () => null;
+const BuyNowScreen = () => null;
+const ToggleFavoriteScreen = () => null;
+
 const Tab = createBottomTabNavigator();
 
-const ProductDetailsTabs = ({product, productContent}) => {
+const ProductDetailsTabs = ({
+  product,
+  productContent,
+  cartItemsCount,
+  setCartItemsCount,
+}) => {
   const navigation = useNavigation();
   const isScreenFocused = useIsFocused();
   const [isFavorite, setIsFavorite] = useState(false);
@@ -26,7 +39,7 @@ const ProductDetailsTabs = ({product, productContent}) => {
           const cleanedUserId = id.replace(/\"/g, '');
           setUserId(cleanedUserId);
         } else {
-          setUserId(null); // Asegurar que userId sea null si no se encuentra
+          setUserId(null);
         }
       } catch (error) {
         console.error('Error retrieving userId:', error);
@@ -34,39 +47,44 @@ const ProductDetailsTabs = ({product, productContent}) => {
       }
     };
     loadInitialData();
-  }, []); // Cargar userId solo una vez
+  }, []);
 
   useEffect(() => {
-    // Solo verificar favoritos si tenemos userId, producto, subcategoría y la pantalla está enfocada
-    if (userId && product?.subcategory?._id && isScreenFocused) {
+    if (userId && product?._id && isScreenFocused) {
       const checkFavoriteStatus = async () => {
         setIsLoadingFavorite(true);
         try {
-          const response = await axios.get(
-            `${API_BASE_URL}/favorites/${userId}`, // Asumo que este endpoint devuelve todos los favoritos del user
+          console.log(
+            `Checking favorite: ${API_BASE_URL}/favorites/check?userId=${userId}&productId=${product._id}`,
           );
-          const favoritesData =
-            response.data?.subcategories || response.data || []; // Adaptar según la respuesta de tu API
-          setIsFavorite(
-            favoritesData.some(fav => fav._id === product.subcategory._id),
-          );
+          if (!userId || !product?._id) {
+            console.warn(
+              'Missing userId or productId, skipping favorite check',
+            );
+            setIsFavorite(false);
+            return;
+          }
+          const response = await axios.get(`${API_BASE_URL}/favorites/check`, {
+            params: {userId, productId: product._id},
+          });
+          setIsFavorite(response.data.isFavorite);
         } catch (error) {
           console.error(
-            'Error checking favorite status:',
+            'Error checking favorite:',
             error.response?.data || error.message,
           );
-          // No cambiar isFavorite en caso de error, podría ser un problema de red temporal
+          setIsFavorite(false); // Default to not favorite on error
         } finally {
           setIsLoadingFavorite(false);
         }
       };
       checkFavoriteStatus();
     } else if (!userId) {
-      setIsFavorite(false); // Si no hay userId, no puede ser favorito
+      setIsFavorite(false);
     }
-  }, [userId, product?.subcategory?._id, isScreenFocused, product?._id]); // product._id para reaccionar si el producto entero cambia
+  }, [userId, product?._id, isScreenFocused]);
 
-  const handleBuyTab = useCallback(async () => {
+  const handleAddToCart = useCallback(async () => {
     if (!product?._id) {
       Alert.alert('Error', 'Producto no disponible.');
       return;
@@ -74,54 +92,67 @@ const ProductDetailsTabs = ({product, productContent}) => {
     try {
       const cart = await AsyncStorage.getItem('cart');
       let cartItems = cart ? JSON.parse(cart) : [];
-      if (!cartItems.find(item => item._id === product._id)) {
-        cartItems.push({...product, quantity: 1});
-        await AsyncStorage.setItem('cart', JSON.stringify(cartItems));
-        Alert.alert('Carrito', 'Producto añadido al carrito');
+      const existingItemIndex = cartItems.findIndex(
+        item => item._id === product._id,
+      );
+      if (existingItemIndex >= 0) {
+        cartItems[existingItemIndex].quantity += 1;
       } else {
-        Alert.alert('Carrito', 'El producto ya está en el carrito');
+        cartItems.push({...product, quantity: 1});
       }
-      navigation.navigate(SCREENS.CART_SCREEN /*, { product } - opcional */);
+      await AsyncStorage.setItem('cart', JSON.stringify(cartItems));
+      setCartItemsCount(cartItems.length);
+      Alert.alert('Carrito', 'Producto añadido al carrito');
     } catch (error) {
       console.error('Error al añadir al carrito:', error);
       Alert.alert('Error', 'No se pudo añadir el producto al carrito.');
     }
-  }, [product, navigation]);
+  }, [product, setCartItemsCount]);
+
+  const handleBuyTab = useCallback(async () => {
+    await handleAddToCart();
+    navigation.navigate(SCREENS.CART);
+  }, [handleAddToCart, navigation]);
+
+  const handleBuyNowTab = useCallback(async () => {
+    await handleAddToCart();
+    navigation.navigate(SCREENS.CART);
+  }, [handleAddToCart, navigation]);
 
   const handleFavoriteTab = useCallback(async () => {
     if (!userId) {
-      Alert.alert('Error', 'Usuario no autenticado. Por favor, inicia sesión.');
+      Alert.alert(
+        'Inicia sesión',
+        'Debes iniciar sesión para guardar favoritos',
+      );
+      navigation.navigate(SCREENS.LOGIN);
       return;
     }
-    if (!product?.subcategory?._id) {
-      Alert.alert('Error', 'Subcategoría no disponible para este producto.');
+    if (!product?._id) {
+      Alert.alert('Error', 'Producto no disponible.');
       return;
     }
-    if (isLoadingFavorite) return; // Evitar múltiples clicks
+    if (isLoadingFavorite) return;
 
     setIsLoadingFavorite(true);
-    const subcategoryId = product.subcategory._id;
-    const newFavoriteState = !isFavorite;
-
     try {
-      if (newFavoriteState) {
-        await axios.post(`${API_BASE_URL}/favorites`, {userId, subcategoryId});
-        Alert.alert('Favoritos', 'Añadido a favoritos');
-      } else {
-        await axios.delete(
-          `${API_BASE_URL}/favorites/${userId}/${subcategoryId}`,
-        );
-        Alert.alert('Favoritos', 'Eliminado de favoritos');
-      }
-      setIsFavorite(newFavoriteState);
-      // navigation.navigate(SCREENS.FAVORITE); // Considerar si esta navegación es siempre necesaria
+      const response = await axios.post(`${API_BASE_URL}/favorites/toggle`, {
+        userId,
+        productId: product._id,
+      });
+      setIsFavorite(response.data.isFavorite);
+      Alert.alert(
+        'Favoritos',
+        response.data.isFavorite
+          ? 'Añadido a favoritos'
+          : 'Eliminado de favoritos',
+      );
     } catch (error) {
       console.error(
         'Error al gestionar favoritos:',
         error.response?.data || error.message,
       );
       Alert.alert('Error', 'No se pudo actualizar favoritos.');
-      // No revertir aquí el estado de isFavorite, la UI se actualizará en el próximo check si es necesario
     } finally {
       setIsLoadingFavorite(false);
     }
@@ -130,21 +161,27 @@ const ProductDetailsTabs = ({product, productContent}) => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarStyle: styles.tabBarStyle || {
-          // Proporcionar un fallback o asegurar que styles.tabBarStyle exista
+        tabBarStyle: {
+          ...styles.tabBarStyle,
           backgroundColor: COLORS.white,
           borderTopWidth: 1,
           borderTopColor: COLORS.lightGray,
-          paddingBottom: SIZES.bottomTabBarPadding || 5, // Usar constante
-          height: SIZES.tabBarHeight || 60, // Usar constante
+          height: 60,
+          paddingBottom: 5,
+          paddingTop: 5,
         },
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.gray,
+        tabBarLabelStyle: {fontSize: 12, fontWeight: '500'},
+        tabBarIconStyle: {marginBottom: -3},
         headerShown: false,
       }}>
       <Tab.Screen
-        name="ProductDetailsMain" // Renombrar para evitar conflictos
-        children={() => productContent}
+        name="ProductDetailsMain"
+        children={() => (
+          <ProductDetailsMainScreen route={{params: {productContent}}} />
+        )}
+        initialParams={{productContent}}
         options={{
           tabBarLabel: 'Detalles',
           tabBarIcon: ({color, size}) => (
@@ -157,8 +194,8 @@ const ProductDetailsTabs = ({product, productContent}) => {
         }}
       />
       <Tab.Screen
-        name="BuyProduct" // Renombrar
-        component={() => null} // Es una acción, no una pantalla
+        name="BuyProduct"
+        children={() => <BuyProductScreen />}
         listeners={{
           tabPress: e => {
             e.preventDefault();
@@ -166,21 +203,47 @@ const ProductDetailsTabs = ({product, productContent}) => {
           },
         }}
         options={{
-          tabBarLabel: 'Comprar',
+          tabBarLabel: 'Añadir al Carrito',
+          tabBarIcon: ({color, size}) => (
+            <View style={styles.tabIconContainer}>
+              <MaterialCommunityIcons
+                name="cart-outline"
+                size={size}
+                color={color}
+              />
+              {cartItemsCount > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{cartItemsCount}</Text>
+                </View>
+              )}
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="BuyNow"
+        children={() => <BuyNowScreen />}
+        listeners={{
+          tabPress: e => {
+            e.preventDefault();
+            handleBuyNowTab();
+          },
+        }}
+        options={{
+          tabBarLabel: 'Comprar Ahora',
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons
-              name="cart-outline"
+              name="cart-plus"
               size={size}
               color={color}
             />
           ),
         }}
       />
-      {/* Solo mostrar tab de favoritos si el producto tiene subcategoría */}
-      {product?.subcategory?._id && (
+      {product?._id && (
         <Tab.Screen
-          name="ToggleFavorite" // Renombrar
-          component={() => null} // Es una acción
+          name="ToggleFavorite"
+          children={() => <ToggleFavoriteScreen />}
           listeners={{
             tabPress: e => {
               e.preventDefault();

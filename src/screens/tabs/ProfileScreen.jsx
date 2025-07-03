@@ -217,27 +217,27 @@ const ProfileScreen = () => {
         navigation.navigate(SCREENS.MIS_PEDIDOS);
       },
     },
-    {
-      icon: (() => {
-        const Icon = IconComponents[ICONS.FOLLOWERS.library];
-        return Icon ? (
-          <Icon
-            name={ICONS.FOLLOWERS.name}
-            size={ICONS.FOLLOWERS.size}
-            color={COLORS.black || '#000'}
-          />
-        ) : null;
-      })(),
-      label: 'Seguidores',
-      onPress: () => {
-        if (!SCREENS.SEGUIDORES) {
-          console.error('SCREENS.SEGUIDORES is undefined');
-          Alert.alert('Error', 'SeguidoresScreen is not defined');
-          return;
-        }
-        navigation.navigate(SCREENS.SEGUIDORES);
-      },
-    },
+    // {
+    //   icon: (() => {
+    //     const Icon = IconComponents[ICONS.FOLLOWERS.library];
+    //     return Icon ? (
+    //       <Icon
+    //         name={ICONS.FOLLOWERS.name}
+    //         size={ICONS.FOLLOWERS.size}
+    //         color={COLORS.black || '#000'}
+    //       />
+    //     ) : null;
+    //   })(),
+    //   label: 'Seguidores',
+    //   onPress: () => {
+    //     if (!SCREENS.SEGUIDORES) {
+    //       console.error('SCREENS.SEGUIDORES is undefined');
+    //       Alert.alert('Error', 'SeguidoresScreen is not defined');
+    //       return;
+    //     }
+    //     navigation.navigate(SCREENS.SEGUIDORES);
+    //   },
+    // },
     {
       icon: (() => {
         const Icon = IconComponents[ICONS.HEART.library];

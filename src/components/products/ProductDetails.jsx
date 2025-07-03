@@ -17,9 +17,11 @@ import styles from './styles/ProductDetails.style';
 import {COLORS, ICONS, SIZES} from '../../constants';
 import SCREENS from '../../screens';
 import {API_BASE_URL} from '../../config/Service.Config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import RelatedProducts from './components/RelatedProducts';
 import StoreCard from './components/StoreCard';
 import HeaderSearch from '../header/HeaderSearch';
+import ProductDetailsTabs from './ProductDetailsTabs';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
@@ -40,12 +42,29 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [showHeader, setShowHeader] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
 
   const params = route.params || {};
   const {item, id} = params;
 
-  const BackArrowIcon = IconComponents[ICONS.BACK_ARROW.library];
-  const ShaerIcons = IconComponents[ICONS.SHARE_ICON.library];
+  const BackArrowIcon =
+    IconComponents[ICONS.BACK_ARROW.library] || (() => null);
+  const ShareIcons = IconComponents[ICONS.SHARE_ICON.library] || (() => null);
+
+  // Load cart items count
+  useEffect(() => {
+    const loadCartData = async () => {
+      try {
+        const cart = await AsyncStorage.getItem('cart');
+        if (cart) {
+          setCartItemsCount(JSON.parse(cart).length);
+        }
+      } catch (error) {
+        console.error('Error loading cart data:', error);
+      }
+    };
+    loadCartData();
+  }, []);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -121,24 +140,19 @@ const ProductDetails = () => {
       if (!product?._id) {
         throw new Error('ID de producto no válido');
       }
-
       const productUrl = `${API_BASE_URL}/products/shortLink/${product._id}`;
       console.log('Sharing URL:', productUrl);
       const response = await axios.post(productUrl);
-
       if (!response.data?.shortLink) {
         throw new Error('No se pudo generar el enlace corto');
       }
-
       const shortLink = response.data.shortLink;
       const message = `Mira este producto: ${product.title}\n\n${product.description}\n\nPrecio: ${product.price}\n\nEnlace: ${shortLink}`;
-
       const result = await Share.share({
         message,
         url: shortLink,
         title: product.title,
       });
-
       if (result.action === Share.sharedAction) {
         console.log('Compartido con éxito');
       } else if (result.action === Share.dismissedAction) {
@@ -258,7 +272,7 @@ const ProductDetails = () => {
                 style={styles.iconButton}
                 onPress={handleShare}
                 accessibilityLabel="Compartir producto">
-                <ShaerIcons
+                <ShareIcons
                   name={ICONS.SHARE_ICON.name}
                   size={ICONS.SHARE_ICON.size || 24}
                   color={COLORS.white}
@@ -282,6 +296,9 @@ const ProductDetails = () => {
         );
 
       case 'details':
+        const WhatsAppIcon =
+          IconComponents[ICONS.WHATSAPP.library] || (() => null);
+        const PhoneIcon = IconComponents[ICONS.PHONE.library] || (() => null);
         return (
           <View style={styles.sectionContainer}>
             <View style={styles.details}>
@@ -437,17 +454,11 @@ const ProductDetails = () => {
                           );
                         }}
                         accessibilityLabel="Contactar por WhatsApp">
-                        {(() => {
-                          const WhatsAppIcon =
-                            IconComponents[ICONS.WHATSAPP.library];
-                          return (
-                            <WhatsAppIcon
-                              name={ICONS.WHATSAPP.name}
-                              size={ICONS.WHATSAPP.size}
-                              color={COLORS.white}
-                            />
-                          );
-                        })()}
+                        <WhatsAppIcon
+                          name={ICONS.WHATSAPP.name}
+                          size={ICONS.WHATSAPP.size || 24}
+                          color={COLORS.white}
+                        />
                         <Text style={styles.contactButtonText}>WhatsApp</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
@@ -468,16 +479,11 @@ const ProductDetails = () => {
                           );
                         }}
                         accessibilityLabel="Llamar">
-                        {(() => {
-                          const PhoneIcon = IconComponents[ICONS.PHONE.library];
-                          return (
-                            <PhoneIcon
-                              name={ICONS.PHONE.name}
-                              size={ICONS.PHONE.size}
-                              color={COLORS.white}
-                            />
-                          );
-                        })()}
+                        <PhoneIcon
+                          name={ICONS.PHONE.name}
+                          size={ICONS.PHONE.size || 24}
+                          color={COLORS.white}
+                        />
                         <Text style={styles.contactButtonText}>Llamar</Text>
                       </TouchableOpacity>
                     </View>
@@ -526,33 +532,23 @@ const ProductDetails = () => {
             onProductPress={handleRelatedProductPress}
           />
         );
-
       default:
         return null;
     }
   };
 
-  // return (
-  //   <View style={styles.container}>
-  //     {showHeader && (
-  //       <TouchableOpacity
-  //         style={styles.header}
-  //         onPress={handleHeaderPress}
-  //         activeOpacity={0.7}
-  //         accessibilityLabel="Ir a la página principal">
-  //         <HeaderSearch />
-  //       </TouchableOpacity>
-  //     )}
-  //     <FlatList
-  //       data={sections}
-  //       renderItem={renderSection}
-  //       keyExtractor={(item, index) => `${item.type}-${index}`}
-  //       showsVerticalScrollIndicator={false}
-  //       onScroll={handleScroll}
-  //       scrollEventThrottle={16}
-  //     />
-  //   </View>
-  // );
+  const productContent = (
+    <FlatList
+      data={sections}
+      renderItem={renderSection}
+      keyExtractor={(item, index) => `${item.type}-${index}`}
+      showsVerticalScrollIndicator={false}
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
+      contentContainerStyle={{paddingBottom: SIZES.tabBarHeight || 60}}
+    />
+  );
+
   return (
     <View style={styles.container}>
       {showHeader && (
@@ -564,31 +560,14 @@ const ProductDetails = () => {
           <HeaderSearch />
         </TouchableOpacity>
       )}
-
-      <FlatList
-        data={sections}
-        renderItem={renderSection}
-        keyExtractor={(item, index) => `${item.type}-${index}`}
-        showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        contentContainerStyle={styles.contentContainer} // Añade padding para el footer
-      />
-
-      {/* Footer con botones de acción */}
-      <View style={styles.footerContainer}>
-        <TouchableOpacity
-          style={styles.cartButton}
-          onPress={() => console.log('Añadir al carrito')}>
-          <Text style={styles.cartButtonText}>AL CARRITO</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.buyButton}
-          onPress={() => console.log('Comprar ahora')}>
-          <Text style={styles.buyButtonText}>COMPRAR</Text>
-        </TouchableOpacity>
-      </View>
+      {product && (
+        <ProductDetailsTabs
+          product={product}
+          productContent={productContent}
+          cartItemsCount={cartItemsCount}
+          setCartItemsCount={setCartItemsCount}
+        />
+      )}
     </View>
   );
 };

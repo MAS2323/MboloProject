@@ -64,6 +64,7 @@ const SCREENS = {
   ADD_DELIVERY_OPTION: 'AddDeliveryOption',
   OFFICIAL_ACCOUNT: 'OfficialAccountSettings',
   OFFICIAL_ACCOUNT_DETAIL: 'OfficialAccountDetailScreen',
+  COMPANY_DETAILS: 'CompanyDetailsScreen',
 };
 
 export default SCREENS;

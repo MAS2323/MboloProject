@@ -61,6 +61,7 @@ import ProductEdition from '../components/products/ProductEdition';
 import AddDeliveryOptionScreen from '../components/profile/bussines/AddDeliveryOptionScreen';
 import OfficialAccount from '../components/stores/OfficialAccount';
 import OfficialAccountDetailScreen from '../components/stores/OfficialAccountDetailScreen';
+import CompanyDetailsScreen from '../components/stores/CompanyDetailsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -189,6 +190,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.PRODUCT_EDITION}
         component={ProductEdition}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.COMPANY_DETAILS}
+        component={CompanyDetailsScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen
