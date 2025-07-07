@@ -63,6 +63,7 @@ import OfficialAccount from '../components/stores/OfficialAccount';
 import OfficialAccountDetailScreen from '../components/stores/OfficialAccountDetailScreen';
 import CompanyDetailsScreen from '../components/stores/CompanyDetailsScreen';
 import OrderProcessingScreen from '../components/stores/OrderProcessingScreen';
+import OrderConfirmationScreen from '../components/stores/OrderConfirmationScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -166,6 +167,11 @@ const StackNavigation = () => {
       <Stack.Screen
         name={SCREENS.DISABLE_FEEDBACK}
         component={DisableFeedbackScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={SCREENS.ORDER_CONFIRMATION}
+        component={OrderConfirmationScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen
