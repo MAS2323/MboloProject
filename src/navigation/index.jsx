@@ -284,6 +284,11 @@ const StackNavigation = () => {
         component={CuentaOficialScreen}
         options={{headerShown: false}}
       />
+      {/* <Stack.Screen
+        name={SCREENS.PROFILE}
+        component={ProfileScreen}
+        options={{headerShown: false}}
+      /> */}
       <Stack.Screen
         name={SCREENS.OFFICIAL_ACCOUNT_PROFILE_SCREEN}
         component={OfficialAccountProfileScreen}

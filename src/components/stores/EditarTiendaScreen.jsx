@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,14 @@ import {
   Image,
   Alert,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -25,6 +30,36 @@ const IconComponents = {
   Ionicons: require('react-native-vector-icons/Ionicons').default,
 };
 
+// Métodos de pago disponibles
+const PAYMENT_METHODS = [
+  {name: 'EcoBank', key: 'EcoBank'},
+  {name: 'BGFBank', key: 'BGFBank'},
+  {name: 'Muni-Dinero', key: 'Muni-Dinero'},
+];
+
+// Tipos de documento
+const DOCUMENT_TYPES = [
+  {name: 'DIP', key: 'DIP'},
+  {name: 'Pasaporte', key: 'Pasaporte'},
+  {name: 'Permiso de Residencia', key: 'Permiso de Residencia'},
+];
+
+// Componente reutilizable para campos de entrada
+const InputField = ({label, value, placeholder, onPress, editable}) => (
+  <View style={styles.inputGroup}>
+    <Text style={styles.label}>{label}</Text>
+    <TouchableOpacity onPress={onPress} disabled={!onPress}>
+      <TextInput
+        style={[styles.input, !editable && styles.disabledInput]}
+        value={value}
+        editable={editable}
+        placeholder={placeholder}
+        placeholderTextColor={COLORS.PLACEHOLDER || '#A0A0A0'}
+      />
+    </TouchableOpacity>
+  </View>
+);
+
 const EditarTiendaScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -35,13 +70,26 @@ const EditarTiendaScreen = () => {
     name: storeData.name || '',
     description: storeData.description || '',
     phone_number: storeData.phone_number || '',
-    address: storeData.address || '',
+    address: storeData.address || '', // Nombre de la ciudad para visualización
+    cityId: '', // ID de la ciudad para el backend
     specific_location: storeData.specific_location || '',
     owner: storeData.owner || '',
+    documentType: storeData.document?.type || '',
   });
   const [logo, setLogo] = useState(storeData.logo || null);
   const [banner, setBanner] = useState(storeData.banner || null);
+  const [document, setDocument] = useState(storeData.document?.url || null);
+  const [paymentMethods, setPaymentMethods] = useState(
+    storeData.paymentMethods?.map(method => method.name) || [],
+  );
+  const [accountNumbers, setAccountNumbers] = useState(
+    storeData.paymentMethods?.reduce((acc, method) => {
+      acc[method.name] = method.accountNumber;
+      return acc;
+    }, {}) || {},
+  );
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState(storeData.ownerName || '');
 
@@ -55,24 +103,87 @@ const EditarTiendaScreen = () => {
   const DeleteForeverIcon =
     IconComponents[ICONS.DELETE_FOREVER.library || 'MaterialIcons'];
 
-  // Cargar userId
+  // Cargar userId y datos iniciales
   useEffect(() => {
-    const loadUserId = async () => {
+    const loadInitialData = async () => {
       try {
+        setIsLoading(true);
         const id = await AsyncStorage.getItem('id');
         if (!id) {
           Alert.alert('Error', 'Debes iniciar sesión para editar la tienda.');
-          navigation.navigate('LoginScreen');
+          navigation.navigate(SCREENS.LOGIN);
           return;
         }
-        setUserId(JSON.parse(id));
+        const parsedId = JSON.parse(id);
+        if (!parsedId || typeof parsedId !== 'string') {
+          await AsyncStorage.removeItem('id');
+          Alert.alert(
+            'Error',
+            'Sesión inválida. Por favor, inicia sesión de nuevo.',
+          );
+          navigation.navigate(SCREENS.LOGIN);
+          return;
+        }
+        setUserId(parsedId);
+
+        const userData = await AsyncStorage.getItem(`user${parsedId}`);
+        if (!userData) {
+          Alert.alert('Error', 'Datos de usuario no encontrados.');
+          navigation.navigate(SCREENS.LOGIN);
+          return;
+        }
+        const parsedUserData = JSON.parse(userData);
+        setUserName(parsedUserData.userName || '');
+        if (!parsedUserData?.ciudad?.id || !parsedUserData?.ciudad?.name) {
+          Alert.alert(
+            'Error',
+            'No se encontró una ciudad válida en los datos del usuario.',
+          );
+          navigation.navigate(SCREENS.PROFILE);
+          return;
+        }
+        const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(
+          parsedUserData.ciudad.id,
+        );
+        if (!isValidObjectId) {
+          Alert.alert('Error', 'El ID de la ciudad del usuario no es válido.');
+          navigation.navigate(SCREENS.PROFILE);
+          return;
+        }
+        setFormData(prev => ({
+          ...prev,
+          cityId: parsedUserData.ciudad.id,
+          address: parsedUserData.ciudad.name,
+        }));
+
+        setIsLoading(false);
       } catch (error) {
-        console.error('Error al cargar userId:', error);
-        Alert.alert('Error', 'No se pudo cargar la sesión.');
+        console.error('Error al cargar datos iniciales:', error);
+        Alert.alert('Error', 'No se pudieron cargar los datos iniciales.');
+        setIsLoading(false);
       }
     };
-    loadUserId();
+    loadInitialData();
   }, []);
+
+  // Manejar la selección de la ciudad
+  const handleCitySelect = selectedCity => {
+    console.log('Ciudad seleccionada:', selectedCity);
+    if (!selectedCity?.id || !selectedCity?.name) {
+      Alert.alert('Error', 'La ciudad seleccionada no es válida.');
+      return;
+    }
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(selectedCity.id);
+    if (!isValidObjectId) {
+      Alert.alert('Error', 'El ID de la ciudad seleccionada no es válido.');
+      return;
+    }
+    setFormData({
+      ...formData,
+      address: selectedCity.name,
+      cityId: selectedCity.id,
+    });
+  };
 
   const handleChange = (name, value) => {
     setFormData({
@@ -81,38 +192,67 @@ const EditarTiendaScreen = () => {
     });
   };
 
-  const pickImage = async type => {
-    if (type === 'logo' && logo) {
-      Alert.alert('Límite alcanzado', 'Solo se permite subir un logo.');
-      return;
+  const togglePaymentMethod = methodKey => {
+    setPaymentMethods(prev =>
+      prev.includes(methodKey)
+        ? prev.filter(key => key !== methodKey)
+        : [...prev, methodKey],
+    );
+    if (paymentMethods.includes(methodKey)) {
+      setAccountNumbers(prev => {
+        const newAccountNumbers = {...prev};
+        delete newAccountNumbers[methodKey];
+        return newAccountNumbers;
+      });
     }
-    if (type === 'banner' && banner) {
-      Alert.alert('Límite alcanzado', 'Solo se permite subir un banner.');
+  };
+
+  const handleAccountNumberChange = (methodKey, value) => {
+    setAccountNumbers(prev => ({
+      ...prev,
+      [methodKey]: value,
+    }));
+  };
+
+  const pickImage = async type => {
+    const imageStates = {
+      logo: {current: logo, setter: setLogo},
+      banner: {current: banner, setter: setBanner},
+    };
+
+    const {current, setter} = imageStates[type];
+    if (current) {
+      Alert.alert('Límite alcanzado', `Solo se permite subir un ${type}.`);
       return;
     }
 
     const options = {
       mediaType: 'photo',
       quality: 1,
-      maxWidth: type === 'logo' ? 500 : 800,
-      maxHeight: type === 'logo' ? 500 : 200,
+      maxWidth: type === 'logo' ? 512 : 1024,
+      maxHeight: type === 'logo' ? 512 : 256,
       includeBase64: false,
     };
 
     launchImageLibrary(options, response => {
       if (response.didCancel) {
+        console.log(`Selección de ${type} cancelada`);
         return;
       }
       if (response.errorCode) {
-        console.error(`Error al seleccionar imagen: ${response.errorMessage}`);
-        Alert.alert('Error', 'No se pudo cargar la imagen seleccionada.');
+        console.error(`Error al seleccionar ${type}:`, response.errorMessage);
+        Alert.alert(
+          'Error',
+          `No se pudo seleccionar la imagen: ${response.errorMessage}`,
+        );
         return;
       }
-      const uri = response.assets[0].uri;
-      if (type === 'logo') {
-        setLogo(uri);
+      if (response.assets && response.assets.length > 0) {
+        const uri = response.assets[0].uri;
+        console.log(`Imagen seleccionada para ${type}: ${uri}`);
+        setter(uri);
       } else {
-        setBanner(uri);
+        console.log(`No se seleccionó ninguna imagen para ${type}`);
       }
     });
   };
@@ -120,7 +260,7 @@ const EditarTiendaScreen = () => {
   const removeImage = type => {
     if (type === 'logo') {
       setLogo(null);
-    } else {
+    } else if (type === 'banner') {
       setBanner(null);
     }
   };
@@ -130,11 +270,17 @@ const EditarTiendaScreen = () => {
     if (!formData.name) missingFields.push('Nombre');
     if (!formData.description) missingFields.push('Descripción');
     if (!formData.phone_number) missingFields.push('Teléfono');
-    if (!formData.address) missingFields.push('Dirección');
+    if (!formData.cityId) missingFields.push('Dirección');
     if (!formData.specific_location) missingFields.push('Ubicación específica');
     if (!formData.owner) missingFields.push('Propietario');
     if (!logo) missingFields.push('Logo');
     if (!banner) missingFields.push('Banner');
+    if (paymentMethods.length === 0) missingFields.push('Métodos de pago');
+    paymentMethods.forEach(method => {
+      if (!accountNumbers[method]) {
+        missingFields.push(`Número de cuenta para ${method}`);
+      }
+    });
 
     if (missingFields.length > 0) {
       Alert.alert(
@@ -149,28 +295,31 @@ const EditarTiendaScreen = () => {
       return;
     }
 
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(formData.cityId);
+    if (!isValidObjectId) {
+      Alert.alert('Error', 'El ID de la ciudad no es válido.');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Obtener addressId desde AsyncStorage
-      const userData = await AsyncStorage.getItem(`user${userId}`);
-      if (!userData) {
-        throw new Error('Datos de usuario no encontrados.');
-      }
-      const parsedUserData = JSON.parse(userData);
-      const addressId = parsedUserData?.ciudad?.id;
-      if (!addressId) {
-        throw new Error('No se ha seleccionado una ciudad válida.');
-      }
-
-      // Preparar datos para el backend
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
       formDataToSend.append('description', formData.description);
       formDataToSend.append('phone_number', formData.phone_number);
-      formDataToSend.append('address', addressId);
+      formDataToSend.append('address', formData.cityId);
       formDataToSend.append('specific_location', formData.specific_location);
       formDataToSend.append('owner', userId);
+      formDataToSend.append(
+        'paymentMethods',
+        JSON.stringify(
+          paymentMethods.map(method => ({
+            name: method,
+            accountNumber: accountNumbers[method],
+          })),
+        ),
+      );
 
       if (logo && logo !== storeData.logo) {
         formDataToSend.append('logo', {
@@ -187,7 +336,34 @@ const EditarTiendaScreen = () => {
         });
       }
 
-      // Enviar al backend
+      console.log('Enviando FormData para actualizar:');
+      console.log('Campos de texto:');
+      [
+        'name',
+        'description',
+        'phone_number',
+        'address',
+        'specific_location',
+        'owner',
+      ].forEach(field => {
+        console.log(
+          `${field}: ${
+            formDataToSend._parts.find(part => part[0] === field)?.[1]
+          }`,
+        );
+      });
+      console.log(
+        'Métodos de pago:',
+        formDataToSend._parts.find(part => part[0] === 'paymentMethods')?.[1],
+      );
+      console.log('Archivos:');
+      ['logo', 'banner'].forEach(field => {
+        const fileData = formDataToSend._parts.find(
+          part => part[0] === field,
+        )?.[1];
+        if (fileData) console.log(`${field}: ${JSON.stringify(fileData)}`);
+      });
+
       const response = await axios.put(
         `${API_BASE_URL}/tienda/${formData.id}`,
         formDataToSend,
@@ -198,7 +374,6 @@ const EditarTiendaScreen = () => {
         },
       );
 
-      // Actualizar AsyncStorage
       const updatedStore = {
         id: formData.id,
         name: formData.name,
@@ -210,21 +385,28 @@ const EditarTiendaScreen = () => {
         ownerName: userName,
         logo: response.data.tienda.logo.url,
         banner: response.data.tienda.banner.url,
+        document: {
+          type: formData.documentType,
+          url: response.data.tienda.document.url,
+        },
+        paymentMethods: response.data.tienda.paymentMethods || [],
       };
       await AsyncStorage.setItem('store_data', JSON.stringify(updatedStore));
 
       Alert.alert('Éxito', 'Tienda actualizada correctamente');
-      navigation.navigate(SCREENS.EDITAR_STORE_DETAILS);
+      navigation.navigate(SCREENS.EDITAR_STORE_DETAILS, {
+        store: JSON.stringify(updatedStore),
+      });
     } catch (error) {
       console.error(
         'Error al actualizar tienda:',
         error.response?.data || error.message,
       );
-      Alert.alert(
-        'Error',
-        error.response?.data?.message ||
-          'No se pudo actualizar la tienda. Intenta de nuevo.',
-      );
+      let errorMessage = 'No se pudo actualizar la tienda. Intenta de nuevo.';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -250,17 +432,18 @@ const EditarTiendaScreen = () => {
               await axios.delete(`${API_BASE_URL}/tienda/${formData.id}`);
               await AsyncStorage.removeItem('store_data');
               Alert.alert('Éxito', 'Tienda eliminada correctamente');
-              navigation.navigate('CrearTiendaScreen', {storeDeleted: 'true'});
+              navigation.navigate(SCREENS.CREAR_TIENDA, {storeDeleted: 'true'});
             } catch (error) {
               console.error(
                 'Error al eliminar tienda:',
                 error.response?.data || error.message,
               );
-              Alert.alert(
-                'Error',
-                error.response?.data?.message ||
-                  'No se pudo eliminar la tienda. Intenta de nuevo.',
-              );
+              let errorMessage =
+                'No se pudo eliminar la tienda. Intenta de nuevo.';
+              if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+              }
+              Alert.alert('Error', errorMessage);
             } finally {
               setLoading(false);
             }
@@ -269,6 +452,16 @@ const EditarTiendaScreen = () => {
       ],
     );
   };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.safeContainer}>
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={COLORS.PRIMARY || '#00C853'} />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -283,7 +476,7 @@ const EditarTiendaScreen = () => {
         <Text style={styles.headerText}>Editar Tienda</Text>
       </View>
       <ScrollView contentContainerStyle={styles.container}>
-        {/* Campo Propietario (primer campo, no editable) */}
+        {/* Campo Propietario */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Propietario*</Text>
           <TextInput
@@ -334,17 +527,18 @@ const EditarTiendaScreen = () => {
           />
         </View>
 
-        {/* Campo Dirección (no editable) */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Dirección*</Text>
-          <TextInput
-            style={[styles.input, styles.disabledInput]}
-            value={formData.address}
-            editable={false}
-            placeholder="Selecciona una ciudad"
-            placeholderTextColor={COLORS.PLACEHOLDER || '#A0A0A0'}
-          />
-        </View>
+        {/* Campo Dirección */}
+        <InputField
+          label="Dirección*"
+          value={formData.address || ''}
+          placeholder="Seleccionar ciudad"
+          onPress={() =>
+            navigation.navigate(SCREENS.SELECT_CITY_SCREEN, {
+              onSelect: handleCitySelect,
+            })
+          }
+          editable={false}
+        />
 
         {/* Campo Ubicación Específica */}
         <View style={styles.inputGroup}>
@@ -358,6 +552,77 @@ const EditarTiendaScreen = () => {
             placeholder="Ej: Barrio Central, Calle Principal"
             placeholderTextColor={COLORS.PLACEHOLDER || '#A0A0A0'}
           />
+        </View>
+
+        {/* Campo Tipo de Documento (No editable) */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Tipo de documento*</Text>
+          <TextInput
+            style={[styles.input, styles.disabledInput]}
+            value={formData.documentType}
+            editable={false}
+            placeholder="Tipo de documento"
+            placeholderTextColor={COLORS.PLACEHOLDER || '#A0A0A0'}
+          />
+        </View>
+
+        {/* Campo Documento (Solo visualización) */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Documento*</Text>
+          {document ? (
+            <View style={styles.imageContainer}>
+              <Image
+                source={{uri: document}}
+                style={styles.documentPreview}
+                key={document}
+                onError={e => {
+                  console.error(
+                    'Error cargando documento:',
+                    e.nativeEvent.error,
+                  );
+                  Alert.alert('Error', 'No se pudo cargar el documento.');
+                }}
+              />
+            </View>
+          ) : (
+            <Text style={styles.imagePickerText}>
+              No se encontró el documento
+            </Text>
+          )}
+        </View>
+
+        {/* Métodos de Pago */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Métodos de pago*</Text>
+          <View style={styles.paymentMethodsContainer}>
+            {PAYMENT_METHODS.map(method => (
+              <View key={method.key} style={styles.paymentMethodItem}>
+                <TouchableOpacity
+                  style={[
+                    styles.paymentMethodButton,
+                    paymentMethods.includes(method.key) &&
+                      styles.paymentMethodButtonSelected,
+                  ]}
+                  onPress={() => togglePaymentMethod(method.key)}
+                  disabled={loading}>
+                  <Text style={styles.paymentMethodText}>{method.name}</Text>
+                </TouchableOpacity>
+                {paymentMethods.includes(method.key) && (
+                  <TextInput
+                    style={[styles.input, styles.accountNumberInput]}
+                    value={accountNumbers[method.key] || ''}
+                    onChangeText={text =>
+                      handleAccountNumberChange(method.key, text)
+                    }
+                    placeholder={`Número de cuenta para ${method.name}`}
+                    placeholderTextColor={COLORS.PLACEHOLDER || '#A0A0A0'}
+                    keyboardType="numeric"
+                    editable={!loading}
+                  />
+                )}
+              </View>
+            ))}
+          </View>
         </View>
 
         {/* Subir Logo */}
@@ -413,7 +678,7 @@ const EditarTiendaScreen = () => {
                 <Image
                   source={{uri: banner}}
                   style={styles.bannerPreview}
-                  key={banner + Date.now()}
+                  key={banner}
                   onError={e => {
                     console.error(
                       'Error cargando banner:',
@@ -511,6 +776,11 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 40,
   },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   inputGroup: {
     marginBottom: 20,
   },
@@ -571,6 +841,12 @@ const styles = StyleSheet.create({
     aspectRatio: 4 / 1,
     resizeMode: 'contain',
   },
+  documentPreview: {
+    width: 150,
+    height: 100,
+    borderRadius: 8,
+    resizeMode: 'contain',
+  },
   deleteButton: {
     position: 'absolute',
     top: -10,
@@ -578,6 +854,32 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.WHITE || '#FFFFFF',
     borderRadius: 12,
     padding: 2,
+  },
+  paymentMethodsContainer: {
+    marginTop: 10,
+  },
+  paymentMethodItem: {
+    marginBottom: 10,
+  },
+  paymentMethodButton: {
+    backgroundColor: COLORS.WHITE || '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  paymentMethodButtonSelected: {
+    backgroundColor: COLORS.PRIMARY || '#00C853',
+    borderColor: COLORS.PRIMARY || '#00C853',
+  },
+  paymentMethodText: {
+    color: COLORS.BLACK || '#1A1A1A',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  accountNumberInput: {
+    marginTop: 8,
   },
   buttonContainer: {
     flexDirection: 'row',
