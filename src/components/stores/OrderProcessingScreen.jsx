@@ -11,6 +11,7 @@ import {
   FlatList,
   Platform,
   Dimensions,
+  StyleSheet,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import axios from 'axios';
@@ -18,6 +19,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import {COLORS, SIZES} from '../../constants';
 import {API_BASE_URL} from '../../config/Service.Config';
 import SCREENS from '../../screens';
+import styles from './styles/OrderProcessingScreen';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
@@ -31,11 +33,17 @@ const MESSAGES = {
     INVALID_IMAGE:
       'Por favor, selecciona una imagen válida para el recibo de pago.',
     INVALID_USER: 'Usuario no válido. Por favor, inicia sesión nuevamente.',
+    INVALID_STORE: 'Tienda no válida.',
     NETWORK_ERROR: 'Error de red. Verifica tu conexión e intenta de nuevo.',
     FILE_UPLOAD_ERROR:
       'Error al subir el recibo de pago. Asegúrate de que sea una imagen válida.',
     TOTAL_MISMATCH:
       'El total proporcionado no coincide con el precio del producto.',
+    INVALID_PAYMENT_METHOD: 'Por favor, selecciona un método de pago válido.',
+    PAYMENT_METHODS_FETCH_ERROR:
+      'No se pudieron cargar los métodos de pago. Intenta de nuevo.',
+    NO_PAYMENT_METHODS:
+      'No hay métodos de pago disponibles. Contacta al vendedor para más información.',
   },
   SUCCESS: {
     PURCHASE_SUCCESS: 'Compra realizada con éxito',
@@ -47,7 +55,8 @@ const isValidObjectId = id => /^[0-9a-fA-F]{24}$/.test(id);
 const OrderProcessingScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {product, userId} = route.params;
+  const {product, userId, storeId: routeStoreId} = route.params;
+  const storeId = routeStoreId || product?.tienda?._id;
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
@@ -55,21 +64,91 @@ const OrderProcessingScreen = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentReceipt, setPaymentReceipt] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [isLoadingPaymentMethods, setIsLoadingPaymentMethods] = useState(false);
+  const [fetchError, setFetchError] = useState(null);
 
   useEffect(() => {
     console.log('Received userId:', userId, 'Type:', typeof userId);
+    console.log(
+      'Received routeStoreId:',
+      routeStoreId,
+      'Type:',
+      typeof routeStoreId,
+    );
+    console.log(
+      'Received product.tienda._id:',
+      product?.tienda?._id,
+      'Type:',
+      typeof product?.tienda?._id,
+    );
+    console.log('Final storeId:', storeId, 'Type:', typeof storeId);
     console.log('Received product:', JSON.stringify(product, null, 2));
     if (!userId || !isValidObjectId(userId)) {
       Alert.alert('Error', MESSAGES.ERRORS.INVALID_USER);
       navigation.goBack();
+      return;
     }
-  }, [userId, navigation]);
+    if (!storeId || !isValidObjectId(storeId)) {
+      Alert.alert('Error', MESSAGES.ERRORS.INVALID_STORE);
+      navigation.goBack();
+      return;
+    }
+  }, [userId, storeId, routeStoreId, product, navigation]);
 
   useEffect(() => {
     if (product?.price) {
       setTotalPrice(product.price * quantity);
     }
   }, [product?.price, quantity]);
+
+  // Fetch payment methods
+  const fetchPaymentMethods = useCallback(async () => {
+    setIsLoadingPaymentMethods(true);
+    setFetchError(null);
+    try {
+      console.log(
+        'Fetching payment methods from:',
+        `${API_BASE_URL}/stores/${storeId}/payment-methods`,
+      );
+      const response = await axios.get(
+        `${API_BASE_URL}/stores/${storeId}/payment-methods`,
+        {timeout: 10000},
+      );
+      console.log('Payment methods response:', response.data);
+      setPaymentMethods(response.data || []);
+      if (response.data.length === 0) {
+        setFetchError(MESSAGES.ERRORS.NO_PAYMENT_METHODS);
+        Alert.alert('Advertencia', MESSAGES.ERRORS.NO_PAYMENT_METHODS);
+      }
+    } catch (error) {
+      console.error('Error fetching payment methods:', {
+        storeId,
+        message: error.message,
+        status: error.response?.status,
+        response: error.response?.data,
+      });
+      let errorMessage = MESSAGES.ERRORS.PAYMENT_METHODS_FETCH_ERROR;
+      if (error.response?.status === 404) {
+        errorMessage =
+          'Tienda no encontrada o sin métodos de pago disponibles.';
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = MESSAGES.ERRORS.NETWORK_ERROR;
+      }
+      setFetchError(errorMessage);
+      Alert.alert('Error', errorMessage);
+    } finally {
+      setIsLoadingPaymentMethods(false);
+    }
+  }, [storeId]);
+  useEffect(() => {
+    fetchPaymentMethods();
+  }, [fetchPaymentMethods]);
+
+  const handleRetryFetch = () => {
+    fetchPaymentMethods();
+  };
 
   const checkStock = useCallback(async () => {
     try {
@@ -126,6 +205,10 @@ const OrderProcessingScreen = () => {
       Alert.alert('Error', MESSAGES.ERRORS.INVALID_USER);
       return;
     }
+    if (!storeId || !isValidObjectId(storeId)) {
+      Alert.alert('Error', MESSAGES.ERRORS.INVALID_STORE);
+      return;
+    }
     if (!isValidObjectId(product._id)) {
       Alert.alert('Error', MESSAGES.ERRORS.INVALID_PRODUCT);
       return;
@@ -145,8 +228,9 @@ const OrderProcessingScreen = () => {
       Alert.alert('Error', MESSAGES.ERRORS.INVALID_SIZE);
       return;
     }
-    if (!paymentReceipt) {
-      console.log('No payment receipt selected; proceeding without file');
+    if (!selectedPaymentMethod) {
+      Alert.alert('Error', MESSAGES.ERRORS.INVALID_PAYMENT_METHOD);
+      return;
     }
 
     const hasStock = await checkStock();
@@ -158,6 +242,7 @@ const OrderProcessingScreen = () => {
       const orderData = {
         userId,
         customerId: userId,
+        storeId,
         products: [
           {
             productId: product._id,
@@ -168,6 +253,10 @@ const OrderProcessingScreen = () => {
         ],
         total: totalPrice.toString(),
         payment_status: 'pending',
+        paymentMethod: {
+          name: selectedPaymentMethod.name,
+          accountNumber: selectedPaymentMethod.accountNumber,
+        },
       };
 
       formData.append('data', JSON.stringify(orderData));
@@ -191,13 +280,13 @@ const OrderProcessingScreen = () => {
       }
 
       console.log('FormData entries:');
-      formData._parts.forEach(([key, value]) => {
+      for (const [key, value] of formData._parts) {
         console.log(
           key,
           ':',
           value.uri ? `[File: ${value.name}, ${value.type}]` : value,
         );
-      });
+      }
 
       const response = await axios.post(`${API_BASE_URL}/orders`, formData, {
         headers: {
@@ -236,12 +325,14 @@ const OrderProcessingScreen = () => {
     }
   }, [
     userId,
+    storeId,
     product,
     quantity,
     selectedColor,
     selectedSize,
     totalPrice,
     paymentReceipt,
+    selectedPaymentMethod,
     navigation,
   ]);
 
@@ -264,6 +355,30 @@ const OrderProcessingScreen = () => {
     </TouchableOpacity>
   );
 
+  const renderPaymentMethod = ({item}) => (
+    <TouchableOpacity
+      style={[
+        styles.paymentMethodItem,
+        selectedPaymentMethod?.accountNumber === item.accountNumber &&
+          styles.optionItemSelected,
+      ]}
+      onPress={() => setSelectedPaymentMethod(item)}
+      disabled={isProcessing}>
+      <Image
+        source={{uri: item.image.url || 'https://via.placeholder.com/100'}}
+        style={styles.paymentMethodImage}
+        resizeMode="contain"
+        onError={() =>
+          console.error('Failed to load payment method image:', item.image.url)
+        }
+      />
+      <View style={styles.paymentMethodDetails}>
+        <Text style={styles.paymentMethodText}>{item.name}</Text>
+        <Text style={styles.paymentMethodAccount}>{item.accountNumber}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   const renderImage = ({item: image, index}) => (
     <TouchableOpacity
       onPress={() =>
@@ -274,9 +389,7 @@ const OrderProcessingScreen = () => {
       }>
       <View style={styles.imageContainer}>
         <Image
-          source={{
-            uri: image.url || 'https://via.placeholder.com/300',
-          }}
+          source={{uri: image.url || 'https://via.placeholder.com/300'}}
           style={styles.image}
           resizeMode="cover"
           onError={() => console.error('Failed to load image:', image.url)}
@@ -401,6 +514,34 @@ const OrderProcessingScreen = () => {
           </View>
         )}
         <View style={styles.selectionContainer}>
+          <Text style={styles.selectionLabel}>Método de Pago:</Text>
+          {isLoadingPaymentMethods ? (
+            <ActivityIndicator size="large" color={COLORS.blue} />
+          ) : fetchError ? (
+            <View>
+              <Text style={styles.noPaymentText}>
+                {MESSAGES.ERRORS.NO_PAYMENT_METHODS}
+              </Text>
+              <TouchableOpacity
+                style={styles.retryButton}
+                onPress={handleRetryFetch}>
+                <Text style={styles.retryButtonText}>Reintentar</Text>
+              </TouchableOpacity>
+            </View>
+          ) : paymentMethods.length > 0 ? (
+            <FlatList
+              data={paymentMethods}
+              renderItem={renderPaymentMethod}
+              keyExtractor={item => item.accountNumber}
+              style={styles.paymentMethodList}
+            />
+          ) : (
+            <Text style={styles.noPaymentText}>
+              {MESSAGES.ERRORS.NO_PAYMENT_METHODS}
+            </Text>
+          )}
+        </View>
+        <View style={styles.selectionContainer}>
           <Text style={styles.selectionLabel}>Recibo de Pago (Opcional):</Text>
           <TouchableOpacity
             style={[styles.uploadButton, isProcessing && styles.disabledButton]}
@@ -428,9 +569,13 @@ const OrderProcessingScreen = () => {
           <Text style={styles.cancelButtonText}>Cancelar</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.confirmButton, isProcessing && styles.disabledButton]}
+          style={[
+            styles.confirmButton,
+            (isProcessing || paymentMethods.length === 0) &&
+              styles.disabledButton,
+          ]}
           onPress={handleFinalizePurchase}
-          disabled={isProcessing}>
+          disabled={isProcessing || paymentMethods.length === 0}>
           {isProcessing ? (
             <ActivityIndicator size="small" color={COLORS.white} />
           ) : (
@@ -440,231 +585,6 @@ const OrderProcessingScreen = () => {
       </View>
     </ScrollView>
   );
-};
-
-const styles = {
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F6FA', // Light gray background
-  },
-  scrollContent: {
-    paddingBottom: SIZES.tabBarHeight || 60,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#1A1A1A',
-    marginVertical: 20,
-    textAlign: 'center',
-    letterSpacing: 0.5,
-  },
-  imageSectionContainer: {
-    position: 'relative',
-    marginBottom: 24,
-  },
-  imageContainer: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_WIDTH * 0.8, // Aspect ratio similar to ProductDetails
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 12,
-  },
-  imageListContent: {
-    alignItems: 'center',
-  },
-  paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 10,
-    width: '100%',
-  },
-  paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#D1D5DB',
-    marginHorizontal: 4,
-  },
-  paginationDotActive: {
-    backgroundColor: '#3B82F6',
-    width: 10,
-    height: 10,
-  },
-  noImageText: {
-    fontSize: 16,
-    color: '#6B7280',
-    textAlign: 'center',
-    padding: 20,
-  },
-  detailsContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 24,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-  },
-  subtitle: {
-    fontSize: 22,
-    fontWeight: '600',
-    color: '#1A1A1A',
-    marginBottom: 12,
-  },
-  detailText: {
-    fontSize: 16,
-    color: '#374151',
-    marginBottom: 8,
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 12,
-  },
-  quantityLabel: {
-    fontSize: 16,
-    color: '#1A1A1A',
-    fontWeight: '600',
-    marginRight: 12,
-  },
-  quantityButton: {
-    backgroundColor: '#3B82F6',
-    padding: 10,
-    borderRadius: 8,
-    marginHorizontal: 6,
-  },
-  quantityButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  quantityInput: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    padding: 8,
-    width: 60,
-    textAlign: 'center',
-    fontSize: 16,
-    backgroundColor: '#F9FAFB',
-  },
-  selectionContainer: {
-    marginVertical: 12,
-  },
-  selectionLabel: {
-    fontSize: 16,
-    color: '#1A1A1A',
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  optionList: {
-    flexGrow: 0,
-  },
-  optionItem: {
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    marginRight: 8,
-    backgroundColor: '#F9FAFB',
-  },
-  optionItemSelected: {
-    borderColor: '#3B82F6',
-    backgroundColor: '#DBEAFE',
-    borderWidth: 2,
-  },
-  optionText: {
-    fontSize: 14,
-    color: '#1A1A1A',
-    fontWeight: '500',
-  },
-  uploadButton: {
-    backgroundColor: '#3B82F6',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  uploadButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  receiptImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 12,
-    marginTop: 12,
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-  },
-  totalText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1A1A1A',
-    marginTop: 12,
-    textAlign: 'right',
-  },
-  actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 16,
-    marginTop: 24,
-    marginBottom: 32,
-  },
-  cancelButton: {
-    backgroundColor: '#6B7280',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    flex: 1,
-    marginRight: 8,
-    alignItems: 'center',
-  },
-  cancelButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  confirmButton: {
-    backgroundColor: '#3B82F6',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    flex: 1,
-    alignItems: 'center',
-  },
-  confirmButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  disabledInput: {
-    opacity: 0.5,
-  },
 };
 
 export default OrderProcessingScreen;

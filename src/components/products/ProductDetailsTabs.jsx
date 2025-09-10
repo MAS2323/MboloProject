@@ -35,6 +35,7 @@ const MESSAGES = {
     CART_ADD_ERROR: 'No se pudo añadir el producto al carrito.',
     FAVORITES_ERROR: 'No se pudo actualizar favoritos.',
     INVALID_PRODUCT: 'Producto no válido.',
+    INVALID_STORE: 'Tienda no válida. Por favor, intenta de nuevo.',
   },
   SUCCESS: {
     CART_ADDED: 'Producto añadido al carrito',
@@ -266,10 +267,22 @@ const ProductDetailsTabs = ({
       Alert.alert('Error', MESSAGES.ERRORS.INVALID_PRODUCT);
       return;
     }
+    if (!product?.tienda?._id || !isValidObjectId(product.tienda._id)) {
+      console.error('Invalid storeId:', product?.tienda?._id);
+      Alert.alert('Error', MESSAGES.ERRORS.INVALID_STORE);
+      return;
+    }
+
+    console.log('Navigating to OrderProcessingScreen with:', {
+      productId: product._id,
+      userId,
+      storeId: product.tienda._id,
+    });
 
     navigation.navigate(SCREENS.ORDER_PROCESSING, {
       product,
       userId,
+      storeId: product.tienda._id,
     });
   }, [userId, product, navigation]);
 

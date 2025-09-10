@@ -70,7 +70,7 @@ const CrearTiendaScreen = () => {
   });
   const [logo, setLogo] = useState(null);
   const [banner, setBanner] = useState(null);
-  const [document, setDocument] = useState(null);
+  const [documents, setDocuments] = useState([]); // Cambiado a array para múltiples documentos
   const [documentType, setDocumentType] = useState('');
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [accountNumbers, setAccountNumbers] = useState({});
@@ -114,13 +114,13 @@ const CrearTiendaScreen = () => {
           name: response.data.name,
           description: response.data.description,
           phone_number: response.data.phone_number,
-          address: response.data.address?.name || '', // Usar el nombre de la ciudad
+          address: response.data.address?.name || '',
           specific_location: response.data.specific_location,
           owner: userId,
           ownerName: response.data.owner?.userName || userName || '',
           logo: response.data.logo?.url,
           banner: response.data.banner?.url,
-          document: response.data.document || {type: '', url: ''},
+          documents: response.data.documents || [], // Cambiado a array para documentos
           paymentMethods: response.data.paymentMethods || [],
         };
         setExistingStore(storeData);
@@ -189,7 +189,6 @@ const CrearTiendaScreen = () => {
           navigation.navigate(SCREENS.PROFILE);
           return;
         }
-        // Validar que ciudad.id sea un ObjectId válido
         const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(
           parsedUserData.ciudad.id,
         );
@@ -200,8 +199,8 @@ const CrearTiendaScreen = () => {
         }
         setFormData(prev => ({
           ...prev,
-          address: parsedUserData.ciudad.name, // Nombre de la ciudad
-          cityId: parsedUserData.ciudad.id, // ID de la ciudad
+          address: parsedUserData.ciudad.name,
+          cityId: parsedUserData.ciudad.id,
         }));
 
         await checkStore(parsedId);
@@ -234,12 +233,11 @@ const CrearTiendaScreen = () => {
 
   // Manejar la selección de la ciudad
   const handleCitySelect = selectedCity => {
-    console.log('Ciudad seleccionada:', selectedCity); // Log para depuración
+    console.log('Ciudad seleccionada:', selectedCity);
     if (!selectedCity?.id || !selectedCity?.name) {
       Alert.alert('Error', 'La ciudad seleccionada no es válida.');
       return;
     }
-    // Validar que el ID sea un ObjectId válido
     const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(selectedCity.id);
     if (!isValidObjectId) {
       Alert.alert('Error', 'El ID de la ciudad seleccionada no es válido.');
@@ -247,8 +245,8 @@ const CrearTiendaScreen = () => {
     }
     setFormData({
       ...formData,
-      address: selectedCity.name, // Nombre para visualización
-      cityId: selectedCity.id, // ID para el backend
+      address: selectedCity.name,
+      cityId: selectedCity.id,
     });
   };
 
@@ -287,14 +285,19 @@ const CrearTiendaScreen = () => {
 
   const pickImage = async type => {
     const imageStates = {
-      logo: {current: logo, setter: setLogo},
-      banner: {current: banner, setter: setBanner},
-      document: {current: document, setter: setDocument},
+      logo: {current: logo, setter: setLogo, max: 1},
+      banner: {current: banner, setter: setBanner, max: 1},
+      documents: {current: documents, setter: setDocuments, max: 2}, // Cambiado para permitir múltiples documentos
     };
 
-    const {current, setter} = imageStates[type];
-    if (current) {
-      Alert.alert('Límite alcanzado', `Solo se permite subir un ${type}.`);
+    const {current, setter, max} = imageStates[type];
+    if (current && current.length >= max) {
+      Alert.alert(
+        'Límite alcanzado',
+        `Solo se permiten hasta ${max} ${
+          type === 'documents' ? 'documentos' : type
+        }.`,
+      );
       return;
     }
 
@@ -302,8 +305,9 @@ const CrearTiendaScreen = () => {
       mediaType: 'photo',
       maxWidth: type === 'logo' ? 512 : type === 'banner' ? 1024 : 800,
       maxHeight: type === 'logo' ? 512 : type === 'banner' ? 256 : 600,
-      quality: 1,
+      quality: 0.8,
       includeBase64: false,
+      selectionLimit: type === 'documents' ? max - current.length : 1,
     };
 
     launchImageLibrary(options, response => {
@@ -320,22 +324,26 @@ const CrearTiendaScreen = () => {
         return;
       }
       if (response.assets && response.assets.length > 0) {
-        const uri = response.assets[0].uri;
-        console.log(`Imagen seleccionada para ${type}: ${uri}`);
-        setter(uri);
+        const uris = response.assets.map(asset => asset.uri);
+        console.log(`Imágenes seleccionadas para ${type}:`, uris);
+        if (type === 'documents') {
+          setter([...current, ...uris].slice(0, max));
+        } else {
+          setter(uris[0]);
+        }
       } else {
         console.log(`No se seleccionó ninguna imagen para ${type}`);
       }
     });
   };
 
-  const removeImage = type => {
+  const removeImage = (type, index = null) => {
     if (type === 'logo') {
       setLogo(null);
     } else if (type === 'banner') {
       setBanner(null);
-    } else if (type === 'document') {
-      setDocument(null);
+    } else if (type === 'documents' && index !== null) {
+      setDocuments(documents.filter((_, i) => i !== index));
     }
   };
 
@@ -349,9 +357,8 @@ const CrearTiendaScreen = () => {
     if (!formData.owner) missingFields.push('Propietario');
     if (!logo) missingFields.push('Logo');
     if (!banner) missingFields.push('Banner');
-    if (!document) missingFields.push('Documento');
+    if (documents.length === 0) missingFields.push('Documento');
     if (!documentType) missingFields.push('Tipo de documento');
-    if (paymentMethods.length === 0) missingFields.push('Métodos de pago');
     paymentMethods.forEach(method => {
       if (!accountNumbers[method]) {
         missingFields.push(`Número de cuenta para ${method}`);
@@ -366,7 +373,6 @@ const CrearTiendaScreen = () => {
       return;
     }
 
-    // Validar que cityId sea un ObjectId válido
     const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(formData.cityId);
     if (!isValidObjectId) {
       Alert.alert('Error', 'El ID de la ciudad no es válido.');
@@ -380,7 +386,7 @@ const CrearTiendaScreen = () => {
       formDataToSend.append('name', formData.name);
       formDataToSend.append('description', formData.description);
       formDataToSend.append('phone_number', formData.phone_number);
-      formDataToSend.append('address', formData.cityId); // Enviar el ID de la ciudad
+      formDataToSend.append('address', formData.cityId);
       formDataToSend.append('specific_location', formData.specific_location);
       formDataToSend.append('owner', userId);
       formDataToSend.append('documentType', documentType);
@@ -394,49 +400,54 @@ const CrearTiendaScreen = () => {
         ),
       );
 
-      const files = [
-        {field: 'logo', uri: logo},
-        {field: 'banner', uri: banner},
-        {field: 'document', uri: document},
-      ].filter(file => file.uri);
+      // Agregar logo
+      if (logo) {
+        formDataToSend.append('logo', {
+          uri: logo,
+          name: `logo_${userId}.jpg`,
+          type: 'image/jpeg',
+        });
+      }
 
-      files.forEach(file => {
-        formDataToSend.append(file.field, {
-          uri: file.uri,
-          name: `${file.field}_${userId}.jpg`,
+      // Agregar banner
+      if (banner) {
+        formDataToSend.append('banner', {
+          uri: banner,
+          name: `banner_${userId}.jpg`,
+          type: 'image/jpeg',
+        });
+      }
+
+      // Agregar documentos (ahora como array)
+      documents.forEach((doc, index) => {
+        formDataToSend.append('document', {
+          // <-- Cambiado a singular
+          uri: doc,
+          name: `document_${userId}_${index}.jpg`,
           type: 'image/jpeg',
         });
       });
-
-      console.log('Enviando FormData:');
-      console.log('Campos de texto:');
-      [
-        'name',
-        'description',
-        'phone_number',
-        'address',
-        'specific_location',
-        'owner',
-        'documentType',
-      ].forEach(field => {
-        console.log(
-          `${field}: ${
-            formDataToSend._parts.find(part => part[0] === field)?.[1]
-          }`,
-        );
+      console.log('Campos de texto:', {
+        name: formData.name,
+        description: formData.description,
+        phone_number: formData.phone_number,
+        address: formData.cityId,
+        specific_location: formData.specific_location,
+        owner: userId,
+        documentType,
       });
       console.log(
         'Métodos de pago:',
-        formDataToSend._parts.find(part => part[0] === 'paymentMethods')?.[1],
+        paymentMethods.map(method => ({
+          name: method,
+          accountNumber: accountNumbers[method],
+        })),
       );
-      console.log('Archivos:');
-      files.forEach(file => {
-        const fileData = formDataToSend._parts.find(
-          part => part[0] === file.field,
-        )?.[1];
-        console.log(`${file.field}: ${JSON.stringify(fileData)}`);
+      console.log('Archivos:', {
+        logo: logo ? `logo_${userId}.jpg` : null,
+        banner: banner ? `banner_${userId}.jpg` : null,
+        documents: documents.map((_, i) => `document_${userId}_${i}.jpg`),
       });
-      console.log(`Total de archivos enviados: ${files.length}`);
 
       const response = await axios.post(
         `${API_BASE_URL}/tienda`,
@@ -445,6 +456,7 @@ const CrearTiendaScreen = () => {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
+          timeout: 60000,
         },
       );
 
@@ -453,21 +465,19 @@ const CrearTiendaScreen = () => {
         name: formData.name,
         description: formData.description,
         phone_number: formData.phone_number,
-        address: formData.address, // Almacenar el nombre de la ciudad para visualización
+        address: formData.address,
         specific_location: formData.specific_location,
         owner: userId,
         ownerName: userName,
         logo: response.data.tienda.logo.url,
         banner: response.data.tienda.banner.url,
-        document: {
-          type: response.data.tienda.document.type,
-          url: response.data.tienda.document.url,
-        },
+        documents: response.data.tienda.documents || [],
         paymentMethods: response.data.tienda.paymentMethods || [],
       };
       await AsyncStorage.setItem('store_data', JSON.stringify(storeData));
       setExistingStore(storeData);
 
+      // Resetear formulario
       setFormData({
         name: '',
         description: '',
@@ -479,7 +489,7 @@ const CrearTiendaScreen = () => {
       });
       setLogo(null);
       setBanner(null);
-      setDocument(null);
+      setDocuments([]);
       setDocumentType('');
       setPaymentMethods([]);
       setAccountNumbers({});
@@ -506,76 +516,131 @@ const CrearTiendaScreen = () => {
   };
 
   // Componente para mostrar los detalles de la tienda
-  const StoreCard = ({store}) => (
-    <TouchableOpacity
-      style={styles.cardContainer}
-      onPress={() =>
-        navigation.navigate(SCREENS.EDITAR_STORE_DETAILS, {
-          store: JSON.stringify(store),
-        })
-      }>
-      <Text style={styles.cardTitle}>{store.name}</Text>
-      {store.banner && (
-        <Image source={{uri: store.banner}} style={styles.bannerPreview} />
-      )}
-      {store.logo && (
-        <Image source={{uri: store.logo}} style={styles.imagePreview} />
-      )}
-      <Text style={styles.cardLabel}>Propietario:</Text>
-      <Text style={styles.cardText}>{store.ownerName}</Text>
-      <Text style={styles.cardLabel}>Descripción:</Text>
-      <Text style={styles.cardText}>{store.description}</Text>
-      <Text style={styles.cardLabel}>Teléfono:</Text>
-      <Text style={styles.cardText}>{store.phone_number}</Text>
-      <Text style={styles.cardLabel}>Dirección:</Text>
-      <Text style={styles.cardText}>{store.address}</Text>
-      <Text style={styles.cardLabel}>Ubicación específica:</Text>
-      <Text style={styles.cardText}>{store.specific_location}</Text>
-      <Text style={styles.cardLabel}>Documento:</Text>
-      <Text style={styles.cardText}>{store.document.type}</Text>
-      {store.document.url && (
-        <Image
-          source={{uri: store.document.url}}
-          style={styles.documentPreview}
-          onError={e => {
-            console.error(
-              'Error cargando imagen del documento:',
-              e.nativeEvent.error,
-            );
-          }}
-        />
-      )}
-      <Text style={styles.cardLabel}>Métodos de pago:</Text>
-      <View style={styles.paymentMethodsContainer}>
-        {store.paymentMethods && store.paymentMethods.length > 0 ? (
-          store.paymentMethods.map((method, index) => (
-            <View key={index} style={styles.paymentMethodItem}>
-              <Text style={styles.cardText}>{method.name}</Text>
+  const StoreCard = ({store}) => {
+    const navigation = useNavigation();
+
+    // Log store.document to debug
+    console.log('StoreCard store.document:', store.document);
+
+    return (
+      <TouchableOpacity
+        style={styles.cardContainer}
+        onPress={() =>
+          navigation.navigate(SCREENS.EDITAR_STORE_DETAILS, {
+            store: JSON.stringify(store),
+          })
+        }>
+        <Text style={styles.cardTitle}>{store.name || 'Sin nombre'}</Text>
+        {store.banner?.url ? (
+          <Image
+            source={{uri: store.banner.url}}
+            style={styles.bannerPreview}
+            onError={e => {
+              console.error('Error cargando banner:', e.nativeEvent.error);
+              Alert.alert('Error', 'No se pudo cargar el banner de la tienda.');
+            }}
+          />
+        ) : (
+          <Text style={styles.cardText}>Banner no disponible</Text>
+        )}
+        {store.logo?.url ? (
+          <Image
+            source={{uri: store.logo.url}}
+            style={styles.imagePreview}
+            onError={e => {
+              console.error('Error cargando logo:', e.nativeEvent.error);
+              Alert.alert('Error', 'No se pudo cargar el logo de la tienda.');
+            }}
+          />
+        ) : (
+          <Text style={styles.cardText}>Logo no disponible</Text>
+        )}
+        <Text style={styles.cardLabel}>Propietario:</Text>
+        <Text style={styles.cardText}>{store.ownerName || 'Desconocido'}</Text>
+        <Text style={styles.cardLabel}>Descripción:</Text>
+        <Text style={styles.cardText}>
+          {store.description || 'Sin descripción'}
+        </Text>
+        <Text style={styles.cardLabel}>Teléfono:</Text>
+        <Text style={styles.cardText}>
+          {store.phone_number || 'Sin teléfono'}
+        </Text>
+        <Text style={styles.cardLabel}>Dirección:</Text>
+        <Text style={styles.cardText}>
+          {store.address?.name || 'Sin dirección'}
+        </Text>
+        <Text style={styles.cardLabel}>Ubicación específica:</Text>
+        <Text style={styles.cardText}>
+          {store.specific_location || 'Sin ubicación'}
+        </Text>
+        <Text style={styles.cardLabel}>Documentos:</Text>
+        {store.document && store.document.length > 0 ? (
+          store.document.map((doc, index) => (
+            <View key={index} style={styles.documentItem}>
               <Text style={styles.cardText}>
-                Cuenta: {method.accountNumber}
+                Tipo: {doc.type || 'Desconocido'}
               </Text>
-              {method.image?.url && (
+              {doc.url ? (
                 <Image
-                  source={{uri: method.image.url}}
-                  style={styles.paymentMethodImage}
+                  source={{uri: doc.url}}
+                  style={styles.documentPreview}
                   onError={e => {
                     console.error(
-                      `Error cargando imagen de ${method.name}:`,
+                      `Error cargando documento ${index}:`,
                       e.nativeEvent.error,
+                    );
+                    Alert.alert(
+                      'Error',
+                      `No se pudo cargar la imagen del documento ${
+                        doc.type || index + 1
+                      }`,
                     );
                   }}
                 />
+              ) : (
+                <Text style={styles.cardText}>Imagen no disponible</Text>
               )}
             </View>
           ))
         ) : (
-          <Text style={styles.cardText}>
-            No hay métodos de pago seleccionados
-          </Text>
+          <Text style={styles.cardText}>No hay documentos</Text>
         )}
-      </View>
-    </TouchableOpacity>
-  );
+        <Text style={styles.cardLabel}>Métodos de pago:</Text>
+        <View style={styles.paymentMethodsContainer}>
+          {store.paymentMethods && store.paymentMethods.length > 0 ? (
+            store.paymentMethods.map((method, index) => (
+              <View key={index} style={styles.paymentMethodItem}>
+                <Text style={styles.cardText}>
+                  {method.name || 'Desconocido'}
+                </Text>
+                <Text style={styles.cardText}>
+                  Cuenta: {method.accountNumber || 'Sin número'}
+                </Text>
+                {method.image?.url ? (
+                  <Image
+                    source={{uri: method.image.url}}
+                    style={styles.paymentMethodImage}
+                    onError={e => {
+                      console.error(
+                        `Error cargando imagen de ${method.name}:`,
+                        e.nativeEvent.error,
+                      );
+                    }}
+                  />
+                ) : (
+                  <Text style={styles.cardText}>Imagen no disponible</Text>
+                )}
+              </View>
+            ))
+          ) : (
+            <Text style={styles.cardText}>
+              No hay métodos de pago seleccionados
+            </Text>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -706,34 +771,45 @@ const CrearTiendaScreen = () => {
         </View>
         <View style={styles.inputGroup}>
           <Text style={styles.label}>
-            Documento (DIP, Pasaporte o Permiso de Residencia)*
+            Documentos (DIP, Pasaporte o Permiso de Residencia, hasta 2
+            imágenes)*
           </Text>
           <TouchableOpacity
             style={styles.imagePicker}
-            onPress={() => pickImage('document')}>
-            {document ? (
+            onPress={() => pickImage('documents')}
+            disabled={loading || documents.length >= 2}>
+            {documents.length > 0 ? (
               <View style={styles.imageContainer}>
-                <Image
-                  source={{uri: document}}
-                  style={styles.documentPreview}
-                  key={document}
-                  onError={e => {
-                    console.error(
-                      'Error cargando documento:',
-                      e.nativeEvent.error,
-                    );
-                    Alert.alert('Error', 'No se pudo cargar el documento.');
-                  }}
-                />
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => removeImage('document')}>
-                  <IconComponents.MaterialIcons
-                    name={ICONS.DELETE.name}
-                    size={ICONS.DELETE.size}
-                    color={COLORS.red}
-                  />
-                </TouchableOpacity>
+                {documents.map((doc, index) => (
+                  <View key={index} style={styles.documentItem}>
+                    <Image
+                      source={{uri: doc}}
+                      style={styles.documentPreview}
+                      onError={e => {
+                        console.error(
+                          'Error cargando documento:',
+                          e.nativeEvent.error,
+                        );
+                        Alert.alert('Error', 'No se pudo cargar el documento.');
+                      }}
+                    />
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => removeImage('documents', index)}
+                      disabled={loading}>
+                      <IconComponents.MaterialIcons
+                        name={ICONS.DELETE.name}
+                        size={ICONS.DELETE.size}
+                        color={COLORS.red}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+                {documents.length < 2 && (
+                  <Text style={styles.imagePickerText}>
+                    Añadir otro documento
+                  </Text>
+                )}
               </View>
             ) : (
               <View style={styles.imagePlaceholder}>
