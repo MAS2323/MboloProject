@@ -70,7 +70,7 @@ const Tab = createBottomTabNavigator();
 const StackNavigation = () => {
   return (
     <Stack.Navigator
-      initialRouteName={SCREENS.INTRO}
+      initialRouteName={SCREENS.HOME_STACK}
       screenOptions={{
         headerShown: false,
       }}>
