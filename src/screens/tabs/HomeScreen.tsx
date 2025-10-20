@@ -7,8 +7,9 @@ import SlideSection from '../../components/products/SlideSecction';
 import ProductRow from '../../components/products/ProductRow';
 import TendenciaScreen from '../../components/tendencia/TendenciaScreen';
 import styles from './styles/HomeScreen.styles';
+import {COLORS} from '../../constants';
 
-const HomeScreen = (props: {navigation: any}) => {
+const HomeScreen = props => {
   const {navigation} = props;
   const [refreshing, setRefreshing] = useState(false);
 
@@ -52,8 +53,8 @@ const HomeScreen = (props: {navigation: any}) => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#00C853']} // Color del indicador de refresco
-            tintColor="#00C853" // Color en iOS
+            colors={[COLORS.primary]} // Color del indicador de refresco
+            tintColor={COLORS.primary} // Color en iOS
           />
         }
       />
